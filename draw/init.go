@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"runtime"
 	"strings"
 	"sync"
 
@@ -332,13 +333,17 @@ func (d *Display) getimage0(i *Image) (*Image, error) {
 func (d *Display) Attach(ref int) error {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	oi := d.Image
-	i, err := d.getimage0(oi)
-	if err != nil {
-		return err
+	if runtime.GOOS != "plan9" {
+		oi := d.Image
+		i, err := d.getimage0(oi)
+		if err != nil {
+			return err
+		}
+		d.Image = i
 	}
-	d.Image = i
+	i := d.Image
 	d.Screen.free()
+	var err error
 	d.Screen, err = i.allocScreen(d.White, false)
 	if err != nil {
 		return err
