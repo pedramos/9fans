@@ -1,3 +1,5 @@
+// +build !plan9
+
 package client
 
 import (
@@ -6,68 +8,33 @@ import (
 	"strings"
 	"sync"
 
-	"plramos.win/9fans/plan9"
+	"9fans.net/go/plan9"
 )
 
 func getuser() string { return os.Getenv("USER") }
 
 type Fid struct {
-	qid  plan9.Qid
-	fid  uint32
-	mode uint8
-	// f guards offset and c.
-	f sync.Mutex
-	// c holds the underlying connection.
-	// It's nil after the Fid has been closed.
-	_c     *conn
+	c      *Conn
+	qid    plan9.Qid
+	fid    uint32
+	mode   uint8
 	offset int64
-}
-
-func (fid *Fid) conn() (*conn, error) {
-	fid.f.Lock()
-	c := fid._c
-	fid.f.Unlock()
-	if c == nil {
-		return nil, errClosed
-	}
-	return c, nil
+	f      sync.Mutex
 }
 
 func (fid *Fid) Close() error {
 	if fid == nil {
-		// TODO why is Close allowed on a nil fid but no other operations?
 		return nil
 	}
-	conn, err := fid.conn()
-	if err != nil {
-		return err
-	}
 	tx := &plan9.Fcall{Type: plan9.Tclunk, Fid: fid.fid}
-	_, err = conn.rpc(tx, fid)
+	_, err := fid.c.rpc(tx)
+	fid.c.putfid(fid)
 	return err
 }
 
-// clunked marks the fid as clunked and closes it. This is called
-// just before sending a message that will clunk it.
-func (fid *Fid) clunked() error {
-	fid.f.Lock()
-	defer fid.f.Unlock()
-	if fid._c == nil {
-		return errClosed
-	}
-	fid._c.putfidnum(fid.fid)
-	fid._c.release()
-	fid._c = nil
-	return nil
-}
-
 func (fid *Fid) Create(name string, mode uint8, perm plan9.Perm) error {
-	conn, err := fid.conn()
-	if err != nil {
-		return err
-	}
 	tx := &plan9.Fcall{Type: plan9.Tcreate, Fid: fid.fid, Name: name, Mode: mode, Perm: perm}
-	rx, err := conn.rpc(tx, nil)
+	rx, err := fid.c.rpc(tx)
 	if err != nil {
 		return err
 	}
@@ -76,71 +43,10 @@ func (fid *Fid) Create(name string, mode uint8, perm plan9.Perm) error {
 	return nil
 }
 
-func (fid *Fid) Dirread() ([]*plan9.Dir, error) {
-	buf := make([]byte, plan9.STATMAX)
-	n, err := fid.Read(buf)
-	if err != nil {
-		return nil, err
-	}
-	return dirUnpack(buf[0:n])
-}
-
-func (fid *Fid) Dirreadall() ([]*plan9.Dir, error) {
-	// Note: Cannot use ioutil.ReadAll / io.ReadAll here
-	// because it assumes it can read small amounts.
-	// Plan 9 requires providing a buffer big enough for
-	// at least a single directory entry.
-	var dirs []*plan9.Dir
-	for {
-		d, err := fid.Dirread()
-		dirs = append(dirs, d...)
-		if err != nil {
-			if err == io.EOF {
-				err = nil
-			}
-			return dirs, err
-		}
-	}
-}
-
-func dirUnpack(b []byte) ([]*plan9.Dir, error) {
-	var err error
-	dirs := make([]*plan9.Dir, 0, 10)
-	for len(b) > 0 {
-		if len(b) < 2 {
-			err = io.ErrUnexpectedEOF
-			break
-		}
-		n := int(b[0]) | int(b[1])<<8
-		if len(b) < n+2 {
-			err = io.ErrUnexpectedEOF
-			break
-		}
-		var d *plan9.Dir
-		d, err = plan9.UnmarshalDir(b[0 : n+2])
-		if err != nil {
-			break
-		}
-		b = b[n+2:]
-		if len(dirs) >= cap(dirs) {
-			ndirs := make([]*plan9.Dir, len(dirs), 2*cap(dirs))
-			copy(ndirs, dirs)
-			dirs = ndirs
-		}
-		n = len(dirs)
-		dirs = dirs[0 : n+1]
-		dirs[n] = d
-	}
-	return dirs, err
-}
-
 func (fid *Fid) Open(mode uint8) error {
-	conn, err := fid.conn()
-	if err != nil {
-		return err
-	}
 	tx := &plan9.Fcall{Type: plan9.Topen, Fid: fid.fid, Mode: mode}
-	if _, err := conn.rpc(tx, nil); err != nil {
+	_, err := fid.c.rpc(tx)
+	if err != nil {
 		return err
 	}
 	fid.mode = mode
@@ -171,11 +77,7 @@ func (fid *Fid) ReadAt(b []byte, offset int64) (n int, err error) {
 }
 
 func (fid *Fid) readAt(b []byte, offset int64) (n int, err error) {
-	conn, err := fid.conn()
-	if err != nil {
-		return 0, err
-	}
-	msize := conn.msize - plan9.IOHDRSZ
+	msize := fid.c.msize - plan9.IOHDRSZ
 	n = len(b)
 	if uint32(n) > msize {
 		n = int(msize)
@@ -187,7 +89,7 @@ func (fid *Fid) readAt(b []byte, offset int64) (n int, err error) {
 		fid.f.Unlock()
 	}
 	tx := &plan9.Fcall{Type: plan9.Tread, Fid: fid.fid, Offset: uint64(o), Count: uint32(n)}
-	rx, err := conn.rpc(tx, nil)
+	rx, err := fid.c.rpc(tx)
 	if err != nil {
 		return 0, err
 	}
@@ -203,17 +105,10 @@ func (fid *Fid) readAt(b []byte, offset int64) (n int, err error) {
 	return len(rx.Data), nil
 }
 
-func (fid *Fid) ReadFull(b []byte) (n int, err error) {
-	return io.ReadFull(fid, b)
-}
-
 func (fid *Fid) Remove() error {
-	conn, err := fid.conn()
-	if err != nil {
-		return err
-	}
 	tx := &plan9.Fcall{Type: plan9.Tremove, Fid: fid.fid}
-	_, err = conn.rpc(tx, fid)
+	_, err := fid.c.rpc(tx)
+	fid.c.putfid(fid)
 	return err
 }
 
@@ -255,12 +150,8 @@ func (fid *Fid) Seek(n int64, whence int) (int64, error) {
 }
 
 func (fid *Fid) Stat() (*plan9.Dir, error) {
-	conn, err := fid.conn()
-	if err != nil {
-		return nil, err
-	}
 	tx := &plan9.Fcall{Type: plan9.Tstat, Fid: fid.fid}
-	rx, err := conn.rpc(tx, nil)
+	rx, err := fid.c.rpc(tx)
 	if err != nil {
 		return nil, err
 	}
@@ -269,11 +160,7 @@ func (fid *Fid) Stat() (*plan9.Dir, error) {
 
 // TODO(rsc): Could use ...string instead?
 func (fid *Fid) Walk(name string) (*Fid, error) {
-	conn, err := fid.conn()
-	if err != nil {
-		return nil, err
-	}
-	wfidnum, err := conn.newfidnum()
+	wfid, err := fid.c.newfid()
 	if err != nil {
 		return nil, err
 	}
@@ -289,34 +176,38 @@ func (fid *Fid) Walk(name string) (*Fid, error) {
 	}
 	elem = elem[0:j]
 
-	var wfid *Fid
-	fromfidnum := fid.fid
 	for nwalk := 0; ; nwalk++ {
 		n := len(elem)
 		if n > plan9.MAXWELEM {
 			n = plan9.MAXWELEM
 		}
-		tx := &plan9.Fcall{Type: plan9.Twalk, Fid: fromfidnum, Newfid: wfidnum, Wname: elem[0:n]}
-		rx, err := conn.rpc(tx, nil)
+		tx := &plan9.Fcall{Type: plan9.Twalk, Newfid: wfid.fid, Wname: elem[0:n]}
+		if nwalk == 0 {
+			tx.Fid = fid.fid
+		} else {
+			tx.Fid = wfid.fid
+		}
+		rx, err := fid.c.rpc(tx)
 		if err == nil && len(rx.Wqid) != n {
 			err = Error("file '" + name + "' not found")
 		}
 		if err != nil {
-			if wfid != nil {
+			if nwalk > 0 {
 				wfid.Close()
+			} else {
+				fid.c.putfid(wfid)
 			}
 			return nil, err
 		}
 		if n == 0 {
-			wfid = conn.newFid(wfidnum, fid.qid)
+			wfid.qid = fid.qid
 		} else {
-			wfid = conn.newFid(wfidnum, rx.Wqid[n-1])
+			wfid.qid = rx.Wqid[n-1]
 		}
 		elem = elem[n:]
 		if len(elem) == 0 {
 			break
 		}
-		fromfidnum = wfid.fid
 	}
 	return wfid, nil
 }
@@ -326,11 +217,7 @@ func (fid *Fid) Write(b []byte) (n int, err error) {
 }
 
 func (fid *Fid) WriteAt(b []byte, offset int64) (n int, err error) {
-	conn, err := fid.conn()
-	if err != nil {
-		return 0, err
-	}
-	msize := conn.msize - plan9.IOHDRSIZE
+	msize := fid.c.msize - plan9.IOHDRSIZE
 	tot := 0
 	n = len(b)
 	first := true
@@ -353,10 +240,6 @@ func (fid *Fid) WriteAt(b []byte, offset int64) (n int, err error) {
 }
 
 func (fid *Fid) writeAt(b []byte, offset int64) (n int, err error) {
-	conn, err := fid.conn()
-	if err != nil {
-		return 0, err
-	}
 	o := offset
 	if o == -1 {
 		fid.f.Lock()
@@ -364,11 +247,11 @@ func (fid *Fid) writeAt(b []byte, offset int64) (n int, err error) {
 		fid.f.Unlock()
 	}
 	tx := &plan9.Fcall{Type: plan9.Twrite, Fid: fid.fid, Offset: uint64(o), Data: b}
-	rx, err := conn.rpc(tx, nil)
+	rx, err := fid.c.rpc(tx)
 	if err != nil {
 		return 0, err
 	}
-	if offset == -1 && rx.Count > 0 {
+	if o == -1 && rx.Count > 0 {
 		fid.f.Lock()
 		fid.offset += int64(rx.Count)
 		fid.f.Unlock()
@@ -377,18 +260,11 @@ func (fid *Fid) writeAt(b []byte, offset int64) (n int, err error) {
 }
 
 func (fid *Fid) Wstat(d *plan9.Dir) error {
-	conn, err := fid.conn()
-	if err != nil {
-		return err
-	}
 	b, err := d.Bytes()
 	if err != nil {
 		return err
 	}
 	tx := &plan9.Fcall{Type: plan9.Twstat, Fid: fid.fid, Stat: b}
-	_, err = conn.rpc(tx, nil)
+	_, err = fid.c.rpc(tx)
 	return err
-}
-func (fid *Fid) ReadFull(b []byte) (n int, err error) {
-	return io.ReadFull(fid, b)
 }
