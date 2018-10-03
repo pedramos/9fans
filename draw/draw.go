@@ -63,7 +63,6 @@ func (dst *Image) draw(r Rectangle, src, mask *Image, p1 Point) {
 	draw(dst, r, src, p1, mask, p1, SoverD)
 }
 
-<<<<<<< HEAD
 // Draw is the standard drawing function. Only those pixels within the
 // intersection of dst.R and dst.Clipr will be affected; draw ignores
 // dst.Repl. The operation proceeds as follows (this is a description of
@@ -99,19 +98,6 @@ func (dst *Image) draw(r Rectangle, src, mask *Image, p1 Point) {
 //
 // Mask may be nil, in which case a fully opaque mask is assumed.
 func (dst *Image) Draw(r Rectangle, src, mask *Image, p Point) {
-=======
-// Draw copies the source image with upper left corner p1 to the destination
-// rectangle r, through the specified mask using operation SoverD. The
-// coordinates are aligned so p1 in src and mask both correspond to r.min in
-// the destination.
-func (dst *Image) Draw(r image.Rectangle, src, mask *Image, p1 image.Point) {
-	if dst == nil {
-		panic("nil image")
-	}
-	if dst.Display == nil {
-		panic("nil display")
-	}
->>>>>>> e29e7d5 (draw: port drawfcall to Plan 9)
 	dst.Display.mu.Lock()
 	defer dst.Display.mu.Unlock()
 	draw(dst, r, src, p, mask, p, SoverD)
