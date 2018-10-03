@@ -161,7 +161,7 @@ func namedImage(d *Display, ai *Image, name string) (i *Image, err error) {
 		Screen:  nil,
 		next:    nil,
 	}
-	//runtime.SetFinalizer(i, (*Image).Free)
+	runtime.SetFinalizer(i, (*Image).Free)
 	return i, nil
 }
 
