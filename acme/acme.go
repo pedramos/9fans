@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -408,7 +407,7 @@ func (w *Win) ReadAddr() (q0, q1 int, err error) {
 	}
 	buf := make([]byte, 40)
 	n, err := f.ReadAt(buf, 0)
-	if err != nil && err != io.EOF {
+	if err != nil {
 		return 0, 0, err
 	}
 	a := strings.Fields(string(buf[0:n]))
