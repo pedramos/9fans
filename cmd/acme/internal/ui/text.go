@@ -57,7 +57,7 @@ func Texttype(t *wind.Text, r rune) {
 			wind.Textshow(t, t.Q1+1, t.Q1+1, true)
 		}
 		return
-	case draw.KeyDown, draw.KeyPageDown, Kscrollonedown:
+	case draw.KeyDown:
 		if t.What == wind.Tag {
 			// expand tag to show all text
 			if !t.W.Tagexpand {
@@ -66,6 +66,44 @@ func Texttype(t *wind.Text, r rune) {
 			}
 			return
 		}
+		q0 := t.Q0
+		q1 := t.Q0
+		if q1 != 0 {
+			q1--
+		}
+		nnb := 0
+		for q0 < t.Len() && wind.Textreadc(t, q0) != '\n' {
+			q0++
+		}
+		if q0 == t.Len()-1 {
+			wind.Textshow(t, q0, q0, true)
+			return
+		}
+		q0++
+		/* find old pos in ln */
+		for q1 > 1 && wind.Textreadc(t, q1) != '\n' {
+			nnb++
+			q1--
+		}
+		/* go right until reachg pos or \n */
+		for q0 < t.Len() && (nnb > 0 && wind.Textreadc(t, q0) != '\n') {
+			q0++
+			nnb--
+		}
+		if q0 > 1 && q0 < t.Len() {
+			wind.Textshow(t, q0, q0, true)
+		}
+		return
+	case draw.KeyPageDown, Kscrollonedown:
+		if t.What == wind.Tag {
+			// expand tag to show all text
+			if !t.W.Tagexpand {
+				t.W.Tagexpand = true
+				WinresizeAndMouse(t.W, t.W.R, false, true)
+			}
+			return
+		}
+
 		switch r {
 		case draw.KeyDown:
 			n = t.Fr.MaxLines / 3
@@ -80,7 +118,52 @@ func Texttype(t *wind.Text, r rune) {
 		q0 = t.Org + t.Fr.CharOf(draw.Pt(t.Fr.R.Min.X, t.Fr.R.Min.Y+n*t.Fr.Font.Height))
 		wind.Textsetorigin(t, q0, true)
 		return
-	case draw.KeyUp, draw.KeyPageUp, Kscrolloneup:
+	case draw.KeyUp:
+		if t.What == wind.Tag {
+			// shrink tag to single line
+			if t.W.Tagexpand {
+				t.W.Tagexpand = false
+				t.W.Taglines = 1
+				WinresizeAndMouse(t.W, t.W.R, false, true)
+			}
+			return
+		}
+		q0 := t.Q0
+		q1 := t.Q0
+//		if q1 < t.Len() {
+//			q1++
+//		}
+		nnb := 0
+		// send q0 to beginning of top line
+		for i := 0 ; i < 2; i++ {
+			if q0 > 1 && wind.Textreadc(t, q0) == '\n' {
+				q0--
+			}
+			for q0 > 1 && wind.Textreadc(t, q0) != '\n' {
+				q0--
+			}
+		}
+		if q0 == 0 {
+			return
+		}
+		q0++
+
+		/* find old pos in ln */
+		for q1 > 1 && wind.Textreadc(t, q1) != '\n' {
+			nnb++
+			q1--
+		}
+		/* go right until reachg pos or \n */
+		for q0 > 0 && (nnb > 0 && wind.Textreadc(t, q0) != '\n') {
+			q0++
+			nnb--
+		}
+		q0--
+		if q0 > 1 && q0 < t.Len() {
+			wind.Textshow(t, q0, q0, true)
+		}
+		return
+	case  draw.KeyPageUp, Kscrolloneup:
 		if t.What == wind.Tag {
 			// shrink tag to single line
 			if t.W.Tagexpand {
@@ -482,8 +565,8 @@ func Textselect(t *wind.Text) {
 	}
 }
 
-var BigLock = func(){}
-var BigUnlock = func(){}
+var BigLock = func() {}
+var BigUnlock = func() {}
 
 /*
  * Release the button in less than DELAY ms and it's considered a null selection

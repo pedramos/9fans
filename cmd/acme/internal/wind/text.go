@@ -36,7 +36,7 @@ type Text struct {
 	Needundo bool
 }
 
-func (t *Text) RuneAt(pos int) rune { return textreadc(t, pos) }
+func (t *Text) RuneAt(pos int) rune { return Textreadc(t, pos) }
 
 func (t *Text) Len() int { return t.File.Len() }
 
@@ -135,7 +135,7 @@ func Textreset(t *Text) {
 	t.File.Truncate()
 }
 
-func textreadc(t *Text, q int) rune {
+func Textreadc(t *Text, q int) rune {
 	var r [1]rune
 	if t.Cq0 <= q && q < t.Cq0+len(t.Cache) {
 		r[0] = t.Cache[q-t.Cq0]
