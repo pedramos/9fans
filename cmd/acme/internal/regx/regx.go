@@ -441,6 +441,9 @@ func nextrec() rune {
 func bldcclass() {
 	var classp []rune
 	/* we have already seen the '[' */
+	if len(exprp) == 0 {
+		regerror("malformed `[]'")
+	}
 	if exprp[0] == '^' { /* don't match newline in negate case */
 		classp = append(classp, '\n')
 		negateclass = true
@@ -450,6 +453,9 @@ func bldcclass() {
 	}
 	for {
 		c1 := nextrec()
+		if len(exprp) == 0 {
+			regerror("malformed `[]'. Probably `[' should bee escaped")
+		}
 		if c1 == ']' {
 			break
 		}
