@@ -43,7 +43,6 @@ import (
 // Various routines flush automatically, notably Mousectl.Read.
 // Programs that receive directly from Mousectl.C should typically
 // Flush the display explicitly before the receive.
-//
 type Display struct {
 	Image       *Image
 	Screen      *Screen
@@ -60,15 +59,16 @@ type Display struct {
 
 	defaultSubfont *subfont // fallback subfont
 
-	mu       sync.Mutex // See comment above.
-	conn     *drawfcall.Conn
-	errch    chan<- error
-	bufsize  int
-	buf      []byte
-	imageid  uint32
-	qmask    *Image
-	locking  bool
-	flushErr int
+	mu             sync.Mutex // See comment above.
+	isfreefontlock bool       // to know if the mutex is locked due to freeing fonts
+	conn           *drawfcall.Conn
+	errch          chan<- error
+	bufsize        int
+	buf            []byte
+	imageid        uint32
+	qmask          *Image
+	locking        bool
+	flushErr       int
 
 	firstfont *Font
 	lastfont  *Font
@@ -320,7 +320,6 @@ func (d *Display) getimage0(i *Image) (*Image, error) {
 // response to a DPI change, meaning the caller should expect that
 // a Font's Height may be different after calling Attach as well.
 // The Font pointers themselves do not change.
-//
 func (d *Display) Attach(ref int) error {
 	d.mu.Lock()
 	defer d.mu.Unlock()

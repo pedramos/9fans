@@ -63,6 +63,13 @@ func (f *Font) unlock() {
 		f.mu.Unlock()
 	}
 }
+func (f *Font) lockfont() {
+	f.mu.Lock()
+}
+
+func (f *Font) unlockfont() {
+	f.mu.Unlock()
+}
 
 type cachefont struct {
 	min         rune

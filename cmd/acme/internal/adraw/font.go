@@ -17,19 +17,13 @@ type RefFont struct {
 }
 
 var RefFont1 RefFont
-
 var RefFonts [2]*RefFont
-
-var nfix int
 
 func FindFont(fix, save, setfont bool, name string) *RefFont {
 	var r *RefFont
 	fixi := 0
 	if fix {
 		fixi = 1
-		if nfix++; nfix > 1 {
-			panic("fixi")
-		}
 	}
 	if name == "" {
 		name = FontNames[fixi]

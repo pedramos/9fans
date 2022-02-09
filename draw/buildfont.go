@@ -96,8 +96,13 @@ func (f *Font) Free() {
 	if f == nil {
 		return
 	}
-	f.lock()
-	defer f.unlock()
+	if !f.Display.isfreefontlock {
+		f.lock()
+		defer f.unlock()
+	}
+	f.Display.isfreefontlock = true
+	f.lockfont()
+	defer f.unlockfont()
 
 	if f.ondisplaylist {
 		f.ondisplaylist = false
@@ -112,15 +117,14 @@ func (f *Font) Free() {
 			f.Display.firstfont = f.next
 		}
 	}
-
 	if f.lodpi != f {
 		f.lodpi.Free()
 	}
 	if f.hidpi != f {
 		f.hidpi.Free()
 	}
-
 	f.free()
+	f.Display.isfreefontlock = false
 }
 
 func (f *Font) free() {
