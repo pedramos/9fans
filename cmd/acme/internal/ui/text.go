@@ -66,16 +66,18 @@ func Texttype(t *wind.Text, r rune) {
 			}
 			return
 		}
+		wind.Typecommit(t)
+		/* 1rst check for being in the last line*/
 		q0 := t.Q0
-		q1 := t.Q0
+		q1 := q0
 		if q1 != 0 {
 			q1--
 		}
-		nnb := 0
-		for q0 < t.Len() && wind.Textreadc(t, q0) != '\n' {
+		nnb = 0
+		for q0 < t.File.Len() && wind.Textreadc(t, q0) != '\n' {
 			q0++
 		}
-		if q0 == t.Len()-1 {
+		if q0 == (t.File.Len() - 1) {
 			wind.Textshow(t, q0, q0, true)
 			return
 		}
@@ -86,11 +88,11 @@ func Texttype(t *wind.Text, r rune) {
 			q1--
 		}
 		/* go right until reachg pos or \n */
-		for q0 < t.Len() && (nnb > 0 && wind.Textreadc(t, q0) != '\n') {
+		for (q0 < t.File.Len()) && (nnb > 0 && wind.Textreadc(t, q0) != '\n') {
 			q0++
 			nnb--
 		}
-		if q0 > 1 && q0 < t.Len() {
+		if q0 > 1 && q0 < t.File.Len() {
 			wind.Textshow(t, q0, q0, true)
 		}
 		return
@@ -128,40 +130,23 @@ func Texttype(t *wind.Text, r rune) {
 			}
 			return
 		}
-		q0 := t.Q0
-		q1 := t.Q0
-//		if q1 < t.Len() {
-//			q1++
-//		}
-		nnb := 0
-		// send q0 to beginning of top line
-		for i := 0 ; i < 2; i++ {
-			if q0 > 1 && wind.Textreadc(t, q0) == '\n' {
-				q0--
-			}
-			for q0 > 1 && wind.Textreadc(t, q0) != '\n' {
-				q0--
-			}
-		}
-		if q0 == 0 {
-			return
-		}
-		q0++
+		wind.Typecommit(t)
+		nnb = 0
 
-		/* find old pos in ln */
-		for q1 > 1 && wind.Textreadc(t, q1) != '\n' {
+		if t.Q0 > 0 && wind.Textreadc(t, t.Q0-1) != '\n' {
+			nnb = wind.Textbswidth(t, 0x15)
+		}
+		/* BOL - 1 if not first line of txt BOL*/
+		if t.Q0-nnb > 1 && wind.Textreadc(t, t.Q0-nnb-1) == '\n' {
 			nnb++
-			q1--
 		}
-		/* go right until reachg pos or \n */
-		for q0 > 0 && (nnb > 0 && wind.Textreadc(t, q0) != '\n') {
-			q0++
-			nnb--
+		offset := nnb
+		if t.Q0-nnb > 0 && wind.Textreadc(t, t.Q0-nnb-1) != '\n' {
+			wind.Textshow(t, t.Q0-nnb, t.Q0-nnb, true)
+			nnb = wind.Textbswidth(t, 0x15)
 		}
-		q0--
-		if q0 > 1 && q0 < t.Len() {
-			wind.Textshow(t, q0, q0, true)
-		}
+		pos := t.Q0 - nnb + offset - 1
+		wind.Textshow(t, pos, pos, true)
 		return
 	case  draw.KeyPageUp, Kscrolloneup:
 		if t.What == wind.Tag {
