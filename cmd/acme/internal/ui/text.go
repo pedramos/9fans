@@ -208,11 +208,11 @@ func Texttype(t *wind.Text, r rune) {
 		}
 		wind.Textshow(t, q0, q0, true)
 		return
-	case draw.KeyCmd + 'c': // %C: copy
+	case draw.KeyCmd + 'c' : // %C: copy
 		wind.Typecommit(t)
 		XCut(t, t, nil, true, false, nil)
 		return
-	case draw.KeyCmd + 'z': // %Z: undo
+	case draw.KeyCmd + 'z', 0x1A: // %Z: undo
 		wind.Typecommit(t)
 		XUndo(t, nil, nil, true, false, nil)
 		return
@@ -227,7 +227,7 @@ func Texttype(t *wind.Text, r rune) {
 	}
 	// cut/paste must be done after the seq++/filemark
 	switch r {
-	case draw.KeyCmd + 'x': // %X: cut
+	case draw.KeyCmd + 'x', 0x18: // %X: cut
 		wind.Typecommit(t)
 		if t.What == wind.Body {
 			file.Seq++
@@ -237,7 +237,7 @@ func Texttype(t *wind.Text, r rune) {
 		wind.Textshow(t, t.Q0, t.Q0, true)
 		t.IQ1 = t.Q0
 		return
-	case draw.KeyCmd + 'v': // %V: paste
+	case draw.KeyCmd + 'v', 0x16: // %V: paste
 		wind.Typecommit(t)
 		if t.What == wind.Body {
 			file.Seq++
