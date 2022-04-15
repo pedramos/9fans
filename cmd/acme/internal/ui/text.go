@@ -537,16 +537,10 @@ func Textselect(t *wind.Text) {
 		}
 		adraw.Display.Flush()
 
-		// Mousectl.Read does both the Flush
-		// and the receive. We did the flush.
-		// Do just the receive, dropping biglock
-		// to let other goroutines proceed.
-		// Note that *Mouse is Mousectl.Mouse.
-		BigUnlock()
 		for Mouse.Buttons == b {
 			*Mouse = <-Mousectl.C
 		}
-		BigLock()
+
 		clicktext = nil
 	}
 }
