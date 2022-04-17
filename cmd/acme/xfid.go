@@ -846,9 +846,8 @@ func xfideventwrite(x *Xfid, w *wind.Window) {
 			goto Rescue
 		}
 
-		bigUnlock()
 		wind.TheRow.Lk.Lock() // just like mousethread
-		bigLock()
+
 		switch c {
 		case 'x',
 			'X':
