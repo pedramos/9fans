@@ -112,7 +112,8 @@ func Texttype(t *wind.Text, r rune) {
 		case draw.KeyPageDown:
 			n = 2 * t.Fr.MaxLines / 3
 		case Kscrollonedown:
-			n = draw.MouseScrollSize(t.Fr.MaxLines)
+			// n = draw.MouseScrollSize(t.Fr.MaxLines)
+			n = t.Fr.MaxLines / 3
 			if n <= 0 {
 				n = 1
 			}
@@ -164,7 +165,8 @@ func Texttype(t *wind.Text, r rune) {
 		case draw.KeyPageUp:
 			n = 2 * t.Fr.MaxLines / 3
 		case Kscrolloneup:
-			n = draw.MouseScrollSize(t.Fr.MaxLines)
+			// n = draw.MouseScrollSize(t.Fr.MaxLines)
+			n = t.Fr.MaxLines / 3
 		}
 		q0 = wind.Textbacknl(t, t.Org, n)
 		wind.Textsetorigin(t, q0, true)
