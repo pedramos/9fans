@@ -453,7 +453,7 @@ func bldcclass() {
 	}
 	for {
 		c1 := nextrec()
-		if len(exprp) == 0 {
+		if len(exprp) == 0 && c1 != ']' {
 			regerror("malformed `[]'. Probably `[' should bee escaped")
 		}
 		if c1 == ']' {
@@ -473,6 +473,7 @@ func bldcclass() {
 			classp = append(classp, c1&^QUOTED)
 		}
 	}
+
 	class = append(class, classp)
 }
 
