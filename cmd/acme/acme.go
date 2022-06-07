@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
+	//"runtime"
 
 	"9fans.net/go/cmd/acme/internal/adraw"
 	"9fans.net/go/cmd/acme/internal/alog"
@@ -24,6 +25,8 @@ import (
 	"9fans.net/go/cmd/acme/internal/util"
 	"9fans.net/go/cmd/acme/internal/wind"
 	"9fans.net/go/draw"
+	
+	"github.com/google/gops/agent"
 )
 
 var snarffd = -1
@@ -40,6 +43,12 @@ func derror(d *draw.Display, errorstr string) {
 }
 
 func main() {
+
+	if err := agent.Listen(agent.Options{}); err != nil {
+		log.Fatal(err)
+	}
+	
+
 	bigLock()
 	log.SetFlags(0)
 	log.SetPrefix("acme: ")
@@ -778,13 +787,15 @@ var big sync.Mutex
 var stk = make([]byte, 1<<20)
 
 func bigLock() {
+	// n := runtime.Stack(stk, true)
+	// print("\n\nbig.Lock (Locking):\n", string(stk[:n]))
 	big.Lock()
-	//n := runtime.Stack(stk, true)
-	//print("\n\nbig.Lock:\n", string(stk[:n]))
+	// n = runtime.Stack(stk, true)
+	// print("\n\nbig.Lock (Locked):\n", string(stk[:n]))
 }
 
 func bigUnlock() {
-	//n := runtime.Stack(stk, true)
-	//print("\n\nbig.Unlock:\n", string(stk[:n]))
+	// n := runtime.Stack(stk, true)
+	// print("\n\nbig.Unlock:\n", string(stk[:n]))
 	big.Unlock()
 }
