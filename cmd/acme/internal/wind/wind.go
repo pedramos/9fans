@@ -261,6 +261,7 @@ func Winresize(w *Window, r draw.Rectangle, safe, keepextra bool) int {
 			r1.Min.Y = util.Min(y, r.Max.Y)
 			r1.Max.Y = r.Max.Y
 		} else {
+			adraw.Display.ScreenImage.Draw(r1, adraw.TagCols[frame.BACK], nil, draw.ZP)
 			r1.Min.Y = y
 			r1.Max.Y = y
 		}
