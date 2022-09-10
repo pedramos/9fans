@@ -24,6 +24,8 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/util"
 	"plramos.win/9fans/cmd/acme/internal/wind"
 	"plramos.win/9fans/draw"
+	
+	"github.com/google/gops/agent"
 )
 
 var snarffd = -1

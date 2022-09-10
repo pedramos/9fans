@@ -1,4 +1,5 @@
 // +build !plan9
+
 package client // import "plramos.win/9fans/plan9/client"
 
 import (

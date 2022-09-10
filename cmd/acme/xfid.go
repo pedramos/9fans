@@ -20,6 +20,7 @@ import (
 	"io"
 	"strings"
 	"unicode/utf8"
+	"log"
 
 	addrpkg "plramos.win/9fans/cmd/acme/internal/addr"
 	"plramos.win/9fans/cmd/acme/internal/adraw"
@@ -735,6 +736,7 @@ func xfidctlwrite(x *Xfid, w *wind.Window) {
 		} else if strings.HasPrefix(p, "addr=dot") { // set addr
 			w.Addr.Pos = w.Body.Q0
 			w.Addr.End = w.Body.Q1
+			log.Print("%d, %d\n", w.Addr.Pos, w.Addr.End)
 			p = p[8:]
 		} else if strings.HasPrefix(p, "limit=addr") { // set limit
 			wind.Textcommit(&w.Body, true)
