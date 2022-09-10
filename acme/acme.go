@@ -956,16 +956,25 @@ func (w *Win) Selection() string {
 }
 
 func (w *Win) SelectionAddr() (q0, q1 int, err error) {
-	f, err := w.fid("addr")
+
+	faddr, err := w.fid("addr")
+	defer faddr.Close()
 	if err != nil {
 		return 0, 0, err
 	}
-	f.Write([]byte("."))
-	p, err := ioutil.ReadAll(f)
+
+	fctl, err := w.fid("ctl")
+	defer fctl.Close()
 	if err != nil {
 		return 0, 0, err
 	}
-	pos := strings.Fields(string(p))
+	fctl.Write([]byte("addr=dot"))
+
+	b := make([]byte, 100)
+	if _, err := faddr.Read(b); err != nil && err != io.EOF {
+		return 0, 0, err
+	}
+	pos := strings.Fields(string(b))
 	q0, err = strconv.Atoi(pos[0])
 	if err != nil {
 		return 0, 0, err
