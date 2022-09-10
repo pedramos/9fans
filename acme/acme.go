@@ -956,33 +956,32 @@ func (w *Win) Selection() string {
 }
 
 func (w *Win) SelectionAddr() (q0, q1 int, err error) {
-
 	faddr, err := w.fid("addr")
 	defer faddr.Close()
 	if err != nil {
-		return 0, 0, err
+		return 0, 0, fmt.Errorf("could not open addr: %v", err)
 	}
 
 	fctl, err := w.fid("ctl")
 	defer fctl.Close()
 	if err != nil {
-		return 0, 0, err
+		return 0, 0, fmt.Errorf("could not open ctl:%v", err)
 	}
+
 	fctl.Write([]byte("addr=dot"))
 
 	b := make([]byte, 100)
 	if _, err := faddr.Read(b); err != nil && err != io.EOF {
-		return 0, 0, err
+		return 0, 0, fmt.Errorf("failed to read addr: %v", err)
 	}
-	pos := strings.Fields(string(b))
-	q0, err = strconv.Atoi(pos[0])
-	if err != nil {
-		return 0, 0, err
+
+	q := strings.Fields(string(b))
+	q0, err0 := strconv.Atoi(q[0])
+	q1, err1 := strconv.Atoi(q[1])
+	if err0 != nil || err1 != nil {
+		return 0, 0, fmt.Errorf("invalid address returned")
 	}
-	q1, err = strconv.Atoi(pos[1])
-	if err != nil {
-		return 0, 0, err
-	}
+
 	return q0, q1, nil
 }
 
