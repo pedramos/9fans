@@ -17,9 +17,9 @@ package ui
 import (
 	"time"
 
-	"9fans.net/go/cmd/acme/internal/adraw"
-	"9fans.net/go/cmd/acme/internal/wind"
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 func scrsleep(dt time.Duration) {

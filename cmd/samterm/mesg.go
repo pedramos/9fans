@@ -7,7 +7,7 @@ import (
 	"os"
 	"unicode/utf8"
 
-	"9fans.net/go/plumb"
+	"pedrolorgaramos.win/s/9fans-go/plumb"
 )
 
 const HSIZE = 3 /* Type + short count */

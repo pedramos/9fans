@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"unsafe"
 
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/util"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
 )
 
 const blockincr = 256

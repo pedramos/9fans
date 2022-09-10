@@ -1,4 +1,4 @@
-package client // import "9fans.net/go/plan9/client"
+package client // import "pedrolorgaramos.win/s/9fans-go/plan9/client"
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"9fans.net/go/plan9"
+	"pedrolorgaramos.win/s/9fans-go/plan9"
 )
 
 type Error string

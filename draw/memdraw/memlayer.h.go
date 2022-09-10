@@ -1,6 +1,6 @@
 package memdraw
 
-import "9fans.net/go/draw"
+import "pedrolorgaramos.win/s/9fans-go/draw"
 
 type Refreshfn func(*Image, draw.Rectangle, interface{})
 

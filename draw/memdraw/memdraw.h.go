@@ -1,6 +1,6 @@
 package memdraw
 
-import "9fans.net/go/draw"
+import "pedrolorgaramos.win/s/9fans-go/draw"
 
 /*
  * Memdata is allocated from main pool, but .data from the image pool.

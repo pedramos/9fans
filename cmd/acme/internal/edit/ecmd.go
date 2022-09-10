@@ -20,15 +20,15 @@ import (
 	"os"
 	"strings"
 
-	"9fans.net/go/cmd/acme/internal/alog"
-	"9fans.net/go/cmd/acme/internal/bufs"
-	"9fans.net/go/cmd/acme/internal/file"
-	"9fans.net/go/cmd/acme/internal/fileload"
-	"9fans.net/go/cmd/acme/internal/regx"
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/ui"
-	"9fans.net/go/cmd/acme/internal/util"
-	"9fans.net/go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/file"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/fileload"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/regx"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/ui"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
 )
 
 var BigLock = func() {}

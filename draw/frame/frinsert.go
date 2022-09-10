@@ -1,7 +1,7 @@
 package frame
 
 import (
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 // bxscan splits text into boxes inside tmpf starting at *ppt,

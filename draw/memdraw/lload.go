@@ -6,7 +6,7 @@
 
 package memdraw
 
-import "9fans.net/go/draw"
+import "pedrolorgaramos.win/s/9fans-go/draw"
 
 func Load(dst *Image, r draw.Rectangle, data []uint8, iscompressed bool) (int, error) {
 	loadfn := loadmemimage
