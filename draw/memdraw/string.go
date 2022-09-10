@@ -8,7 +8,7 @@ package memdraw
 import (
 	"unicode/utf8"
 
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 func memimagestring(b *Image, p draw.Point, color *Image, cp draw.Point, f *subfont, s []byte) draw.Point {

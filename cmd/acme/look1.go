@@ -21,15 +21,15 @@ import (
 	"fmt"
 	"time"
 
-	"9fans.net/go/cmd/acme/internal/adraw"
-	"9fans.net/go/cmd/acme/internal/alog"
-	"9fans.net/go/cmd/acme/internal/bufs"
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/ui"
-	"9fans.net/go/cmd/acme/internal/wind"
-	"9fans.net/go/plan9"
-	"9fans.net/go/plan9/client"
-	"9fans.net/go/plumb"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/ui"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/plan9"
+	"pedrolorgaramos.win/s/9fans-go/plan9/client"
+	"pedrolorgaramos.win/s/9fans-go/plumb"
 )
 
 var plumbeditfid *client.Fid

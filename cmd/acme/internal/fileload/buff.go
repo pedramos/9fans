@@ -19,11 +19,11 @@ import (
 	"os"
 	"unicode/utf8"
 
-	"9fans.net/go/cmd/acme/internal/alog"
-	"9fans.net/go/cmd/acme/internal/bufs"
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/util"
-	"9fans.net/go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
 )
 
 func Loadfile(fd *os.File, q0 int, nulls *bool, f func(int, []rune) int, h io.Writer) int {

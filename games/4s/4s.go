@@ -4,13 +4,13 @@
 
 // 4s is a tetromino stacking game.
 // Use 4s -5 for pentominoes.
-package main // import "9fans.net/go/games/4s"
+package main // import "pedrolorgaramos.win/s/9fans-go/games/4s"
 
 import (
 	"log"
 	"os"
 
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 func main() {

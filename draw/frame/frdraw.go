@@ -3,7 +3,7 @@ package frame
 import (
 	"fmt"
 
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 func (f *Frame) drawtext(pt draw.Point, text, back *draw.Image) {

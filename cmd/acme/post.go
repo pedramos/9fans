@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"9fans.net/go/plan9/client"
+	"pedrolorgaramos.win/s/9fans-go/plan9/client"
 )
 
 var chattyfuse int

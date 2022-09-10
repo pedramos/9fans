@@ -3,7 +3,7 @@ package frame
 import (
 	"unicode/utf8"
 
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 type box struct {

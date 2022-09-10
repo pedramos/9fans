@@ -7,8 +7,8 @@ import (
 	"io"
 	"os"
 
-	"9fans.net/go/plan9"
-	"9fans.net/go/plan9/client"
+	"pedrolorgaramos.win/s/9fans-go/plan9"
+	"pedrolorgaramos.win/s/9fans-go/plan9/client"
 )
 
 func main() {

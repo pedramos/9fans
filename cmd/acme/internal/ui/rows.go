@@ -18,9 +18,9 @@ package ui
 import (
 	"unicode/utf8"
 
-	"9fans.net/go/cmd/acme/internal/adraw"
-	"9fans.net/go/cmd/acme/internal/wind"
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 func Rowdragcol(row *wind.Row, c *wind.Column, _0 int) {

@@ -21,16 +21,16 @@ import (
 	"os"
 	"path"
 
-	"9fans.net/go/cmd/acme/internal/addr"
-	"9fans.net/go/cmd/acme/internal/adraw"
-	"9fans.net/go/cmd/acme/internal/alog"
-	"9fans.net/go/cmd/acme/internal/bufs"
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/util"
-	"9fans.net/go/cmd/acme/internal/wind"
-	"9fans.net/go/draw"
-	"9fans.net/go/plan9/client"
-	"9fans.net/go/plumb"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/addr"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/s/9fans-go/plan9/client"
+	"pedrolorgaramos.win/s/9fans-go/plumb"
 )
 
 func Look3(t *wind.Text, q0, q1 int, external bool) {

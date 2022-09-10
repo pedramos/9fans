@@ -1,6 +1,6 @@
 package frame
 
-import "9fans.net/go/draw"
+import "pedrolorgaramos.win/s/9fans-go/draw"
 
 // Delete deletes from f the text between p0 and p1;
 // p1 points at the first rune beyond the deletion.

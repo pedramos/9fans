@@ -9,7 +9,7 @@ package memdraw
 import (
 	"fmt"
 
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 func Unload(src *Image, r draw.Rectangle, data []uint8) (int, error) {

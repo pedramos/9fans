@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"9fans.net/go/plan9"
+	"pedrolorgaramos.win/s/9fans-go/plan9"
 )
 
 func getuser() string { return os.Getenv("USER") }

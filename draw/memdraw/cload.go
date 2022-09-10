@@ -8,7 +8,7 @@ package memdraw
 import (
 	"fmt"
 
-	"9fans.net/go/draw"
+	"pedrolorgaramos.win/s/9fans-go/draw"
 )
 
 // Compressed image file parameters.

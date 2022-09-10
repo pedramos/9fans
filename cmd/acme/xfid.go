@@ -20,20 +20,21 @@ import (
 	"io"
 	"strings"
 	"unicode/utf8"
+	"log"
 
-	addrpkg "9fans.net/go/cmd/acme/internal/addr"
-	"9fans.net/go/cmd/acme/internal/adraw"
-	"9fans.net/go/cmd/acme/internal/alog"
-	"9fans.net/go/cmd/acme/internal/bufs"
-	"9fans.net/go/cmd/acme/internal/disk"
-	editpkg "9fans.net/go/cmd/acme/internal/edit"
-	"9fans.net/go/cmd/acme/internal/exec"
-	"9fans.net/go/cmd/acme/internal/file"
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/ui"
-	"9fans.net/go/cmd/acme/internal/util"
-	"9fans.net/go/cmd/acme/internal/wind"
-	"9fans.net/go/plan9"
+	addrpkg "pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/addr"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/disk"
+	editpkg "pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/edit"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/exec"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/file"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/ui"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/plan9"
 )
 
 const (
@@ -735,6 +736,7 @@ func xfidctlwrite(x *Xfid, w *wind.Window) {
 		} else if strings.HasPrefix(p, "addr=dot") { // set addr
 			w.Addr.Pos = w.Body.Q0
 			w.Addr.End = w.Body.Q1
+			log.Print("%d, %d\n", w.Addr.Pos, w.Addr.End)
 			p = p[8:]
 		} else if strings.HasPrefix(p, "limit=addr") { // set limit
 			wind.Textcommit(&w.Body, true)

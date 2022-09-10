@@ -21,13 +21,13 @@ import (
 	"reflect"
 	"unsafe"
 
-	"9fans.net/go/cmd/acme/internal/alog"
-	"9fans.net/go/cmd/acme/internal/bufs"
-	"9fans.net/go/cmd/acme/internal/disk"
-	"9fans.net/go/cmd/acme/internal/runes"
-	"9fans.net/go/cmd/acme/internal/ui"
-	"9fans.net/go/cmd/acme/internal/util"
-	"9fans.net/go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/disk"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/ui"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
+	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
 )
 
 var Wsequence = "warning: changes out of sequence\n"
