@@ -955,6 +955,28 @@ func (w *Win) Selection() string {
 	return string(data)
 }
 
+func (w *Win) SelectionAddr() (q0, q1 int, err error) {
+	f, err := w.fid("addr")
+	if err != nil {
+		return 0, 0, err
+	}
+	f.Write([]byte("."))
+	p, err := ioutil.ReadAll(f)
+	if err != nil {
+		return 0, 0, err
+	}
+	pos := strings.Fields(string(p))
+	q0, err = strconv.Atoi(pos[0])
+	if err != nil {
+		return 0, 0, err
+	}
+	q1, err = strconv.Atoi(pos[1])
+	if err != nil {
+		return 0, 0, err
+	}
+	return q0, q1, nil
+}
+
 func (w *Win) SetErrorPrefix(p string) {
 	w.errorPrefix = p
 }
