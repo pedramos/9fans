@@ -17,7 +17,6 @@ type RefFont struct {
 }
 
 var RefFont1 RefFont
-
 var RefFonts [2]*RefFont
 
 func FindFont(fix, save, setfont bool, name string) *RefFont {
