@@ -957,13 +957,11 @@ func (w *Win) Selection() string {
 
 func (w *Win) SelectionAddr() (q0, q1 int, err error) {
 	faddr, err := w.fid("addr")
-	defer faddr.Close()
 	if err != nil {
 		return 0, 0, fmt.Errorf("could not open addr: %v", err)
 	}
 
 	fctl, err := w.fid("ctl")
-	defer fctl.Close()
 	if err != nil {
 		return 0, 0, fmt.Errorf("could not open ctl:%v", err)
 	}
