@@ -20,7 +20,6 @@ import (
 	"io"
 	"strings"
 	"unicode/utf8"
-	"log"
 
 	addrpkg "pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/addr"
 	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
