@@ -3,7 +3,7 @@ package main
 import (
 	"image"
 
-	"pedrolorgaramos.win/s/9fans-go/draw/frame"
+	"pedrolorgaramos.win/go/9fans/draw/frame"
 )
 
 type Vis int

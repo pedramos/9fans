@@ -3,7 +3,7 @@ package main
 import (
 	"image"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 var bullseye = draw.Cursor{

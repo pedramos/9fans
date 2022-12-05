@@ -3,9 +3,9 @@ package wind
 import (
 	"sync"
 
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 type Row struct {

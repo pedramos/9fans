@@ -3,7 +3,7 @@ package frame
 import (
 	"unicode/utf8"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func (f *Frame) ptofcharptb(p int, pt draw.Point, bn int) draw.Point {

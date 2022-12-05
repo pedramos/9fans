@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"pedrolorgaramos.win/s/9fans-go/draw/drawfcall"
+	"pedrolorgaramos.win/go/9fans/draw/drawfcall"
 )
 
 // Mouse is the structure describing the current state of the mouse.

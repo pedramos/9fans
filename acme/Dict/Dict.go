@@ -1,10 +1,10 @@
-package main // import "pedrolorgaramos.win/s/9fans-go/acme/Dict"
+package main // import "pedrolorgaramos.win/go/9fans/acme/Dict"
 
 import (
 	"flag"
 	"log"
 
-	"pedrolorgaramos.win/s/9fans-go/acme"
+	"pedrolorgaramos.win/go/9fans/acme"
 	"golang.org/x/net/dict"
 )
 

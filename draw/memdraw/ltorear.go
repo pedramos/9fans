@@ -6,7 +6,7 @@
 
 package memdraw
 
-import "pedrolorgaramos.win/s/9fans-go/draw"
+import "pedrolorgaramos.win/go/9fans/draw"
 
 func _memltorear(i *Image, rear *Image) {
 	l := i.Layer

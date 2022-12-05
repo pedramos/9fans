@@ -3,8 +3,8 @@ package main
 import (
 	"image"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
-	"pedrolorgaramos.win/s/9fans-go/draw/frame"
+	"pedrolorgaramos.win/go/9fans/draw"
+	"pedrolorgaramos.win/go/9fans/draw/frame"
 )
 
 var llist []*Flayer /* front to back */

@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func readmemimage(fd *os.File) (*Image, error) {

@@ -1,7 +1,7 @@
 package frame
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 // Init prepares the frame f so characters drawn in it

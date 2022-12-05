@@ -9,10 +9,10 @@ import (
 	"os"
 	"strconv"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
-	"pedrolorgaramos.win/s/9fans-go/plan9"
-	"pedrolorgaramos.win/s/9fans-go/plan9/client"
-	"pedrolorgaramos.win/s/9fans-go/plumb"
+	"pedrolorgaramos.win/go/9fans/draw"
+	"pedrolorgaramos.win/go/9fans/plan9"
+	"pedrolorgaramos.win/go/9fans/plan9/client"
+	"pedrolorgaramos.win/go/9fans/plumb"
 )
 
 var exname string

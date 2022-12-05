@@ -20,10 +20,10 @@ import (
 	"runtime"
 	"strings"
 
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
 )
 
 var linex = "\n"

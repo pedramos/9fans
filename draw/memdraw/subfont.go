@@ -5,7 +5,7 @@
 
 package memdraw
 
-import "pedrolorgaramos.win/s/9fans-go/draw"
+import "pedrolorgaramos.win/go/9fans/draw"
 
 func allocmemsubfont(name string, n int, height int, ascent int, info []draw.Fontchar, i *Image) *subfont {
 	f := new(subfont)

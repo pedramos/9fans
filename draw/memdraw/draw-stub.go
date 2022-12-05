@@ -6,7 +6,7 @@
 package memdraw
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func (i *Image) Draw(r draw.Rectangle, src *Image, sp draw.Point, mask *Image, mp draw.Point, op draw.Op) {

@@ -27,7 +27,7 @@
 // Executing Kill stops any commands being executed. On Unix it sends the commands
 // a SIGINT, followed 100ms later by a SIGTERM, followed 100ms later by a SIGKILL.
 // On other systems it sends os.Interrupt followed 100ms later by os.Kill
-package main // import "pedrolorgaramos.win/s/9fans-go/acme/Watch"
+package main // import "pedrolorgaramos.win/go/9fans/acme/Watch"
 
 import (
 	"bytes"
@@ -44,7 +44,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"pedrolorgaramos.win/s/9fans-go/acme"
+	"pedrolorgaramos.win/go/9fans/acme"
 )
 
 var args []string
