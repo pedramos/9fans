@@ -15,10 +15,10 @@
 package ui
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/file"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/file"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func WinresizeAndMouse(w *wind.Window, r draw.Rectangle, safe, keepextra bool) int {

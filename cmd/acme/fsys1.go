@@ -23,11 +23,11 @@ import (
 	"sync"
 	"time"
 
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/ui"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/s/9fans-go/cmd/internal/base"
-	"pedrolorgaramos.win/s/9fans-go/plan9"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/ui"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/go/9fans/cmd/internal/base"
+	"pedrolorgaramos.win/go/9fans/plan9"
 )
 
 func QID(w, q int) uint64  { return uint64(w<<8 | q) }

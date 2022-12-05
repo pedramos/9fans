@@ -3,9 +3,9 @@ package adraw
 import (
 	"sync"
 
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/alog"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/alog"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 var Font *draw.Font

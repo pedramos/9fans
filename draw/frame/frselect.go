@@ -1,7 +1,7 @@
 package frame
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func region(a, b int) int {

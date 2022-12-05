@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"os"
 
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/bufs"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/file"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/util"
-	"pedrolorgaramos.win/s/9fans-go/draw"
-	"pedrolorgaramos.win/s/9fans-go/draw/frame"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/bufs"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/file"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+	"pedrolorgaramos.win/go/9fans/draw"
+	"pedrolorgaramos.win/go/9fans/draw/frame"
 )
 
 type Text struct {

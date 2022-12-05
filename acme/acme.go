@@ -3,7 +3,7 @@
 // Many of the functions in this package take a format string and optional
 // parameters.  In the documentation, the notation format, ... denotes the result
 // of formatting the string and arguments using fmt.Sprintf.
-package acme // import "pedrolorgaramos.win/s/9fans-go/acme"
+package acme // import "pedrolorgaramos.win/go/9fans/acme"
 
 import (
 	"bufio"
@@ -22,9 +22,9 @@ import (
 	"sync"
 	"time"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
-	"pedrolorgaramos.win/s/9fans-go/plan9"
-	"pedrolorgaramos.win/s/9fans-go/plan9/client"
+	"pedrolorgaramos.win/go/9fans/draw"
+	"pedrolorgaramos.win/go/9fans/plan9"
+	"pedrolorgaramos.win/go/9fans/plan9/client"
 )
 
 // A Win represents a single acme window and its control files.

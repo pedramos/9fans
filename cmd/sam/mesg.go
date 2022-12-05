@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"pedrolorgaramos.win/s/9fans-go/plumb"
+	"pedrolorgaramos.win/go/9fans/plumb"
 )
 
 // #include "sam.h"

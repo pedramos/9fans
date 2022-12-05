@@ -1,11 +1,11 @@
 package main
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/s/9fans-go/cmd/internal/base"
-	"pedrolorgaramos.win/s/9fans-go/draw"
-	"pedrolorgaramos.win/s/9fans-go/plan9"
-	"pedrolorgaramos.win/s/9fans-go/plumb"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/go/9fans/cmd/internal/base"
+	"pedrolorgaramos.win/go/9fans/draw"
+	"pedrolorgaramos.win/go/9fans/plan9"
+	"pedrolorgaramos.win/go/9fans/plumb"
 )
 
 const (

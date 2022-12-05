@@ -8,7 +8,7 @@ package memdraw
 import (
 	"fmt"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func loadmemimage(i *Image, r draw.Rectangle, data []uint8) (int, error) {

@@ -1,4 +1,4 @@
-package draw // import "pedrolorgaramos.win/s/9fans-go/draw"
+package draw // import "pedrolorgaramos.win/go/9fans/draw"
 
 // An Op represents a Porter-Duff compositing operator.
 //

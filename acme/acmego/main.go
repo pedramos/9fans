@@ -36,7 +36,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"pedrolorgaramos.win/s/9fans-go/acme"
+	"pedrolorgaramos.win/go/9fans/acme"
 )
 
 var gofmt = flag.Bool("f", false, "format the entire file after Put")

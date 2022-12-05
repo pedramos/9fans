@@ -3,7 +3,7 @@
 package frame
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 // A Frame is a frame of editable text in a single font on a raster display.

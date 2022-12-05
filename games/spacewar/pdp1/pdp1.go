@@ -53,7 +53,7 @@
 //	Brian Silverman
 //	Vadim Gerasimov
 //
-package pdp1 // import "pedrolorgaramos.win/s/9fans-go/games/spacewar/pdp1"
+package pdp1 // import "pedrolorgaramos.win/go/9fans/games/spacewar/pdp1"
 
 import (
 	"bufio"

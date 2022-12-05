@@ -3,7 +3,7 @@ package frame
 import (
 	"unicode/utf8"
 
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 // canfit returns the number of runes from b that

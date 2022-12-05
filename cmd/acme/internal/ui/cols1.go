@@ -15,9 +15,9 @@
 package ui
 
 import (
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/s/9fans-go/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/s/9fans-go/draw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
+	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
+	"pedrolorgaramos.win/go/9fans/draw"
 )
 
 func ColaddAndMouse(c *wind.Column, w *wind.Window, clone *wind.Window, y int) *wind.Window {
