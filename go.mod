@@ -1,4 +1,4 @@
-module pedrolorgaramos.win/s/9fans-go
+module pedrolorgaramos.win/go/9fans
 
 go 1.18
 
