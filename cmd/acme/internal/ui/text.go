@@ -149,7 +149,7 @@ func Texttype(t *wind.Text, r rune) {
 		pos := t.Q0 - nnb + offset - 1
 		wind.Textshow(t, pos, pos, true)
 		return
-	case  draw.KeyPageUp, Kscrolloneup:
+	case draw.KeyPageUp, Kscrolloneup:
 		if t.What == wind.Tag {
 			// shrink tag to single line
 			if t.W.Tagexpand {
@@ -210,7 +210,7 @@ func Texttype(t *wind.Text, r rune) {
 		}
 		wind.Textshow(t, q0, q0, true)
 		return
-	case draw.KeyCmd + 'c' : // %C: copy
+	case draw.KeyCmd + 'c': // %C: copy
 		wind.Typecommit(t)
 		XCut(t, t, nil, true, false, nil)
 		return
@@ -539,10 +539,29 @@ func Textselect(t *wind.Text) {
 		}
 		adraw.Display.Flush()
 
+		// Mousectl.Read does both the Flush
+		// and the receive. We did the flush.
+		// Do just the receive, dropping biglock
+		// to let other goroutines proceed.
+		// Note that *Mouse is Mousectl.Mouse.
+		// We also need to release the window lock, or else other code
+		// will deadlock with us by acquiring the big lock and _then_ acquiring
+		// the window lock
+		var owner rune
+		if t.W != nil  {
+			owner = t.W.Owner
+			wind.Winunlock(t.W)
+		}
+
+		BigUnlock()
 		for Mouse.Buttons == b {
 			*Mouse = <-Mousectl.C
 		}
 
+		BigLock()
+		if t.W != nil {
+			wind.Winlock(t.W, owner)
+		}
 		clicktext = nil
 	}
 }
