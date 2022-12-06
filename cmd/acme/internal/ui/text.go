@@ -539,13 +539,26 @@ func Textselect(t *wind.Text) {
 		}
 		adraw.Display.Flush()
 
-		for Mouse.Buttons == b {
-			*Mouse = <-Mousectl.C
-		}
+		// Mousectl.Read does both the Flush
+		// and the receive. We did the flush.
+		// Do just the receive, dropping biglock
+		// to let other goroutines proceed.
+		// Note that *Mouse is Mousectl.Mouse.
+		// We also need to release the window lock, or else other code
+		// will deadlock with us by acquiring the big lock and _then_ acquiring
+		// the window lock
+		o := t.W.Owner
+		wind.Winunlock(t.W)
+		BigUnlock()
+ 		for Mouse.Buttons == b {
+ 			*Mouse = <-Mousectl.C
+ 		}
 
-		clicktext = nil
-	}
-}
+		BigLock()
+		wind.Winlock(t.W, o)
+ 		clicktext = nil
+ 	}
+ }
 
 var BigLock = func() {}
 var BigUnlock = func() {}
