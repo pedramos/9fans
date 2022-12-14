@@ -40,7 +40,7 @@ type Mousectl struct {
 // InitMouse connects to the mouse and returns a Mousectl to interact with it.
 func (d *Display) InitMouse() *Mousectl {
 	ch := make(chan Mouse, 0)
-	rch := make(chan bool, 2)
+	rch := make(chan bool, 10)
 	mc := &Mousectl{
 		C:       ch,
 		Resize:  rch,
