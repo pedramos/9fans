@@ -547,15 +547,19 @@ func Textselect(t *wind.Text) {
 		// We also need to release the window lock, or else other code
 		// will deadlock with us by acquiring the big lock and _then_ acquiring
 		// the window lock
-		o := t.W.Owner
-		wind.Winunlock(t.W)
+		if t.W != nil {
+			wind.Winunlock(t.W)
+		}
+
 		BigUnlock()
  		for Mouse.Buttons == b {
  			*Mouse = <-Mousectl.C
  		}
 
 		BigLock()
-		wind.Winlock(t.W, o)
+		if t.W != nil {
+			wind.Winlock(t.W, t.W.Owner)
+		}
  		clicktext = nil
  	}
  }
