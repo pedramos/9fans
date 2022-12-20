@@ -149,7 +149,7 @@ func Texttype(t *wind.Text, r rune) {
 		pos := t.Q0 - nnb + offset - 1
 		wind.Textshow(t, pos, pos, true)
 		return
-	case  draw.KeyPageUp, Kscrolloneup:
+	case draw.KeyPageUp, Kscrolloneup:
 		if t.What == wind.Tag {
 			// shrink tag to single line
 			if t.W.Tagexpand {
@@ -210,7 +210,7 @@ func Texttype(t *wind.Text, r rune) {
 		}
 		wind.Textshow(t, q0, q0, true)
 		return
-	case draw.KeyCmd + 'c' : // %C: copy
+	case draw.KeyCmd + 'c': // %C: copy
 		wind.Typecommit(t)
 		XCut(t, t, nil, true, false, nil)
 		return
@@ -547,22 +547,24 @@ func Textselect(t *wind.Text) {
 		// We also need to release the window lock, or else other code
 		// will deadlock with us by acquiring the big lock and _then_ acquiring
 		// the window lock
-		if t.W != nil {
+		var owner rune
+		if t.W != nil  {
+			owner = t.W.Owner
 			wind.Winunlock(t.W)
 		}
 
 		BigUnlock()
- 		for Mouse.Buttons == b {
- 			*Mouse = <-Mousectl.C
- 		}
+		for Mouse.Buttons == b {
+			*Mouse = <-Mousectl.C
+		}
 
 		BigLock()
 		if t.W != nil {
-			wind.Winlock(t.W, t.W.Owner)
+			wind.Winlock(t.W, owner)
 		}
- 		clicktext = nil
- 	}
- }
+		clicktext = nil
+	}
+}
 
 var BigLock = func() {}
 var BigUnlock = func() {}
