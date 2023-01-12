@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"syscall"
 
 	"pedrolorgaramos.win/go/9fans/draw"
 	"pedrolorgaramos.win/go/9fans/plan9"
@@ -77,10 +78,10 @@ func removeextern() {
 	os.Remove(exname)
 }
 
-func extproc(c chan string, fd *os.File) {
+func extproc(c chan string, fd int) {
 	buf := make([]byte, READBUFSIZE)
 	for {
-		n, err := fd.Read(buf)
+		n, err := syscall.Read(fd, buf)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "samterm: extern read error: %v\n", err)
 			return /* not a fatal error */
