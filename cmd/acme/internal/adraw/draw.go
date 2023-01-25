@@ -1,9 +1,12 @@
 package adraw
 
 import (
+<<<<<<< HEAD
 	"os"
 	"strconv"
 
+=======
+>>>>>>> 3a53886 (pedrolorgaramos.win/go => plramos.win)
 	"plramos.win/9fans/draw"
 	"plramos.win/9fans/draw/frame"
 )

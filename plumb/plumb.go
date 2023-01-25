@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 
+	"plramos.win/9fans/plan9/client"
 )
 
 // Message represents a message to or from the plumber.
