@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/plan9/client"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/plan9/client"
 )
 
 var (

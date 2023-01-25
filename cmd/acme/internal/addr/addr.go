@@ -1,9 +1,9 @@
 package addr
 
 import (
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/alog"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/regx"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/alog"
+	"plramos.win/9fans/cmd/acme/internal/regx"
+	"plramos.win/9fans/cmd/acme/internal/runes"
 )
 
 const (

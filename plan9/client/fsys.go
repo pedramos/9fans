@@ -3,7 +3,7 @@ package client
 import (
 	"strings"
 
-	"pedrolorgaramos.win/go/9fans/plan9"
+	"plramos.win/9fans/plan9"
 )
 
 type Fsys struct {

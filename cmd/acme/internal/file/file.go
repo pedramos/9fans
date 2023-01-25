@@ -30,10 +30,10 @@ import (
 	"reflect"
 	"unsafe"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/bufs"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/disk"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+	"plramos.win/9fans/cmd/acme/internal/bufs"
+	"plramos.win/9fans/cmd/acme/internal/disk"
+	"plramos.win/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/util"
 )
 
 type File struct {

@@ -3,7 +3,7 @@ package bufs
 import (
 	"sync"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/runes"
 )
 
 const Len = 32 * 1024

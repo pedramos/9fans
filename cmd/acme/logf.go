@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"sync"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/go/9fans/plan9"
+	"plramos.win/9fans/cmd/acme/internal/wind"
+	"plramos.win/9fans/plan9"
 )
 
 type Log struct {

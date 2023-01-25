@@ -6,7 +6,7 @@
 
 package memdraw
 
-import "pedrolorgaramos.win/go/9fans/draw"
+import "plramos.win/9fans/draw"
 
 /*
  * Pull i towards top of screen, just behind front

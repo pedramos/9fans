@@ -20,7 +20,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"pedrolorgaramos.win/go/9fans/acme"
+	"plramos.win/9fans/acme"
 )
 
 func main() {

@@ -17,8 +17,8 @@
 package ui
 
 import (
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
+	"plramos.win/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/wind"
 )
 
 func New(et, t, argt *wind.Text, flag1, flag2 bool, arg []rune) {

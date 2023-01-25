@@ -1,4 +1,4 @@
-module pedrolorgaramos.win/go/9fans
+module plramos.win/9fans
 
 go 1.18
 

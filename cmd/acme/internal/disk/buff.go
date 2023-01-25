@@ -1,6 +1,6 @@
 package disk
 
-import "pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
+import "plramos.win/9fans/cmd/acme/internal/util"
 
 type Buffer struct {
 	nc     int

@@ -21,7 +21,7 @@
 
 // Spacewar is the original PDP-1 Spacewar video game,
 // running in a PDP-1 emulator.
-package main // import "pedrolorgaramos.win/go/9fans/games/spacewar"
+package main // import "plramos.win/9fans/games/spacewar"
 
 import (
 	"bytes"
@@ -30,8 +30,8 @@ import (
 	"os"
 	"time"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/games/spacewar/pdp1"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/games/spacewar/pdp1"
 )
 
 func main() {

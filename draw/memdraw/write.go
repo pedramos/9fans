@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 const (

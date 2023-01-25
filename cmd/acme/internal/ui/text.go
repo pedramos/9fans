@@ -18,12 +18,12 @@ package ui
 import (
 	"time"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/file"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/frame"
+	"plramos.win/9fans/cmd/acme/internal/adraw"
+	"plramos.win/9fans/cmd/acme/internal/file"
+	"plramos.win/9fans/cmd/acme/internal/util"
+	"plramos.win/9fans/cmd/acme/internal/wind"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/frame"
 )
 
 var Textcomplete func(*wind.Text) []rune

@@ -13,7 +13,7 @@ import (
 	"strings"
 	"unsafe"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 const _DBG = false

@@ -1,4 +1,4 @@
-package plan9 // import "pedrolorgaramos.win/go/9fans/plan9"
+package plan9 // import "plramos.win/9fans/plan9"
 
 func gbit8(b []byte) (uint8, []byte) {
 	return uint8(b[0]), b[1:]

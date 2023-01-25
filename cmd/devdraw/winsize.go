@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 func parsewinsize(s string, r *draw.Rectangle, havemin *bool) error {

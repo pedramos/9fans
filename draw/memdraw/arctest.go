@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"syscall"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 func main(argc int, argv []*int8) {

@@ -19,11 +19,11 @@ package ui
 import (
 	"fmt"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/frame"
+	"plramos.win/9fans/cmd/acme/internal/adraw"
+	"plramos.win/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/wind"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/frame"
 )
 
 func Fontx(et, t, argt *wind.Text, _, _ bool, arg []rune) {

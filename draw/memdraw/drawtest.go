@@ -22,8 +22,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/memdraw"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/memdraw"
 )
 
 const DBG = 0

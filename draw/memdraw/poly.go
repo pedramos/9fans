@@ -5,7 +5,7 @@
 
 package memdraw
 
-import "pedrolorgaramos.win/go/9fans/draw"
+import "plramos.win/9fans/draw"
 
 func Poly(dst *Image, vert []draw.Point, end0, end1 draw.End, radius int, src *Image, sp draw.Point, op draw.Op) {
 	nvert := len(vert)

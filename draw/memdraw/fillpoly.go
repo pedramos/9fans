@@ -8,7 +8,7 @@ package memdraw
 import (
 	"sort"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 type polySeg struct {

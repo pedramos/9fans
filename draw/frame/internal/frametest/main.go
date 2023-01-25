@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/frame"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/frame"
 )
 
 var display *draw.Display

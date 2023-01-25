@@ -1,5 +1,5 @@
 // Package plumb provides routines for sending and receiving messages for the plumber.
-package plumb // import "pedrolorgaramos.win/go/9fans/plumb"
+package plumb // import "plramos.win/9fans/plumb"
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"pedrolorgaramos.win/go/9fans/plan9/client"
+	"plramos.win/9fans/plan9/client"
 )
 
 // Message represents a message to or from the plumber.

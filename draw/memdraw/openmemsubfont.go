@@ -10,7 +10,7 @@ import (
 	"io"
 	"os"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 func openmemsubfont(name string) (*subfont, error) {

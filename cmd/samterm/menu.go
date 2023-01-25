@@ -4,7 +4,7 @@ import (
 	"image"
 	"unicode/utf8"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 var name [][]uint8 /* first byte is ' ' or '\'': modified state */

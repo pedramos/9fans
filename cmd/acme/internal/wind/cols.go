@@ -3,11 +3,11 @@ package wind
 import (
 	"sort"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/frame"
+	"plramos.win/9fans/cmd/acme/internal/adraw"
+	"plramos.win/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/util"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/frame"
 )
 
 type Column struct {

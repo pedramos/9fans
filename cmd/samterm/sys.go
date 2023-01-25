@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"syscall"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/plan9"
-	"pedrolorgaramos.win/go/9fans/plan9/client"
-	"pedrolorgaramos.win/go/9fans/plumb"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/plan9"
+	"plramos.win/9fans/plan9/client"
+	"plramos.win/9fans/plumb"
 )
 
 var exname string

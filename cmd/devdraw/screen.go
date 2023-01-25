@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/memdraw"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/memdraw"
 	"golang.org/x/exp/shiny/driver"
 	"golang.org/x/exp/shiny/screen"
 	"golang.org/x/mobile/event/key"

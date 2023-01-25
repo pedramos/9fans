@@ -6,7 +6,7 @@
 
 package memdraw
 
-import "pedrolorgaramos.win/go/9fans/draw"
+import "plramos.win/9fans/draw"
 
 func LDelete(i *Image) {
 	l := i.Layer

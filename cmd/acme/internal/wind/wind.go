@@ -7,14 +7,14 @@ import (
 	"sync"
 	"unsafe"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/alog"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/bufs"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/file"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/frame"
+	"plramos.win/9fans/cmd/acme/internal/adraw"
+	"plramos.win/9fans/cmd/acme/internal/alog"
+	"plramos.win/9fans/cmd/acme/internal/bufs"
+	"plramos.win/9fans/cmd/acme/internal/file"
+	"plramos.win/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/util"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/frame"
 )
 
 type Window struct {

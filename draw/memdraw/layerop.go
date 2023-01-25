@@ -1,7 +1,7 @@
 package memdraw
 
 import (
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 func _layerop(fn func(*Image, draw.Rectangle, draw.Rectangle, interface{}, int), i *Image, r draw.Rectangle, clipr draw.Rectangle, etc interface{}, front *Image) {

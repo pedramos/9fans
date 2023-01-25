@@ -17,7 +17,7 @@ import (
 	"os"
 	"time"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 /*

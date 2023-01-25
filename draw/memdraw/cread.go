@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"pedrolorgaramos.win/go/9fans/draw"
+	"plramos.win/9fans/draw"
 )
 
 func atoi(s []byte) int {

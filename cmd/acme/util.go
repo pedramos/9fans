@@ -17,13 +17,13 @@ package main
 import (
 	"fmt"
 
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/bufs"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/disk"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/runes"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/ui"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
-	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
-	"pedrolorgaramos.win/go/9fans/cmd/internal/base"
+	"plramos.win/9fans/cmd/acme/internal/bufs"
+	"plramos.win/9fans/cmd/acme/internal/disk"
+	"plramos.win/9fans/cmd/acme/internal/runes"
+	"plramos.win/9fans/cmd/acme/internal/ui"
+	"plramos.win/9fans/cmd/acme/internal/util"
+	"plramos.win/9fans/cmd/acme/internal/wind"
+	"plramos.win/9fans/cmd/internal/base"
 )
 
 func errorwin1(dir []rune, incl [][]rune) *wind.Window {

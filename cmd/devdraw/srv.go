@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"time"
 
-	"pedrolorgaramos.win/go/9fans/draw"
-	"pedrolorgaramos.win/go/9fans/draw/drawfcall"
-	"pedrolorgaramos.win/go/9fans/draw/memdraw"
+	"plramos.win/9fans/draw"
+	"plramos.win/9fans/draw/drawfcall"
+	"plramos.win/9fans/draw/memdraw"
 )
 
 var client0 *Client

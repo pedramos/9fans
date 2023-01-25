@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"pedrolorgaramos.win/go/9fans/draw/drawfcall"
+	"plramos.win/9fans/draw/drawfcall"
 )
 
 // Display locking:
