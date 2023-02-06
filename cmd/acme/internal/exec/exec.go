@@ -1040,6 +1040,9 @@ func runproc(win *wind.Window, s string, rdir []rune, newns bool, argaddr, xarg 
 		if rdir != nil {
 			dir = string(rdir)
 		}
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			dir = os.Getenv("HOME")
+		}
 		cmd := exec.Command(av[0], av[1:]...)
 		cmd.Stdin = sfd[0]
 		cmd.Stdout = sfd[1]
@@ -1067,6 +1070,9 @@ Hard:
 		var dir string
 		if rdir != nil {
 			dir = string(rdir)
+		}
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			dir = os.Getenv("HOME")
 		}
 		shell := Acmeshell
 		if shell == "" {
