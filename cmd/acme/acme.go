@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 	"unicode/utf8"
-	//"runtime"
 
 	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/adraw"
 	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/alog"
@@ -25,8 +24,6 @@ import (
 	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/util"
 	"pedrolorgaramos.win/go/9fans/cmd/acme/internal/wind"
 	"pedrolorgaramos.win/go/9fans/draw"
-	
-	"github.com/google/gops/agent"
 )
 
 var snarffd = -1
@@ -43,12 +40,6 @@ func derror(d *draw.Display, errorstr string) {
 }
 
 func main() {
-
-	if err := agent.Listen(agent.Options{}); err != nil {
-		log.Fatal(err)
-	}
-	
-
 	bigLock()
 	log.SetFlags(0)
 	log.SetPrefix("acme: ")
