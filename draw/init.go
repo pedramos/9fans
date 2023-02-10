@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -255,7 +256,11 @@ func Init(errch chan<- error, font, label, size string) (d *Display, err error) 
 	if err := d.flush(true); err != nil {
 		log.Fatal("draw flush: ", err)
 	}
-
+	if dpienv, isSet := os.LookupEnv("9dpi"); isSet {
+		if dpi, err := strconv.Atoi(dpienv); err == nil {
+			d.DPI = dpi
+		}
+	}
 	return d, nil
 }
 
@@ -306,7 +311,11 @@ func (d *Display) getimage0(i *Image) (*Image, error) {
 			d.DPI = atoi(info)
 		}
 	}
-
+	if dpienv, isSet := os.LookupEnv("9dpi"); isSet {
+		if dpi, err := strconv.Atoi(dpienv); err == nil {
+			d.DPI = dpi
+		}
+	}
 	return i, nil
 }
 

@@ -1,6 +1,9 @@
 package adraw
 
 import (
+	"os"
+	"strconv"
+
 	"plramos.win/9fans/draw"
 	"plramos.win/9fans/draw/frame"
 )
@@ -159,12 +162,24 @@ var BoxCursor2 = draw.Cursor2{
 	},
 }
 
-func Scrollwid() int { return Display.Scale(12) }
+func getEnvScale() float64 {
+	sstr, found := os.LookupEnv("9scale")
+	if !found {
+		return 1.0
+	}
+	if s, err := strconv.ParseFloat(sstr, 8); err == nil {
+		return s
+	} else {
+		return 1.0
+	}
+}
 
-func Scrollgap() int { return Display.Scale(4) }
+func Scrollwid() int { return int(float64(Display.Scale(12)) * getEnvScale()) }
 
-func Margin() int { return Display.Scale(4) }
+func Scrollgap() int { return int(float64(Display.Scale(4)) * getEnvScale()) }
 
-func Border() int { return Display.Scale(2) }
+func Margin() int { return int(float64(Display.Scale(4)) * getEnvScale()) }
 
-func ButtonBorder() int { return Display.Scale(2) }
+func Border() int { return int(float64(Display.Scale(2)) * getEnvScale()) }
+
+func ButtonBorder() int { return int(float64(Display.Scale(2)) * getEnvScale()) }
