@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"unicode"
 	"unsafe"
 
 	"plramos.win/9fans/cmd/acme/internal/adraw"
@@ -438,6 +439,15 @@ func parsetag(w *Window, extra int) ([]rune, int) {
 				break
 			}
 		}
+	}
+	for {
+		if i == 0 || len(r) == 0 {
+			break
+		}
+		if !unicode.IsSpace(r[i-1]) {
+			break
+		}
+		i--
 	}
 	return r, i
 }
