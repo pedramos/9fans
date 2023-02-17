@@ -134,6 +134,10 @@ func Texttype(t *wind.Text, r rune) {
 		wind.Typecommit(t)
 		nnb = 0
 
+		// return if beginning of text
+		if t.Q0 == 0 {
+			return
+		}
 		if t.Q0 > 0 && wind.Textreadc(t, t.Q0-1) != '\n' {
 			nnb = wind.Textbswidth(t, 0x15)
 		}
@@ -548,7 +552,7 @@ func Textselect(t *wind.Text) {
 		// will deadlock with us by acquiring the big lock and _then_ acquiring
 		// the window lock
 		var owner rune
-		if t.W != nil  {
+		if t.W != nil {
 			owner = t.W.Owner
 			wind.Winunlock(t.W)
 		}
