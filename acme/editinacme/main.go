@@ -15,6 +15,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -69,8 +70,10 @@ func main() {
 
 	for len(files) > 0 {
 		ev, err := r.Read()
-		if err != nil {
+		if err != nil && err != io.EOF {
 			log.Fatalf("reading acme log: %v", err)
+		} else if err == io.EOF {
+			os.Exit(0)
 		}
 		if _, found := files[ev.Name]; ev.Op == "del" && found {
 			delete(files, ev.Name)
