@@ -15,7 +15,7 @@ import (
 
 const blockincr = 256
 
-const maxblock = 32 * 1024
+const maxblock = 64 * 1024
 
 var disk *Disk
 
