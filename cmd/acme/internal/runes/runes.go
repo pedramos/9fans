@@ -101,7 +101,7 @@ func IsAlphaNum(c rune) bool {
 	return true
 }
 
-var isfilec_Lx = []rune(".-+/:@")
+var isfilec_Lx = []rune(".-+/:@!#")
 
 func IsFilename(r rune) bool {
 	if IsAlphaNum(r) {

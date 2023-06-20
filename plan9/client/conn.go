@@ -9,6 +9,8 @@ import (
 	"plramos.win/9fans/plan9"
 )
 
+const debug = false
+
 type Error string
 
 func (e Error) Error() string { return string(e) }
@@ -218,6 +220,9 @@ func (c *conn) write(f *plan9.Fcall) error {
 	if err := c.getErr(); err != nil {
 		return err
 	}
+	if debug {
+		fmt.Println("-> ", f)
+	}
 	err := plan9.WriteFcall(c.rwc, f)
 	if err != nil {
 		c.setErr(err)
@@ -266,6 +271,9 @@ func (c *conn) rpc(tx *plan9.Fcall, clunkFid *Fid) (rx *plan9.Fcall, err error) 
 		rx, err = c.read()
 		if err != nil {
 			break
+		}
+		if debug {
+			fmt.Println("<-", rx)
 		}
 		c.mux(rx)
 	}

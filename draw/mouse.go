@@ -22,7 +22,7 @@ type Mouse struct {
 // receiver from C. The Read method does the update, but any use
 // of C in a select needs to update the field as well, as in:
 //
-//	case mc.Mouse <- mc.C:
+//	case mc.Mouse = <-mc.C:
 //
 // In the Plan 9 C library, the sender does the write after the send,
 // but that write could not be relied upon due to scheduling delays,

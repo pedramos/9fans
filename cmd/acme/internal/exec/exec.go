@@ -991,7 +991,7 @@ func runproc(win *wind.Window, s string, rdir []rune, newns bool, argaddr, xarg 
 			sfd[1], _ = fsopenfd(fs, "cons", plan9.OWRITE)
 			sfd[2] = sfd[1]
 		}
-		// fsunmount(fs) // TODO(rsc): implement
+		fs.Close()
 	} else {
 		// TODO(rsc): This is "Local foo".
 		// Interpret the command since a subshell will not be Local.

@@ -121,12 +121,20 @@ type WinInfo struct {
 	// the Win.Info method, because that information
 	// isn't available as part of the index file.
 	Size *WinSizeInfo
+
+	// History is only non-nil if the version of acme supports it.
+	History *WinHistoryInfo
 }
 
 type WinSizeInfo struct {
 	Width    int
 	Font     string
 	TabWidth int
+}
+
+type WinHistoryInfo struct {
+	CanUndo bool
+	CanRedo bool
 }
 
 // A LogReader provides read access to the acme log file.
@@ -441,7 +449,7 @@ func (w *Win) Info() (WinInfo, error) {
 	info := WinInfo{
 		Size: new(WinSizeInfo),
 	}
-	if _, err := splitFields(line,
+	rest, err := splitFields(line,
 		&info.ID,
 		&info.TagLen,
 		&info.BodyLen,
@@ -450,8 +458,15 @@ func (w *Win) Info() (WinInfo, error) {
 		&info.Size.Width,
 		&info.Size.Font,
 		&info.Size.TabWidth,
-	); err != nil {
+	)
+	if err != nil {
 		return WinInfo{}, fmt.Errorf("invalid ctl contents %q: %v", line, err)
+	}
+	if rest != "" {
+		info.History = new(WinHistoryInfo)
+		if _, err := splitFields(rest, &info.History.CanUndo, &info.History.CanRedo); err != nil {
+			return WinInfo{}, fmt.Errorf("invalid history info in %q: %v", line, err)
+		}
 	}
 	return info, nil
 }

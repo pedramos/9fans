@@ -307,7 +307,9 @@ func (fid *Fid) Walk(name string) (*Fid, error) {
 			}
 			return nil, err
 		}
-		if n == 0 {
+		if wfid != nil {
+			wfid.qid = rx.Wqid[n-1]
+		} else if n == 0 {
 			wfid = conn.newFid(wfidnum, fid.qid)
 		} else {
 			wfid = conn.newFid(wfidnum, rx.Wqid[n-1])
