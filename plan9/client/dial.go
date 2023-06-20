@@ -56,6 +56,7 @@ func MountServiceAname(service, aname string) (*Fsys, error) {
 	if err != nil {
 		c.Close()
 	}
+	c.Release()
 	return fsys, err
 }
 

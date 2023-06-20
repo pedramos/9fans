@@ -49,9 +49,15 @@ var formatters = map[string][]string{
 
 // Non-Go formatters (only loaded with -f option).
 var otherFormatters = map[string][]string{
+<<<<<<< HEAD
 	".rs":    []string{"rustfmt", "--emit", "stdout"},
 	".py":    []string{"yapf"},
 	".templ": []string{"templ", "fmt", "--stdout"}
+=======
+	".rs":  []string{"rustfmt", "--emit", "stdout"},
+	".py":  []string{"yapf"},
+	".sql": []string{"sqlfmt", "-"},
+>>>>>>> 3f1551a (acme: a lot of changes from rogpepe and adding sqlfmt to acmego)
 }
 
 func main() {

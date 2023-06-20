@@ -392,3 +392,188 @@ func (fid *Fid) Wstat(d *plan9.Dir) error {
 func (fid *Fid) ReadFull(b []byte) (n int, err error) {
 	return io.ReadFull(fid, b)
 }
+
+func (fid *Fid) Remove() error {
+	conn, err := fid.conn()
+	if err != nil {
+		return err
+	}
+	tx := &plan9.Fcall{Type: plan9.Tremove, Fid: fid.fid}
+	_, err = conn.rpc(tx, fid)
+	return err
+}
+
+func (fid *Fid) Seek(n int64, whence int) (int64, error) {
+	switch whence {
+	case 0:
+		fid.f.Lock()
+		fid.offset = n
+		fid.f.Unlock()
+
+	case 1:
+		fid.f.Lock()
+		n += fid.offset
+		if n < 0 {
+			fid.f.Unlock()
+			return 0, Error("negative offset")
+		}
+		fid.offset = n
+		fid.f.Unlock()
+
+	case 2:
+		d, err := fid.Stat()
+		if err != nil {
+			return 0, err
+		}
+		n += int64(d.Length)
+		if n < 0 {
+			return 0, Error("negative offset")
+		}
+		fid.f.Lock()
+		fid.offset = n
+		fid.f.Unlock()
+
+	default:
+		return 0, Error("bad whence in seek")
+	}
+
+	return n, nil
+}
+
+func (fid *Fid) Stat() (*plan9.Dir, error) {
+	conn, err := fid.conn()
+	if err != nil {
+		return nil, err
+	}
+	tx := &plan9.Fcall{Type: plan9.Tstat, Fid: fid.fid}
+	rx, err := conn.rpc(tx, nil)
+	if err != nil {
+		return nil, err
+	}
+	return plan9.UnmarshalDir(rx.Stat)
+}
+
+// TODO(rsc): Could use ...string instead?
+func (fid *Fid) Walk(name string) (*Fid, error) {
+	conn, err := fid.conn()
+	if err != nil {
+		return nil, err
+	}
+	wfidnum, err := conn.newfidnum()
+	if err != nil {
+		return nil, err
+	}
+
+	// Split, delete empty strings and dot.
+	elem := strings.Split(name, "/")
+	j := 0
+	for _, e := range elem {
+		if e != "" && e != "." {
+			elem[j] = e
+			j++
+		}
+	}
+	elem = elem[0:j]
+
+	var wfid *Fid
+	fromfidnum := fid.fid
+	for nwalk := 0; ; nwalk++ {
+		n := len(elem)
+		if n > plan9.MAXWELEM {
+			n = plan9.MAXWELEM
+		}
+		tx := &plan9.Fcall{Type: plan9.Twalk, Fid: fromfidnum, Newfid: wfidnum, Wname: elem[0:n]}
+		rx, err := conn.rpc(tx, nil)
+		if err == nil && len(rx.Wqid) != n {
+			err = Error("file '" + name + "' not found")
+		}
+		if err != nil {
+			if wfid != nil {
+				wfid.Close()
+			}
+			return nil, err
+		}
+		if wfid != nil {
+			wfid.qid = rx.Wqid[n-1]
+		} else if n == 0 {
+			wfid = conn.newFid(wfidnum, fid.qid)
+		} else {
+			wfid = conn.newFid(wfidnum, rx.Wqid[n-1])
+		}
+		elem = elem[n:]
+		if len(elem) == 0 {
+			break
+		}
+		fromfidnum = wfid.fid
+	}
+	return wfid, nil
+}
+
+func (fid *Fid) Write(b []byte) (n int, err error) {
+	return fid.WriteAt(b, -1)
+}
+
+func (fid *Fid) WriteAt(b []byte, offset int64) (n int, err error) {
+	conn, err := fid.conn()
+	if err != nil {
+		return 0, err
+	}
+	msize := conn.msize - plan9.IOHDRSIZE
+	tot := 0
+	n = len(b)
+	first := true
+	for tot < n || first {
+		want := n - tot
+		if uint32(want) > msize {
+			want = int(msize)
+		}
+		got, err := fid.writeAt(b[tot:tot+want], offset)
+		tot += got
+		if err != nil {
+			return tot, err
+		}
+		if offset != -1 {
+			offset += int64(got)
+		}
+		first = false
+	}
+	return tot, nil
+}
+
+func (fid *Fid) writeAt(b []byte, offset int64) (n int, err error) {
+	conn, err := fid.conn()
+	if err != nil {
+		return 0, err
+	}
+	o := offset
+	if o == -1 {
+		fid.f.Lock()
+		o = fid.offset
+		fid.f.Unlock()
+	}
+	tx := &plan9.Fcall{Type: plan9.Twrite, Fid: fid.fid, Offset: uint64(o), Data: b}
+	rx, err := conn.rpc(tx, nil)
+	if err != nil {
+		return 0, err
+	}
+	if offset == -1 && rx.Count > 0 {
+		fid.f.Lock()
+		fid.offset += int64(rx.Count)
+		fid.f.Unlock()
+	}
+	return int(rx.Count), nil
+}
+
+func (fid *Fid) Wstat(d *plan9.Dir) error {
+	conn, err := fid.conn()
+	if err != nil {
+		return err
+	}
+	b, err := d.Bytes()
+	if err != nil {
+		return err
+	}
+	tx := &plan9.Fcall{Type: plan9.Twstat, Fid: fid.fid, Stat: b}
+	_, err = conn.rpc(tx, nil)
+	return err
+}
