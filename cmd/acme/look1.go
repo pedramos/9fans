@@ -54,10 +54,10 @@ func plumbthread() {
 			}
 			time.Sleep(2 * time.Second)
 		}
-		bigLock() // TODO still racy
+		big.Lock() // TODO still racy
 		plumbeditfid = fid
 		ui.Plumbsendfid, _ = plumb.Open("send", plan9.OWRITE|plan9.OCEXEC)
-		bigUnlock()
+		big.Unlock()
 
 		/*
 		 * Relay messages.
