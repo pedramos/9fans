@@ -601,30 +601,19 @@ func Winaddincl(w *Window, r []rune) {
 }
 
 func Winctlprint(w *Window, fonts bool) string {
-	base := fmt.Sprintf("%11d %11d %11d %11d %11d ",
-		w.ID,
-		w.Tag.Len(),
-		w.Body.Len(),
-		bool2int(w.IsDir),
-		bool2int(w.Dirty),
-	)
+	isdir := 0
+	if w.IsDir {
+		isdir = 1
+	}
+	dirty := 0
+	if w.Dirty {
+		dirty = 1
+	}
+	base := fmt.Sprintf("%11d %11d %11d %11d %11d ", w.ID, w.Tag.Len(), w.Body.Len(), isdir, dirty)
 	if fonts {
-		base += fmt.Sprintf("%11d %q %11d %11d %11d ",
-			w.Body.Fr.R.Dx(),
-			w.Body.Reffont.F.Name,
-			w.Body.Fr.MaxTab,
-			bool2int(w.Body.File.Seq() != 0),
-			bool2int(w.Body.File.RedoSeq() != 0),
-		)
+		base += fmt.Sprintf("%11d %q %11d ", w.Body.Fr.R.Dx(), w.Body.Reffont.F.Name, w.Body.Fr.MaxTab)
 	}
 	return base
-}
-
-func bool2int(b bool) int {
-	if b {
-		return 1
-	}
-	return 0
 }
 
 // fbufalloc() guarantees room off end of BUFSIZE

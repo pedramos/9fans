@@ -65,10 +65,6 @@ func pdir(b []byte, d *Dir) []byte {
 	return b
 }
 
-func (d *Dir) Append(buf []byte) []byte {
-	return pdir(buf, d)
-}
-
 func (d *Dir) Bytes() ([]byte, error) {
 	return pdir(nil, d), nil
 }
@@ -199,10 +195,6 @@ type Qid struct {
 	Path uint64
 	Vers uint32
 	Type uint8
-}
-
-func (q Qid) IsDir() bool {
-	return q.Type&QTDIR != 0
 }
 
 func (q Qid) String() string {

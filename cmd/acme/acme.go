@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	_ "runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -151,6 +150,8 @@ func main() {
 	editpkg.Run = func(w *wind.Window, s string, rdir []rune) {
 		exec.Run(w, s, rdir, true, nil, nil, true)
 	}
+	ui.BigLock = bigLock
+	ui.BigUnlock = bigUnlock
 	exec.Fsysmount = fsysmount
 	exec.Fsysdelid = fsysdelid
 	exec.Xfidlog = xfidlog
@@ -774,15 +775,18 @@ func ismtpt(file string) bool {
 // The big lock is always acquired last compared to any other mutexes.
 // Eventually the goal is to avoid needing it at all, but that will take some time.
 var big sync.Mutex
+var stk = make([]byte, 1<<20)
 
 func bigLock() {
 	// n := runtime.Stack(stk, true)
 	// print("\n\nbig.Lock (Locking):\n", string(stk[:n]))
 	big.Lock()
+	// n = runtime.Stack(stk, true)
+	// print("\n\nbig.Lock (Locked):\n", string(stk[:n]))
 }
 
 func bigUnlock() {
 	// n := runtime.Stack(stk, true)
-	// print("\n\nbig.Lock (Locked):\n", string(stk[:n]))
+	// print("\n\nbig.Unlock:\n", string(stk[:n]))
 	big.Unlock()
 }

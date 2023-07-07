@@ -75,13 +75,13 @@ func plumbthread() {
 		/*
 		 * Lost connection.
 		 */
-		bigLock() // TODO still racy
+		big.Lock() // TODO still racy
 		fid = ui.Plumbsendfid
 		ui.Plumbsendfid = nil
 		big.Unlock()
 		fid.Close()
 
-		bigLock() // TODO still racy
+		big.Lock() // TODO still racy
 		fid = plumbeditfid
 		plumbeditfid = nil
 		big.Unlock()
