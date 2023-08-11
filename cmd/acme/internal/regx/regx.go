@@ -506,7 +506,7 @@ func addinst(l []Ilist, inst *Inst, sep *Ranges) int {
 	p := &l[i]
 	for p.inst != nil {
 		if p.inst == inst {
-			if sep.R[0].Pos < p.se.R[0].End {
+			if sep.R[0].Pos < p.se.R[0].Pos {
 				p.se = *sep /* this would be bug */
 			}
 			return 0 /* It's already there */
