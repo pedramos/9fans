@@ -74,7 +74,7 @@ func scalesubfont(f *subfont, scale int) {
 	f.Height *= scale
 	f.Ascent *= scale
 
-	for j := 0; j < f.N; j++ {
+	for j := 0; j <= f.N; j++ {
 		p := &f.Info[j]
 		p.X *= scale
 		p.Top *= uint8(scale)
