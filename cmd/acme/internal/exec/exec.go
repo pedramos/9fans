@@ -436,8 +436,9 @@ func Get(et, t, argt *wind.Text, flag1, _ bool, arg []rune) {
 		t.File.SetMod(false)
 		dirty = false
 	} else {
-		t.File.SetMod(true)
-		dirty = true
+		t.File.SetName(r)
+		t.File.SetMod(false)
+		dirty = false
 	}
 	for i := 0; i < len(t.File.Text); i++ {
 		t.File.Text[i].W.Dirty = dirty
