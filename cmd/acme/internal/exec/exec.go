@@ -327,6 +327,8 @@ func getname(t *wind.Text, argt *wind.Text, arg []rune, isput bool) string {
 		if len(arg) == 0 {
 			return string(t.File.Name())
 		}
+		s := strings.TrimSpace(string(arg))
+		arg = []rune(s)
 		var dir []rune
 		// prefix with directory name if necessary
 		dir = nil
@@ -337,7 +339,7 @@ func getname(t *wind.Text, argt *wind.Text, arg []rune, isput bool) string {
 			}
 		}
 		if dir != nil {
-			r = make([]rune, len(dir)+1+len(arg))
+			r = make([]rune, 0, len(dir)+1+len(arg))
 			r = append(r, dir...)
 			if len(r) > 0 && r[len(r)-1] != '/' && len(arg) > 0 && arg[0] != '/' {
 				r = append(r, '/')
