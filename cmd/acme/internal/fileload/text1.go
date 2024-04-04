@@ -182,7 +182,8 @@ func Textcomplete(t *wind.Text) []rune {
 		dir = runes.CleanPath(dir)
 	}
 
-	c, err := complete.Complete(string(dir), string(str))
+	d := os.ExpandEnv(string(dir))
+	c, err := complete.Complete(d, string(str))
 	if err != nil {
 		alog.Printf("error attempting completion: %v\n", err)
 		return nil
@@ -197,7 +198,7 @@ func Textcomplete(t *wind.Text) []rune {
 		if c.NumMatch == 0 {
 			more = ": no matches in:"
 		}
-		alog.Printf("%s%s%s*%s\n", string(dir), sep, string(str), more)
+		alog.Printf("%s%s%s*%s\n", d, sep, string(str), more)
 		for i := 0; i < len(c.Files); i++ {
 			alog.Printf(" %s\n", c.Files[i])
 		}

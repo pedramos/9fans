@@ -325,9 +325,14 @@ func getname(t *wind.Text, argt *wind.Text, arg []rune, isput bool) string {
 	}
 	if promote {
 		if len(arg) == 0 {
+			fname := string(t.File.Name())
+			if fname != os.ExpandEnv(fname) {
+				t.File.SetName([]rune(os.ExpandEnv(fname)))
+			}
 			return string(t.File.Name())
 		}
 		s := strings.TrimSpace(string(arg))
+		s = os.ExpandEnv(s)
 		arg = []rune(s)
 		var dir []rune
 		// prefix with directory name if necessary

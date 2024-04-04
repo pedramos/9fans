@@ -136,7 +136,8 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 		}
 		r = make([]rune, q1-q0)
 		t.File.Read(q0, r)
-		m.Data = []byte(string(r))
+		s := os.ExpandEnv(string(r))
+		m.Data = []byte(s)
 		if len(m.Data) < 7*1024 && m.Send(Plumbsendfid) == nil {
 			return
 		}
