@@ -1,9 +1,10 @@
+//go:build !plan9
 // +build !plan9
 
 package plumb
 
 import (
-	"9fans.net/go/plan9/client"
+	"plramos.win/9fans/plan9/client"
 )
 
 func mountPlumb() {

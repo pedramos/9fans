@@ -25,11 +25,6 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/util"
 	"plramos.win/9fans/cmd/acme/internal/wind"
 	"plramos.win/9fans/draw"
-<<<<<<< HEAD
-	
-	"github.com/google/gops/agent"
-=======
->>>>>>> 3a53886 (pedrolorgaramos.win/go => plramos.win)
 )
 
 var snarffd = -1

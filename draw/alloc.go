@@ -2,11 +2,8 @@ package draw
 
 import (
 	"fmt"
-<<<<<<< HEAD
-=======
-	"image"
+
 	"os"
->>>>>>> e29e7d5 (draw: port drawfcall to Plan 9)
 	"runtime"
 	"strings"
 )
@@ -34,7 +31,6 @@ import (
 // used to paint a region red:
 //
 //	red, err := display.AllocImage(draw.Rect(0, 0, 1, 1), draw.RGB24, true, draw.Red)
-//
 func (d *Display) AllocImage(r Rectangle, pix Pix, repl bool, color Color) (*Image, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()

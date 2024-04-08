@@ -1,15 +1,10 @@
 package draw
 
-<<<<<<< HEAD
-import "fmt"
-=======
 import (
 	"fmt"
-	"image"
 	"io/ioutil"
 	"runtime"
 )
->>>>>>> e29e7d5 (draw: port drawfcall to Plan 9)
 
 var screenid uint32
 
