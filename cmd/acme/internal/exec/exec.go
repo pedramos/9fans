@@ -441,6 +441,9 @@ func Get(et, t, argt *wind.Text, flag1, _ bool, arg []rune) {
 		t.File.SetMod(false)
 		dirty = false
 	} else {
+		if info, err := os.Stat(name); err == nil && info.IsDir() {
+			r = append(r, '/')
+		}
 		t.File.SetName(r)
 		t.File.SetMod(false)
 		dirty = false
