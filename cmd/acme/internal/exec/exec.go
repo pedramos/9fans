@@ -106,6 +106,7 @@ var exectab = [30]Exectab{
 	Exectab{[]rune("Snarf"), ui.XCut, false, true, false},
 	Exectab{[]rune("Sort"), xsort, false, XXX, XXX},
 	Exectab{[]rune("Tab"), tab, false, XXX, XXX},
+	Exectab{[]rune("TabExpand"), tabexpand, false, XXX, XXX},
 	Exectab{[]rune("Undo"), ui.XUndo, false, true, XXX},
 	Exectab{[]rune("Zerox"), zeroxx, false, XXX, XXX},
 }
@@ -130,6 +131,20 @@ func isexecc(c rune) bool {
 		return true
 	}
 	return c == '<' || c == '|' || c == '>'
+}
+func tabexpand(et, _, _ *wind.Text, _, _ bool, _ []rune) {
+
+	if et == nil || et.W == nil {
+		return
+	}
+	w := et.W
+	if w.IsTabExpand {
+		w.IsTabExpand = false
+	} else {
+		w.IsTabExpand = true
+
+	}
+	/* printf("tabexpand: %d\n", w->tabexpand); */
 }
 
 func Execute(t *wind.Text, aq0 int, aq1 int, external bool, argt *wind.Text) {
@@ -326,7 +341,7 @@ func getname(t *wind.Text, argt *wind.Text, arg []rune, isput bool) string {
 	if promote {
 		if len(arg) == 0 {
 			fname := string(t.File.Name())
-			if fname != os.ExpandEnv(fname) {
+			if _, err := os.Stat(fname); fname != os.ExpandEnv(fname) && err == nil {
 				t.File.SetName([]rune(os.ExpandEnv(fname)))
 			}
 			return string(t.File.Name())
@@ -441,7 +456,7 @@ func Get(et, t, argt *wind.Text, flag1, _ bool, arg []rune) {
 		t.File.SetMod(false)
 		dirty = false
 	} else {
-		if info, err := os.Stat(name); err == nil && info.IsDir() {
+		if info, err := os.Stat(name); err == nil && info.IsDir() && r[len(r)-1] != '/' {
 			r = append(r, '/')
 		}
 		t.File.SetName(r)

@@ -197,6 +197,13 @@ func Texttype(t *wind.Text, r rune) {
 		// 			wind.Textshow(t, t.Len(), t.Len(), false)
 		// 		}
 		// 		return
+	case 0x09:	/* ^I (TAB) */
+		if t.W.IsTabExpand {
+			for _ = range t.W.Body.Tabstop {
+				Texttype(t, ' ');
+			}
+			return;
+		}
 	case 0x01, draw.KeyHome: // ^A: beginning of line
 		wind.Typecommit(t)
 		// go to where ^U would erase, if not already at BOL

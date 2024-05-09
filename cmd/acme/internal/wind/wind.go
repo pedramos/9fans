@@ -60,6 +60,7 @@ type Window struct {
 	tagtop      draw.Rectangle
 	Editoutlk   util.QLock
 	External    bool
+	IsTabExpand bool
 }
 
 // Text.what
@@ -149,6 +150,7 @@ func Init(w *Window, clone *Window, r draw.Rectangle) {
 	w.Filemenu = true
 	w.Maxlines = w.Body.Fr.MaxLines
 	w.Autoindent = GlobalAutoindent
+	w.IsTabExpand = false
 	if clone != nil {
 		w.Dirty = clone.Dirty
 		w.Autoindent = clone.Autoindent

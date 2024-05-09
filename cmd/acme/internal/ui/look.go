@@ -66,6 +66,11 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 		if n <= wind.EVENTSIZE {
 			r := make([]rune, n)
 			t.File.Read(q0, r)
+			s := os.ExpandEnv(string(r))
+			if _, err := os.Stat(s); err != nil {
+				r = []rune(s)
+				n = len(s)
+			}
 			wind.Winevent(t.W, "%c%d %d %d %d %s\n", c, q0, q1, f, n, string(r))
 		} else {
 			wind.Winevent(t.W, "%c%d %d %d 0 \n", c, q0, q1, f)
@@ -80,6 +85,11 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 			}
 			r = make([]rune, n)
 			copy(r, e.Name)
+			s := os.ExpandEnv(string(r))
+			if _, err := os.Stat(s); err != nil {
+				r = []rune(s)
+				n = len(r)
+			}
 			if e.A1 > e.A0 {
 				r[len(e.Name)] = ':'
 				at := e.Arg.(*wind.Text)
@@ -89,6 +99,10 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 			n = e.Q1 - e.Q0
 			r = make([]rune, n)
 			t.File.Read(e.Q0, r)
+			s := os.ExpandEnv(string(r))
+			if _, err := os.Stat(s); err != nil {
+				r = []rune(s)
+			}
 		}
 		f &^= 2
 		if n <= wind.EVENTSIZE {
