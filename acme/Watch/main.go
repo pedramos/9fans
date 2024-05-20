@@ -33,6 +33,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -58,8 +59,9 @@ func usage() {
 }
 
 func main() {
-	log.SetFlags(0)
-	log.SetPrefix("Watch: ")
+	// 	log.SetFlags(0)
+	// 	log.SetPrefix("Watch: ")
+	log.SetFlags(log.Llongfile)
 	flag.Usage = usage
 	flag.Parse()
 	args = flag.Args()
@@ -215,7 +217,7 @@ func runBackground(id int, dir string) {
 			return
 		}
 		q0, _, err := win.ReadAddr()
-		if err != nil {
+		if err != nil && err != io.EOF {
 			log.Fatal(err)
 		}
 		err = win.Addr("#%d/^%%[ \t][^ \t\\n].*\\n/", q0)
