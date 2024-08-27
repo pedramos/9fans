@@ -198,7 +198,7 @@ func Texttype(t *wind.Text, r rune) {
 		// 		}
 		// 		return
 	case 0x09:	/* ^I (TAB) */
-		if t.W.IsTabExpand {
+		if t.What == wind.Body && t.W.IsTabExpand  {
 			for _ = range t.W.Body.Tabstop {
 				Texttype(t, ' ');
 			}
