@@ -44,9 +44,11 @@ import (
 	"plramos.win/9fans/plan9/client"
 )
 
-var Fsysmount = func([]rune, [][]rune) *base.Mntdir { return nil }
-var Fsysdelid = func(*base.Mntdir) {}
-var Xfidlog = func(*wind.Window, string) {}
+var (
+	Fsysmount = func([]rune, [][]rune) *base.Mntdir { return nil }
+	Fsysdelid = func(*base.Mntdir) {}
+	Xfidlog   = func(*wind.Window, string) {}
+)
 
 var Cwait = make(chan Waitmsg)
 
@@ -79,36 +81,36 @@ type Exectab struct {
 }
 
 var exectab = [30]Exectab{
-	Exectab{[]rune("Abort"), doabort, false, XXX, XXX},
-	Exectab{[]rune("Cut"), ui.XCut, true, true, true},
-	Exectab{[]rune("Del"), del, false, false, XXX},
-	Exectab{[]rune("Delcol"), delcol, false, XXX, XXX},
-	Exectab{[]rune("Delete"), del, false, true, XXX},
-	Exectab{[]rune("Dump"), dump_, false, true, XXX},
-	Exectab{[]rune("Edit"), edit_, false, XXX, XXX},
-	Exectab{[]rune("Exit"), xexit, false, XXX, XXX},
-	Exectab{[]rune("Font"), ui.Fontx, false, XXX, XXX},
-	Exectab{[]rune("Get"), Get, false, true, XXX},
-	Exectab{[]rune("ID"), id, false, XXX, XXX},
-	Exectab{[]rune("Incl"), incl, false, XXX, XXX},
-	Exectab{[]rune("Indent"), indent, false, XXX, XXX},
-	Exectab{[]rune("Kill"), xkill, false, XXX, XXX},
-	Exectab{[]rune("Load"), dump_, false, false, XXX},
-	Exectab{[]rune("Local"), local, false, XXX, XXX},
-	Exectab{[]rune("Look"), look, false, XXX, XXX},
-	Exectab{[]rune("New"), ui.New, false, XXX, XXX},
-	Exectab{[]rune("Newcol"), newcol, false, XXX, XXX},
-	Exectab{[]rune("Paste"), ui.XPaste, true, true, XXX},
-	Exectab{[]rune("Put"), Put, false, XXX, XXX},
-	Exectab{[]rune("Putall"), putall, false, XXX, XXX},
-	Exectab{[]rune("Redo"), ui.XUndo, false, false, XXX},
-	Exectab{[]rune("Send"), sendx, true, XXX, XXX},
-	Exectab{[]rune("Snarf"), ui.XCut, false, true, false},
-	Exectab{[]rune("Sort"), xsort, false, XXX, XXX},
-	Exectab{[]rune("Tab"), tab, false, XXX, XXX},
-	Exectab{[]rune("TabExpand"), tabexpand, false, XXX, XXX},
-	Exectab{[]rune("Undo"), ui.XUndo, false, true, XXX},
-	Exectab{[]rune("Zerox"), zeroxx, false, XXX, XXX},
+	{[]rune("Abort"), doabort, false, XXX, XXX},
+	{[]rune("Cut"), ui.XCut, true, true, true},
+	{[]rune("Del"), del, false, false, XXX},
+	{[]rune("Delcol"), delcol, false, XXX, XXX},
+	{[]rune("Delete"), del, false, true, XXX},
+	{[]rune("Dump"), dump_, false, true, XXX},
+	{[]rune("Edit"), edit_, false, XXX, XXX},
+	{[]rune("Exit"), xexit, false, XXX, XXX},
+	{[]rune("Font"), ui.Fontx, false, XXX, XXX},
+	{[]rune("Get"), Get, false, true, XXX},
+	{[]rune("ID"), id, false, XXX, XXX},
+	{[]rune("Incl"), incl, false, XXX, XXX},
+	{[]rune("Indent"), indent, false, XXX, XXX},
+	{[]rune("Kill"), xkill, false, XXX, XXX},
+	{[]rune("Load"), dump_, false, false, XXX},
+	{[]rune("Local"), local, false, XXX, XXX},
+	{[]rune("Look"), look, false, XXX, XXX},
+	{[]rune("New"), ui.New, false, XXX, XXX},
+	{[]rune("Newcol"), newcol, false, XXX, XXX},
+	{[]rune("Paste"), ui.XPaste, true, true, XXX},
+	{[]rune("Put"), Put, false, XXX, XXX},
+	{[]rune("Putall"), putall, false, XXX, XXX},
+	{[]rune("Redo"), ui.XUndo, false, false, XXX},
+	{[]rune("Send"), sendx, true, XXX, XXX},
+	{[]rune("Snarf"), ui.XCut, false, true, false},
+	{[]rune("Sort"), xsort, false, XXX, XXX},
+	{[]rune("Tab"), tab, false, XXX, XXX},
+	{[]rune("TabExpand"), tabexpand, false, XXX, XXX},
+	{[]rune("Undo"), ui.XUndo, false, true, XXX},
+	{[]rune("Zerox"), zeroxx, false, XXX, XXX},
 }
 
 func lookup(r []rune) *Exectab {
@@ -132,8 +134,8 @@ func isexecc(c rune) bool {
 	}
 	return c == '<' || c == '|' || c == '>'
 }
-func tabexpand(et, _, _ *wind.Text, _, _ bool, _ []rune) {
 
+func tabexpand(et, _, _ *wind.Text, _, _ bool, _ []rune) {
 	if et == nil || et.W == nil {
 		return
 	}
@@ -142,7 +144,6 @@ func tabexpand(et, _, _ *wind.Text, _, _ bool, _ []rune) {
 		w.IsTabExpand = false
 	} else {
 		w.IsTabExpand = true
-
 	}
 	/* printf("tabexpand: %d\n", w->tabexpand); */
 }
@@ -273,7 +274,6 @@ func doabort(_, _, _ *wind.Text, _, _ bool, _ []rune) {
 }
 
 func newcol(et, _, _ *wind.Text, _, _ bool, _ []rune) {
-
 	c := wind.RowAdd(et.Row, nil, -1)
 	ui.Clearmouse()
 	if c != nil {
@@ -284,7 +284,6 @@ func newcol(et, _, _ *wind.Text, _, _ bool, _ []rune) {
 }
 
 func delcol(et, _, _ *wind.Text, _, _ bool, _ []rune) {
-
 	c := et.Col
 	if c == nil || !wind.Colclean(c) {
 		return
@@ -310,7 +309,6 @@ func del(et, _, _ *wind.Text, isDelete, _ bool, _ []rune) {
 }
 
 func xsort(et, _, _ *wind.Text, _, _ bool, _ []rune) {
-
 	if et.Col != nil {
 		ui.Clearmouse()
 		wind.Colsort(et.Col)
@@ -373,7 +371,6 @@ func getname(t *wind.Text, argt *wind.Text, arg []rune, isput bool) string {
 }
 
 func zeroxx(et, t, _ *wind.Text, _, _ bool, _ []rune) {
-
 	locked := false
 	if t != nil && t.W != nil && t.W != et.W {
 		locked = true
@@ -675,7 +672,6 @@ func trimspaces(et *wind.Text) {
 }
 
 func Put(et, _, argt *wind.Text, _, _ bool, arg []rune) {
-
 	if et == nil || et.W == nil || et.W.IsDir {
 		return
 	}
@@ -713,7 +709,7 @@ func look(et, t, argt *wind.Text, _, _ bool, arg []rune) {
 	if et != nil && et.W != nil {
 		t = &et.W.Body
 		if len(arg) > 0 {
-			ui.Search(t, arg)
+			ui.Search(t, arg, false)
 			return
 		}
 		var r []rune
@@ -722,7 +718,7 @@ func look(et, t, argt *wind.Text, _, _ bool, arg []rune) {
 			r = make([]rune, t.Q1-t.Q0)
 			t.File.Read(t.Q0, r)
 		}
-		ui.Search(t, r)
+		ui.Search(t, r, false)
 	}
 }
 
@@ -1104,7 +1100,7 @@ Hard:
 		if shell == "" {
 			shell = "rc"
 		}
-		//static void *parg[2];
+		// static void *parg[2];
 		cmd := exec.Command(shell, "-c", t)
 		cmd.Dir = dir
 		cmd.Stdin = sfd[0]

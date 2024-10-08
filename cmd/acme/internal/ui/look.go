@@ -18,6 +18,7 @@ package ui
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 
@@ -33,13 +34,13 @@ import (
 	"plramos.win/9fans/plumb"
 )
 
-func Look3(t *wind.Text, q0, q1 int, external bool) {
+func Look3(t *wind.Text, q0, q1 int, external bool, reverse bool) {
 	ct := wind.Seltext
 	if ct == nil {
 		wind.Seltext = t
 	}
 	var e Expand
-	expanded := Expand_(t, q0, q1, &e)
+	expanded := Expand_(t, q0, q1, &e, reverse)
 	var n int
 	var c rune
 	var r []rune
@@ -61,6 +62,9 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 		c = 'l'
 		if t.What == wind.Body {
 			c = 'L'
+			if reverse {
+				c += 'R' - 'L'
+			}
 		}
 		n = q1 - q0
 		if n <= wind.EVENTSIZE {
@@ -173,11 +177,15 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 			wind.Winlock(ct.W, 'M')
 		}
 		if t == ct {
-			wind.Textsetselect(ct, e.Q1, e.Q1)
+			q := e.Q1
+			if reverse {
+				q = e.Q0
+			}
+			wind.Textsetselect(ct, q, q)
 		}
 		r = make([]rune, e.Q1-e.Q0)
 		t.File.Read(e.Q0, r)
-		if Search(ct, r) && e.Jump {
+		if Search(ct, r, reverse) && e.Jump {
 			adraw.Display.MoveCursor(ct.Fr.PointOf(ct.Fr.P0).Add(draw.Pt(4, ct.Fr.Font.Height-4)))
 		}
 		if t.W != ct.W {
@@ -186,7 +194,7 @@ func Look3(t *wind.Text, q0, q1 int, external bool) {
 	}
 }
 
-func Search(ct *wind.Text, r []rune) bool {
+func Search(ct *wind.Text, r []rune, reverse bool) bool {
 	if len(r) == 0 || len(r) > ct.Len() {
 		return false
 	}
@@ -198,52 +206,109 @@ func Search(ct *wind.Text, r []rune) bool {
 	s := bufs.AllocRunes()
 	b := s[:0]
 	around := 0
-	q := ct.Q1
-	for {
-		if q >= ct.Len() {
-			q = 0
-			around = 1
-			b = b[:0]
-		}
-		if len(b) > 0 {
-			i := runes.IndexRune(b, r[0])
-			if i < 0 {
-				q += len(b)
+	log.SetFlags(log.Llongfile)
+	if reverse {
+		q1 := ct.Q0 // q1 is (past) end of text being searched
+		for {
+			if q1 <= 0 {
+				q1 = ct.Len()
+				around = 1
 				b = b[:0]
-				if around != 0 && q >= ct.Q1 {
-					break
+			}
+			if len(b) > 0 {
+				i := len(b)
+				for i := len(b); i > 0; i-- {
+					if b[i-1] == r[len(r)-1] {
+						break
+					}
 				}
-				continue
+				if i == 0 {
+					q1 -= len(b)
+					b = b[:0]
+					if around != 0 && q1 <= 0 {
+						break
+					}
+					continue
+				}
+				q1 -= len(b) - i
+				b = b[:i]
 			}
-			q += i
-			b = b[i:]
-		}
-		// reload if buffer covers neither string nor rest of file
-		if len(b) < len(r) && len(b) != ct.Len()-q {
-			nb := ct.Len() - q
-			if nb >= maxn {
-				nb = maxn - 1
+			// reload if buffer covers neither string nor rest of file
+			if len(b) < len(r) && len(b) != q1 {
+				nb := q1
+				if nb >= maxn {
+					nb = maxn - 1
+				}
+				ct.File.Read(q1-nb, s[:nb])
+				b = s[:nb]
 			}
-			ct.File.Read(q, s[:nb])
-			b = s[:nb]
-		}
-		// this runeeq is fishy but the null at b[nb] makes it safe // TODO(rsc): NUL done gone
-		if len(b) >= len(r) && runes.Equal(b[:len(r)], r) {
-			if ct.W != nil {
-				wind.Textshow(ct, q, q+len(r), true)
-				wind.Winsettag(ct.W)
-			} else {
-				ct.Q0 = q
-				ct.Q1 = q + len(r)
+			// this runeeq is fishy but the null at b[nb] makes it safe // TODO(rsc): NUL done gone
+			if len(b) >= len(r) && runes.Equal(b[len(b)-len(r):], r) {
+				if ct.W != nil {
+					wind.Textshow(ct, q1-len(r), q1, true)
+					wind.Winsettag(ct.W)
+				} else {
+					ct.Q0 = q1 - len(r)
+					ct.Q1 = q1
+				}
+				wind.Seltext = ct
+				bufs.FreeRunes(s)
+				return true
 			}
-			wind.Seltext = ct
-			bufs.FreeRunes(s)
-			return true
+			q1--
+			b = b[:len(b)-1]
+			if around != 0 && q1 <= 0 {
+				break
+			}
 		}
-		b = b[1:]
-		q++
-		if around != 0 && q >= ct.Q1 {
-			break
+	} else {
+		q := ct.Q1
+		for {
+			if q >= ct.Len() {
+				q = 0
+				around = 1
+				b = b[:0]
+			}
+			if len(b) > 0 {
+				i := runes.IndexRune(b, r[0])
+				if i < 0 {
+					q += len(b)
+					b = b[:0]
+					if around != 0 && q >= ct.Q1 {
+						break
+					}
+					continue
+				}
+				q += i
+				b = b[i:]
+			}
+			// reload if buffer covers neither string nor rest of file
+			if len(b) < len(r) && len(b) != ct.Len()-q {
+				nb := ct.Len() - q
+				if nb >= maxn {
+					nb = maxn - 1
+				}
+				ct.File.Read(q, s[:nb])
+				b = s[:nb]
+			}
+			// this runeeq is fishy but the null at b[nb] makes it safe // TODO(rsc): NUL done gone
+			if len(b) >= len(r) && runes.Equal(b[:len(r)], r) {
+				if ct.W != nil {
+					wind.Textshow(ct, q, q+len(r), true)
+					wind.Winsettag(ct.W)
+				} else {
+					ct.Q0 = q
+					ct.Q1 = q + len(r)
+				}
+				wind.Seltext = ct
+				bufs.FreeRunes(s)
+				return true
+			}
+			b = b[1:]
+			q++
+			if around != 0 && q >= ct.Q1 {
+				break
+			}
 		}
 	}
 	bufs.FreeRunes(s)
@@ -329,7 +394,7 @@ func hasPrefix(r []rune, s []rune) bool {
 	return true
 }
 
-func expandfile(t *wind.Text, q0 int, q1 int, e *Expand) bool {
+func expandfile(t *wind.Text, q0 int, q1 int, e *Expand, reverse bool) bool {
 	amax := q1
 	var c rune
 	if q1 == q0 {
@@ -378,6 +443,13 @@ func expandfile(t *wind.Text, q0 int, q1 int, e *Expand) bool {
 				}
 			} else {
 				amax = t.Len()
+			}
+			if colon != q0 {
+				reverse = false
+			} else if reverse {
+				if t.RuneAt(q0) != ':' {
+					reverse = false
+				}
 			}
 		}
 	}
@@ -465,12 +537,13 @@ Isfile:
 	e.Name = r[:nname]
 	e.Arg = t
 	e.A0 = amin + 1
+	e.Reverse = reverse
 	eval := false
-	addr.Eval(true, nil, runes.Rng(-1, -1), runes.Rng(0, 0), t, e.A0, amax, tgetc, &eval, (*int)(&e.A1))
+	addr.Eval(true, nil, runes.Rng(-1, -1), runes.Rng(0, 0), t, e.A0, amax, tgetc, &eval, (*int)(&e.A1), e.Reverse)
 	return true
 }
 
-func Expand_(t *wind.Text, q0 int, q1 int, e *Expand) bool {
+func Expand_(t *wind.Text, q0 int, q1 int, e *Expand, reverse bool) bool {
 	*e = Expand{}
 	e.Agetc = tgetc
 	// if in selection, choose selection
@@ -483,7 +556,7 @@ func Expand_(t *wind.Text, q0 int, q1 int, e *Expand) bool {
 		}
 	}
 
-	if expandfile(t, q0, q1, e) {
+	if expandfile(t, q0, q1, e, reverse) {
 		return true
 	}
 
@@ -535,15 +608,16 @@ func LookID(id int) *wind.Window {
 }
 
 type Expand struct {
-	Q0    int
-	Q1    int
-	Name  []rune
-	Bname string
-	Jump  bool
-	Arg   interface{}
-	Agetc func(interface{}, int) rune
-	A0    int
-	A1    int
+	Q0      int
+	Q1      int
+	Name    []rune
+	Bname   string
+	Jump    bool
+	Reverse bool
+	Arg     interface{}
+	Agetc   func(interface{}, int) rune
+	A0      int
+	A1      int
 }
 
 func tgetc(a interface{}, n int) rune {
@@ -631,7 +705,7 @@ func Openfile(t *wind.Text, e *Expand) *wind.Window {
 	} else {
 		eval = true
 		var dummy int
-		r = addr.Eval(true, t, runes.Rng(-1, -1), runes.Rng(t.Q0, t.Q1), e.Arg, e.A0, e.A1, e.Agetc, &eval, &dummy)
+		r = addr.Eval(true, t, runes.Rng(-1, -1), runes.Rng(t.Q0, t.Q1), e.Arg, e.A0, e.A1, e.Agetc, &eval, &dummy, false)
 		if r.Pos > r.End {
 			eval = false
 			alog.Printf("addresses out of order\n")

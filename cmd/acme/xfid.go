@@ -20,7 +20,6 @@ import (
 	"io"
 	"strings"
 	"unicode/utf8"
-	"log"
 
 	addrpkg "plramos.win/9fans/cmd/acme/internal/addr"
 	"plramos.win/9fans/cmd/acme/internal/adraw"
@@ -41,12 +40,14 @@ const (
 	Ctlsize = 5 * 12
 )
 
-var Edel string = "deleted window"
-var Ebadctl string = "ill-formed control message"
-var Ebadaddr string = "bad address syntax"
-var Eaddr string = "address out of range"
-var Einuse string = "already in use"
-var Ebadevent string = "bad event syntax"
+var (
+	Edel      string = "deleted window"
+	Ebadctl   string = "ill-formed control message"
+	Ebadaddr  string = "bad address syntax"
+	Eaddr     string = "address out of range"
+	Einuse    string = "already in use"
+	Ebadevent string = "bad event syntax"
+)
 
 // extern var Eperm [unknown]C.char
 
@@ -119,8 +120,7 @@ func xfidopen(x *Xfid) {
 				w.Addr = runes.Rng(0, 0)
 				w.Limit = runes.Rng(-1, -1)
 			}
-		case QWdata,
-			QWxdata:
+		case QWdata, QWxdata:
 			nopen[wq{w, q}]++
 		case QWevent:
 			tmp31 := nopen[wq{w, q}]
@@ -235,8 +235,7 @@ func xfidclose(x *Xfid) {
 				w.Ctlfid = ^0
 				w.Ctllock.Unlock()
 			}
-		case QWdata,
-			QWxdata:
+		case QWdata, QWxdata:
 			w.Nomark = false
 			fallthrough
 		// fall through
@@ -288,8 +287,7 @@ func xfidread(x *Xfid) {
 	if w == nil {
 		fc.Count = 0
 		switch q {
-		case Qcons,
-			Qlabel:
+		case Qcons, Qlabel:
 			break
 		case Qindex:
 			xfidindexread(x)
@@ -448,7 +446,7 @@ func xfidwrite(x *Xfid) {
 		wind.Wincommit(w, t)
 		eval := true
 		var nb int
-		a := addrpkg.Eval(false, t, w.Limit, w.Addr, r, 0, len(r), rgetc, &eval, &nb)
+		a := addrpkg.Eval(false, t, w.Limit, w.Addr, r, 0, len(r), rgetc, &eval, &nb, false)
 		if nb < len(r) {
 			respond(x, &fc, Ebadaddr)
 			break
@@ -461,8 +459,7 @@ func xfidwrite(x *Xfid) {
 		fc.Count = uint32(len(x.fcall.Data))
 		respond(x, &fc, "")
 
-	case Qeditout,
-		QWeditout:
+	case Qeditout, QWeditout:
 		r := fullrunewrite(x)
 		var err error
 		if w != nil {
@@ -534,8 +531,7 @@ func xfidwrite(x *Xfid) {
 			w = errorwinforwin(w)
 			t = &w.Body
 
-		case QWbody,
-			QWwrsel:
+		case QWbody, QWwrsel:
 			t = &w.Body
 
 		case QWtag:
@@ -736,7 +732,6 @@ func xfidctlwrite(x *Xfid, w *wind.Window) {
 		} else if strings.HasPrefix(p, "addr=dot") { // set addr
 			w.Addr.Pos = w.Body.Q0
 			w.Addr.End = w.Body.Q1
-			log.Print("%d, %d\n", w.Addr.Pos, w.Addr.End)
 			p = p[8:]
 		} else if strings.HasPrefix(p, "limit=addr") { // set limit
 			wind.Textcommit(&w.Body, true)
@@ -851,18 +846,18 @@ func xfideventwrite(x *Xfid, w *wind.Window) {
 		o := w.Owner
 		wind.Winunlock(w)
 		bigUnlock()
- 		wind.TheRow.Lk.Lock() // just like mousethread
+		wind.TheRow.Lk.Lock() // just like mousethread
 
 		bigLock()
 		wind.Winlock(w, o)
 
 		switch c {
-		case 'x',
-			'X':
+		case 'x', 'X':
 			exec.Execute(t, q0, q1, true, nil)
-		case 'l',
-			'L':
-			ui.Look3(t, q0, q1, true)
+		case 'l', 'L':
+			ui.Look3(t, q0, q1, true, false)
+		case 'r', 'R':
+			ui.Look3(t, q0, q1, true, true)
 		default:
 			wind.TheRow.Lk.Unlock()
 			goto Rescue

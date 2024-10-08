@@ -158,7 +158,7 @@ func regexp(showerr bool, t runes.Text, lim runes.Range, r runes.Range, pat []ru
 	return sel.R[0]
 }
 
-func Eval(showerr bool, t runes.Text, lim runes.Range, ar runes.Range, a interface{}, q0 int, q1 int, getc func(interface{}, int) rune, evalp *bool, qp *int) runes.Range {
+func Eval(showerr bool, t runes.Text, lim runes.Range, ar runes.Range, a interface{}, q0 int, q1 int, getc func(interface{}, int) rune, evalp *bool, qp *int, reverse bool) runes.Range {
 	r := ar
 	q := q0
 	dir := None
@@ -187,7 +187,7 @@ func Eval(showerr bool, t runes.Text, lim runes.Range, ar runes.Range, a interfa
 			if q >= q1 && t != nil /* && t.file != nil */ { /* rhs defaults to $ */
 				r.End = t.Len()
 			} else {
-				nr = Eval(showerr, t, lim, ar, a, q, q1, getc, evalp, &q)
+				nr = Eval(showerr, t, lim, ar, a, q, q1, getc, evalp, &q, false)
 				r.End = nr.End
 			}
 			*qp = q
@@ -200,8 +200,7 @@ func Eval(showerr bool, t runes.Text, lim runes.Range, ar runes.Range, a interfa
 				}
 			}
 			dir = c
-		case '.',
-			'$':
+		case '.', '$':
 			if q != q0+1 {
 				*qp = q - 1
 				return r
@@ -272,6 +271,9 @@ func Eval(showerr bool, t runes.Text, lim runes.Range, ar runes.Range, a interfa
 				r = regexp(showerr, t, lim, r, pat, dir, evalp)
 			}
 			dir = None
+			if reverse {
+				dir = Back
+			}
 			size = Line
 		}
 	}

@@ -27,10 +27,12 @@ import (
 	"plramos.win/9fans/draw"
 )
 
-var snarffd = -1
-var mainpid int
-var swapscrollbuttons bool = false
-var mtpt string
+var (
+	snarffd           = -1
+	mainpid           int
+	swapscrollbuttons bool = false
+	mtpt              string
+)
 
 var mainthread sync.Mutex
 
@@ -123,7 +125,7 @@ func main() {
 
 	adraw.Display = d
 	adraw.Font = d.Font
-	//assert(font);
+	// assert(font);
 
 	adraw.RefFont1.F = adraw.Font
 	adraw.RefFonts[0] = &adraw.RefFont1
@@ -310,8 +312,10 @@ func killprocs() {
 	}
 }
 
-var errorfd *os.File
-var erroutfd *os.File
+var (
+	errorfd  *os.File
+	erroutfd *os.File
+)
 
 func acmeerrorproc() {
 	buf := make([]byte, 8192)
@@ -413,6 +417,8 @@ func keyboardthread() {
 func mousethread() {
 	bigLock()
 	defer bigUnlock()
+
+	Shift := 5
 
 	for {
 		bigUnlock()
@@ -566,10 +572,10 @@ func mousethread() {
 					if ui.Textselect2(t, &q0, &q1, &argt) != 0 {
 						exec.Execute(t, q0, q1, false, argt)
 					}
-				} else if m.Buttons&4 != 0 {
+				} else if m.Buttons&4 != 0 || (4|4<<Shift) != 0 {
 					var q0, q1 int
 					if ui.Textselect3(t, &q0, &q1) {
-						ui.Look3(t, q0, q1, false)
+						ui.Look3(t, q0, q1, false, (m.Buttons&(4<<Shift)) != 0)
 					}
 				}
 				if w != nil {
@@ -654,7 +660,7 @@ func waitthread() {
 				p.next = pids
 				pids = p
 			} else {
-				if ui.Search(t, c.Name) {
+				if ui.Search(t, c.Name, false) {
 					wind.Textdelete(t, t.Q0, t.Q1, true)
 					wind.Textsetselect(t, 0, 0)
 				}

@@ -23,7 +23,6 @@
 //	.rs - rustfmt
 //	.py - yapf
 //	.templ - templ fmt
-//
 package main
 
 import (
@@ -44,20 +43,14 @@ import (
 var gofmt = flag.Bool("f", false, "format the entire file after Put")
 
 var formatters = map[string][]string{
-	".go": []string{"goimports"},
+	".go": {"goimports"},
 }
 
 // Non-Go formatters (only loaded with -f option).
 var otherFormatters = map[string][]string{
-<<<<<<< HEAD
-	".rs":    []string{"rustfmt", "--emit", "stdout"},
-	".py":    []string{"yapf"},
-	".templ": []string{"templ", "fmt", "--stdout"}
-=======
-	".rs":  []string{"rustfmt", "--emit", "stdout"},
-	".py":  []string{"yapf"},
-	".sql": []string{"sqlfmt", "-"},
->>>>>>> 3f1551a (acme: a lot of changes from rogpepe and adding sqlfmt to acmego)
+	".rs":  {"rustfmt", "--emit", "stdout"},
+	".py":  {"yapf"},
+	".sql": {"sqlfmt", "-"},
 }
 
 func main() {
@@ -99,7 +92,7 @@ func reformat(id int, name string, formatter []string) {
 
 	old, err := ioutil.ReadFile(name)
 	if err != nil {
-		//log.Print(err)
+		// log.Print(err)
 		return
 	}
 
@@ -126,12 +119,12 @@ func reformat(id int, name string, formatter []string) {
 	if !*gofmt {
 		oldTop, err := readImports(bytes.NewReader(old), true)
 		if err != nil {
-			//log.Print(err)
+			// log.Print(err)
 			return
 		}
 		newTop, err := readImports(bytes.NewReader(new), true)
 		if err != nil {
-			//log.Print(err)
+			// log.Print(err)
 			return
 		}
 		if bytes.Equal(oldTop, newTop) {

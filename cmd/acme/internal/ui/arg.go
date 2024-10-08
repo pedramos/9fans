@@ -99,7 +99,7 @@ func Getarg(argt *wind.Text, doaddr, dofile bool, rp *[]rune) *string {
 	wind.Textcommit(argt, true)
 	var e Expand
 	var a *string
-	if Expand_(argt, argt.Q0, argt.Q1, &e) {
+	if Expand_(argt, argt.Q0, argt.Q1, &e, false) {
 		if len(e.Name) > 0 && dofile {
 			if doaddr {
 				a = Printarg(argt, e.Q0, e.Q1)

@@ -1,3 +1,4 @@
+//go:build unix
 // +build unix
 
 package main
@@ -22,7 +23,7 @@ func extstart() {
 	} else {
 		exname = fmt.Sprintf("/tmp/.sam.%s", user)
 	}
-	err := syscall.Mkfifo(exname, 0600)
+	err := syscall.Mkfifo(exname, 0o600)
 	if err != nil {
 		if !os.IsExist(err) {
 			return
@@ -33,7 +34,7 @@ func extstart() {
 		}
 		if st.Mode()&fs.ModeNamedPipe == 0 {
 			removeextern()
-			if err := syscall.Mkfifo(exname, 0600); err != nil {
+			if err := syscall.Mkfifo(exname, 0o600); err != nil {
 				return
 			}
 		}
@@ -59,7 +60,7 @@ func extstart() {
 	}
 
 	plumbc = make(chan string)
-	go extproc(plumbc, os.NewFile(uintptr(fd), exname))
+	go extproc(plumbc, int(os.NewFile(uintptr(fd), exname).Fd()))
 	// atexit(removeextern)
 	return
 
