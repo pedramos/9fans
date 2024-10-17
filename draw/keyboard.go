@@ -4,6 +4,7 @@ import "log"
 
 const (
 	KeyFn = '\uF000'
+	Spec = '\uF800'
 
 	KeyHome      = KeyFn | 0x0D
 	KeyUp        = KeyFn | 0x0E
@@ -11,8 +12,8 @@ const (
 	KeyPrint     = KeyFn | 0x10
 	KeyLeft      = KeyFn | 0x11
 	KeyRight     = KeyFn | 0x12
-	KeyDown      = 0x80
-	KeyView      = 0x80
+	KeyDown      = Spec | 0x00
+	KeyView      = Spec | 0x00
 	KeyPageDown  = KeyFn | 0x13
 	KeyInsert    = KeyFn | 0x14
 	KeyEnd       = KeyFn | 0x18
