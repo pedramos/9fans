@@ -30,6 +30,7 @@ const (
 	QWwrsel
 	QWtag
 	QWxdata
+	QWindent
 	QMAX
 )
 
@@ -70,13 +71,15 @@ type Xfid struct {
 	flushed bool
 }
 
-var screen *draw.Image
-var keyboardctl *draw.Keyboardctl
-var timerpid int
-var fsyspid int
-var cputype string
-var home string
-var dodollarsigns bool
+var (
+	screen        *draw.Image
+	keyboardctl   *draw.Keyboardctl
+	timerpid      int
+	fsyspid       int
+	cputype       string
+	home          string
+	dodollarsigns bool
+)
 
 type Waitmsg struct {
 	pid int

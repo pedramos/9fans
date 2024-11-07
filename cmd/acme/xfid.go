@@ -365,7 +365,14 @@ func xfidread(x *Xfid) {
 		fc.Data = b[:n]
 		respond(x, &fc, "")
 		// fbuffree(b)
-
+	case QWindent:
+		fc.Count = uint32(2)
+		if w.Autoindent {
+			buf = []byte("on")
+		} else {
+			buf = []byte("on")
+		}
+		goto Readbuf
 	default:
 		respond(x, &fc, fmt.Sprintf("unknown qid %d in read", q))
 	}
@@ -597,7 +604,13 @@ func xfidctlwrite(x *Xfid, w *wind.Window) {
 	p := string(x.fcall.Data)
 	var err string
 	for p != "" {
-		if strings.HasPrefix(p, "lock") { // make window exclusive use
+		if strings.HasPrefix(p, "indent") { // enable autoindent
+			w.Autoindent = true
+			p = p[6:]
+		} else if strings.HasPrefix(p, "noindent") { // disable autoindent
+			w.Autoindent = false
+			p = p[8:]
+		} else if strings.HasPrefix(p, "lock") { // make window exclusive use
 			w.Ctllock.Lock()
 			w.Ctlfid = x.f.fid
 			p = p[4:]

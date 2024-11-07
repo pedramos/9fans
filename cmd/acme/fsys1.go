@@ -61,36 +61,39 @@ func initfcall() {
 	fcall[plan9.Twstat] = fsyswstat
 }
 
-var Eperm string = "permission denied"
-var Eexist string = "file does not exist"
-var Enotdir string = "not a directory"
+var (
+	Eperm   string = "permission denied"
+	Eexist  string = "file does not exist"
+	Enotdir string = "not a directory"
+)
 
 var dirtab = [11]Dirtab{
-	Dirtab{".", plan9.QTDIR, Qdir, 0500 | plan9.DMDIR},
-	Dirtab{"acme", plan9.QTDIR, Qacme, 0500 | plan9.DMDIR},
-	Dirtab{"cons", plan9.QTFILE, Qcons, 0600},
-	Dirtab{"consctl", plan9.QTFILE, Qconsctl, 0000},
-	Dirtab{"draw", plan9.QTDIR, Qdraw, 0000 | plan9.DMDIR}, // to suppress graphics progs started in acme
-	Dirtab{"editout", plan9.QTFILE, Qeditout, 0200},
-	Dirtab{"index", plan9.QTFILE, Qindex, 0400},
-	Dirtab{"label", plan9.QTFILE, Qlabel, 0600},
-	Dirtab{"log", plan9.QTFILE, Qlog, 0400},
-	Dirtab{"new", plan9.QTDIR, Qnew, 0500 | plan9.DMDIR},
+	{".", plan9.QTDIR, Qdir, 0o500 | plan9.DMDIR},
+	{"acme", plan9.QTDIR, Qacme, 0o500 | plan9.DMDIR},
+	{"cons", plan9.QTFILE, Qcons, 0o600},
+	{"consctl", plan9.QTFILE, Qconsctl, 0o000},
+	{"draw", plan9.QTDIR, Qdraw, 0o000 | plan9.DMDIR}, // to suppress graphics progs started in acme
+	{"editout", plan9.QTFILE, Qeditout, 0o200},
+	{"index", plan9.QTFILE, Qindex, 0o400},
+	{"label", plan9.QTFILE, Qlabel, 0o600},
+	{"log", plan9.QTFILE, Qlog, 0o400},
+	{"new", plan9.QTDIR, Qnew, 0o500 | plan9.DMDIR},
 }
 
 var dirtabw = [13]Dirtab{
-	Dirtab{".", plan9.QTDIR, Qdir, 0500 | plan9.DMDIR},
-	Dirtab{"addr", plan9.QTFILE, QWaddr, 0600},
-	Dirtab{"body", plan9.QTAPPEND, QWbody, 0600 | plan9.DMAPPEND},
-	Dirtab{"ctl", plan9.QTFILE, QWctl, 0600},
-	Dirtab{"data", plan9.QTFILE, QWdata, 0600},
-	Dirtab{"editout", plan9.QTFILE, QWeditout, 0200},
-	Dirtab{"errors", plan9.QTFILE, QWerrors, 0200},
-	Dirtab{"event", plan9.QTFILE, QWevent, 0600},
-	Dirtab{"rdsel", plan9.QTFILE, QWrdsel, 0400},
-	Dirtab{"wrsel", plan9.QTFILE, QWwrsel, 0200},
-	Dirtab{"tag", plan9.QTAPPEND, QWtag, 0600 | plan9.DMAPPEND},
-	Dirtab{"xdata", plan9.QTFILE, QWxdata, 0600},
+	{".", plan9.QTDIR, Qdir, 0o500 | plan9.DMDIR},
+	{"addr", plan9.QTFILE, QWaddr, 0o600},
+	{"body", plan9.QTAPPEND, QWbody, 0o600 | plan9.DMAPPEND},
+	{"ctl", plan9.QTFILE, QWctl, 0o600},
+	{"data", plan9.QTFILE, QWdata, 0o600},
+	{"editout", plan9.QTFILE, QWeditout, 0o200},
+	{"errors", plan9.QTFILE, QWerrors, 0o200},
+	{"event", plan9.QTFILE, QWevent, 0o600},
+	{"rdsel", plan9.QTFILE, QWrdsel, 0o400},
+	{"wrsel", plan9.QTFILE, QWwrsel, 0o200},
+	{"tag", plan9.QTAPPEND, QWtag, 0o600 | plan9.DMAPPEND},
+	{"xdata", plan9.QTFILE, QWxdata, 0o600},
+	{"indent", plan9.QTFILE, QWindent, 0o600},
 }
 
 type Mnt struct {
@@ -101,9 +104,11 @@ type Mnt struct {
 
 var mnt Mnt
 
-var user string = "Wile E. Coyote"
-var closing bool
-var messagesize int = 8192 + plan9.IOHDRSZ // good start
+var (
+	user        string = "Wile E. Coyote"
+	closing     bool
+	messagesize int = 8192 + plan9.IOHDRSZ // good start
+)
 
 func fsysinit() {
 	initfcall()
@@ -478,11 +483,11 @@ func fsysopen(x *Xfid, f *Fid) *Xfid {
 		default:
 			goto Deny
 		case plan9.OREAD:
-			m = 0400
+			m = 0o400
 		case plan9.OWRITE:
-			m = 0200
+			m = 0o200
 		case plan9.ORDWR:
-			m = 0600
+			m = 0o600
 		}
 		if (f.dir[0].perm & ^(plan9.DMDIR|plan9.DMAPPEND))&m != m {
 			goto Deny
@@ -566,7 +571,7 @@ func fsysread(x *Xfid, f *Fid) *Xfid {
 				dt.name = fmt.Sprintf("%d", k)
 				dt.qid = int(QID(k, Qdir)) // TODO(rsc)
 				dt.typ = plan9.QTDIR
-				dt.perm = plan9.DMDIR | 0700
+				dt.perm = plan9.DMDIR | 0o700
 				buf, err := dostat(k, &dt, clock)
 				if err != nil || len(b) > int(x.fcall.Count)-n {
 					break
