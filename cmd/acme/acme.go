@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	_ "runtime"
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 	"unicode/utf8"
 
@@ -39,6 +41,7 @@ var mainthread sync.Mutex
 var command *exec.Command
 
 func derror(d *draw.Display, errorstr string) {
+	fmt.Println("derror")
 	util.Fatal(errorstr)
 }
 
@@ -220,7 +223,14 @@ func main() {
 	go waitthread()
 	go xfidallocthread()
 	go newwindowthread()
-	// threadnotify(shutdown, 1)
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
+	go func() {
+		sig := <-sigs
+		shutdown(sig)
+		os.Exit(1)
+	}()
 	bigUnlock()
 	<-exec.Cexit
 	bigLock()
@@ -248,41 +258,16 @@ func readfile(c *wind.Column, s string) {
 	xfidlog(w, "new")
 }
 
-var ignotes = []string{
-	"sys: write on closed pipe",
-	"sys: ttin",
-	"sys: ttou",
-	"sys: tstp",
-}
-
-var oknotes = []string{
-	"delete",
-	"hangup",
-	"kill",
-	"exit",
-}
-
 var dumping bool
 
-func shutdown(v *[0]byte, msg string) bool {
-	for _, ig := range ignotes {
-		if strings.HasPrefix(msg, ig) {
-			return true
-		}
-	}
-
+func shutdown(sig os.Signal) {
+	msg := sig.String()
 	killprocs()
 	if !dumping && msg != "kill" && msg != "exit" {
 		dumping = true
 		dumppkg.Dump(&wind.TheRow, nil)
 	}
-	for _, ok := range oknotes {
-		if strings.HasPrefix(msg, ok) {
-			os.Exit(0)
-		}
-	}
-	print("acme: %s\n", msg)
-	return false
+	os.Exit(0)
 }
 
 /*
