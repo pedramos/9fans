@@ -661,9 +661,9 @@ func printposn(t *wind.Text, mode int) {
 		if l2 == l1 {
 			r2 += r1
 		}
-		alog.Printf("%d+#%d", l1, r1)
+		alog.Printf("%d:%d", l1, r1+1)
 		if l2 != l1 {
-			alog.Printf(",%d+#%d", l2, r2)
+			alog.Printf(",%d:%d", l2, r2+1)
 		}
 		alog.Printf("\n")
 		return

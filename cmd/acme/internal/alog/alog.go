@@ -15,8 +15,5 @@ func Init(w func(string)) {
 
 func Printf(format string, args ...interface{}) {
 	s := fmt.Sprintf(format, args...)
-	if s != "" && s[len(s)-1] != '\n' {
-		s += "\n"
-	}
 	warn(s)
 }
