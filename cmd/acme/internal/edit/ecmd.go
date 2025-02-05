@@ -377,6 +377,14 @@ func p_cmd(t *wind.Text, cp *Cmd) bool {
 	return pdisplay(t.File)
 }
 
+func P_cmd(t *wind.Text, cp *Cmd) bool {
+	ok := pdisplay(t.File)
+	if ok {
+		alog.Printf("\n")
+	}
+	return ok
+}
+
 func s_cmd(t *wind.Text, cp *Cmd) bool {
 	n := cp.num
 	op := -1

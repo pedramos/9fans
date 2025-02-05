@@ -56,6 +56,7 @@ var cmdtab1 = []Cmdtab{
 	Cmdtab{'i', true, false, false, 0, aDot, 0, "", i_cmd},
 	Cmdtab{'m', false, false, true, 0, aDot, 0, "", m_cmd},
 	Cmdtab{'p', false, false, false, 0, aDot, 0, "", p_cmd},
+	Cmdtab{'P', false, false, false, 0, aDot, 0, "", P_cmd},
 	Cmdtab{'r', false, false, false, 0, aDot, 0, wordx, e_cmd},
 	Cmdtab{'s', false, true, false, 0, aDot, 1, "", s_cmd},
 	Cmdtab{'t', false, false, true, 0, aDot, 0, "", m_cmd},
