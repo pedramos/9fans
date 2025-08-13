@@ -151,7 +151,7 @@ func scroll(l *Flayer, but int) {
 				scrmark(l, r)
 			}
 		}
-		if button(but) == 0 {
+		if !(but <= 3 && button(but) !=0 ) {
 			break
 		}
 	}
