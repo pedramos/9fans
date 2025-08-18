@@ -17,6 +17,7 @@ package edit
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 
@@ -31,15 +32,21 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/wind"
 )
 
-var BigLock = func() {}
-var BigUnlock = func() {}
+var (
+	BigLock   = func() {}
+	BigUnlock = func() {}
+)
 
-var Glooping int
-var nest int
-var Enoname = "no file name given"
+var (
+	Glooping int
+	nest     int
+	Enoname  = "no file name given"
+)
 
-var TheAddr Address
-var menu *wind.File
+var (
+	TheAddr Address
+	menu    *wind.File
+)
 
 // extern var curtext *Text
 var collection []rune
@@ -316,7 +323,8 @@ func g_cmd(t *wind.Text, cp *Cmd) bool {
 	if !regx.Compile(cp.re.r) {
 		editerror("bad regexp in g command")
 	}
-	if regx.Match(t, nil, TheAddr.r.Pos, TheAddr.r.End, &regx.Sel) != (cp.cmdc == 'v') {
+	_, match := regx.Match(t, TheAddr.r.Pos, TheAddr.r.End)
+	if match != (cp.cmdc == 'v') {
 		t.Q0 = TheAddr.r.Pos
 		t.Q1 = TheAddr.r.End
 		return cmdexec(t, cp.u.cmd)
@@ -386,37 +394,22 @@ func P_cmd(t *wind.Text, cp *Cmd) bool {
 }
 
 func s_cmd(t *wind.Text, cp *Cmd) bool {
-	n := cp.num
-	op := -1
 	if !regx.Compile(cp.re.r) {
 		editerror("bad regexp in s command")
 	}
-	var rp []regx.Ranges
 	delta := 0
 	didsub := false
-	for p1 := TheAddr.r.Pos; p1 <= TheAddr.r.End && regx.Match(t, nil, p1, TheAddr.r.End, &regx.Sel); {
-		if regx.Sel.R[0].Pos == regx.Sel.R[0].End { // empty match?
-			if regx.Sel.R[0].Pos == op {
-				p1++
-				continue
-			}
-			p1 = regx.Sel.R[0].End + 1
-		} else {
-			p1 = regx.Sel.R[0].End
-		}
-		op = regx.Sel.R[0].End
-		n--
-		if n > 0 {
-			continue
-		}
-		rp = append(rp, regx.Sel)
+	p1 := TheAddr.r.Pos
+	rp, matched := regx.MatchLines(t, p1, TheAddr.r.End)
+	if !matched {
+		return false
 	}
 	rbuf := bufs.AllocRunes()
 	buf := allocstring(0)
 	var err string
 	for m := 0; m < len(rp); m++ {
 		buf.r = buf.r[:0]
-		regx.Sel = rp[m]
+		sel := rp[m]
 		for i := 0; i < len(cp.u.text.r); i++ {
 			c := cp.u.text.r[i]
 			if c == '\\' && i < len(cp.u.text.r)-1 {
@@ -424,12 +417,12 @@ func s_cmd(t *wind.Text, cp *Cmd) bool {
 				c = cp.u.text.r[i]
 				if '1' <= c && c <= '9' {
 					j := c - '0'
-					if regx.Sel.R[j].End-regx.Sel.R[j].Pos > bufs.RuneLen {
+					if sel.R[j].End-sel.R[j].Pos > bufs.RuneLen {
 						err = "replacement string too long"
 						goto Err
 					}
-					t.File.Read(regx.Sel.R[j].Pos, rbuf[:regx.Sel.R[j].End-regx.Sel.R[j].Pos])
-					for k := 0; k < regx.Sel.R[j].End-regx.Sel.R[j].Pos; k++ {
+					t.File.Read(sel.R[j].Pos, rbuf[:sel.R[j].End-sel.R[j].Pos])
+					for k := 0; k < sel.R[j].End-sel.R[j].Pos; k++ {
 						Straddc(buf, rbuf[k])
 					}
 				} else {
@@ -438,18 +431,18 @@ func s_cmd(t *wind.Text, cp *Cmd) bool {
 			} else if c != '&' {
 				Straddc(buf, c)
 			} else {
-				if regx.Sel.R[0].End-regx.Sel.R[0].Pos > bufs.RuneLen {
+				if sel.R[0].End-sel.R[0].Pos > bufs.RuneLen {
 					err = "right hand side too long in substitution"
 					goto Err
 				}
-				t.File.Read(regx.Sel.R[0].Pos, rbuf[:regx.Sel.R[0].End-regx.Sel.R[0].Pos])
-				for k := 0; k < regx.Sel.R[0].End-regx.Sel.R[0].Pos; k++ {
+				t.File.Read(sel.R[0].Pos, rbuf[:sel.R[0].End-sel.R[0].Pos])
+				for k := 0; k < sel.R[0].End-sel.R[0].Pos; k++ {
 					Straddc(buf, rbuf[k])
 				}
 			}
 		}
-		elogreplace(t.File, regx.Sel.R[0].Pos, regx.Sel.R[0].End, buf.r)
-		delta -= regx.Sel.R[0].End - regx.Sel.R[0].Pos
+		elogreplace(t.File, sel.R[0].Pos, sel.R[0].End, buf.r)
+		delta -= sel.R[0].End - sel.R[0].Pos
 		delta += len(buf.r)
 		didsub = true
 		if !cp.flag {
@@ -519,7 +512,6 @@ func x_cmd(t *wind.Text, cp *Cmd) bool {
 }
 
 func X_cmd(t *wind.Text, cp *Cmd) bool {
-
 	filelooper(t, cp, cp.cmdc == 'X')
 	return true
 }
@@ -772,45 +764,53 @@ func loopcmd(f *wind.File, cp *Cmd, rp []runes.Range) {
 
 func looper(f *wind.File, cp *Cmd, xy bool) {
 	r := TheAddr.r
-	op := r.Pos
-	if xy {
-		op = -1
-	}
 	nest++
 	if !regx.Compile(cp.re.r) {
 		editerror("bad regexp in %c command", cp.cmdc)
 	}
-	var rp []runes.Range
-	for p := r.Pos; p <= r.End; {
-		var tr runes.Range
-		if !regx.Match(f.Curtext, nil, p, r.End, &regx.Sel) { // no match, but y should still run
-			if xy || op > r.End {
-				break
-			}
-			tr.Pos = op
-			tr.End = r.End
-			p = r.End + 1 // exit next loop
-		} else {
-			if regx.Sel.R[0].Pos == regx.Sel.R[0].End { // empty match?
-				if regx.Sel.R[0].Pos == op {
-					p++
+	rp, _ := regx.MatchAll(f.Curtext, r.Pos, r.End)
+	rs := []runes.Range{}
+	if len(rp) == 0 {
+		return
+	}
+
+	if !xy {
+		slog.Info("selected range", "start", r.Pos, "end", r.End, "startChar", string(f.Curtext.RuneAt(r.Pos)), "endChar", string(f.Curtext.RuneAt(r.End-1)))
+		// y_cmd, revert match
+		rs = make([]runes.Range, 0, len(rp)+1)
+
+		// add chunk until first regex match
+		if rp[0].R[0].Pos != 0 {
+			rs = append(rs, runes.Range{Pos: r.Pos, End: rp[0].R[0].Pos})
+		}
+		slog.Info("pre-match chunk", "matched", rp[0].R[0])
+
+		// add chunk after each regex match
+		for i := range rp {
+			slog.Info("matched block", "i", i, "start", rp[i].R[0].Pos, "end", rp[i].R[0].End)
+			end := rp[i].R[0].End
+			if i == len(rp)-1 {
+				if end == r.End {
 					continue
 				}
-				p = regx.Sel.R[0].End + 1
+				if end > r.End {
+					rs[len(rs)-1].End--
+					continue
+				}
+				rs = append(rs, runes.Range{Pos: end, End: r.End})
 			} else {
-				p = regx.Sel.R[0].End
+				pos1 := rp[i+1].R[0].Pos
+				rs = append(rs, runes.Range{Pos: end, End: pos1})
 			}
-			if xy {
-				tr = regx.Sel.R[0]
-			} else {
-				tr.Pos = op
-				tr.End = regx.Sel.R[0].Pos
-			}
+			slog.Info("inverted match", "i", i, "start", rs[len(rs)-1].Pos, "end", rs[len(rs)-1].End)
 		}
-		op = regx.Sel.R[0].End
-		rp = append(rp, tr)
+	} else {
+		rs = make([]runes.Range, len(rp))
+		for i := range rp {
+			rs[i] = rp[i].R[0]
+		}
 	}
-	loopcmd(f, cp.u.cmd, rp)
+	loopcmd(f, cp.u.cmd, rs)
 	nest--
 }
 
@@ -947,7 +947,7 @@ func nextmatch(f *wind.File, r *String, p int, sign int) {
 		editerror("bad regexp in command address")
 	}
 	if sign >= 0 {
-		if !regx.Match(f.Curtext, nil, p, 0x7FFFFFFF, &regx.Sel) {
+		if _, match := regx.Match(f.Curtext, p, 0x7FFFFFFF); !match {
 			editerror("no match for regexp")
 		}
 		if regx.Sel.R[0].Pos == regx.Sel.R[0].End && regx.Sel.R[0].Pos == p {
@@ -955,12 +955,12 @@ func nextmatch(f *wind.File, r *String, p int, sign int) {
 			if p > f.Len() {
 				p = 0
 			}
-			if !regx.Match(f.Curtext, nil, p, 0x7FFFFFFF, &regx.Sel) {
+			if _, match := regx.Match(f.Curtext, p, 0x7FFFFFFF); !match {
 				editerror("address")
 			}
 		}
 	} else {
-		if !regx.MatchBackward(f.Curtext, p, &regx.Sel) {
+		if _, match := regx.MatchBackward(f.Curtext, p); !match {
 			editerror("no match for regexp")
 		}
 		if regx.Sel.R[0].Pos == regx.Sel.R[0].End && regx.Sel.R[0].End == p {
@@ -968,7 +968,7 @@ func nextmatch(f *wind.File, r *String, p int, sign int) {
 			if p < 0 {
 				p = f.Len()
 			}
-			if !regx.MatchBackward(f.Curtext, p, &regx.Sel) {
+			if _, match := regx.MatchBackward(f.Curtext, p); !match {
 				editerror("address")
 			}
 		}
@@ -1022,8 +1022,7 @@ func cmdaddress(ap *Addr, a Address, sign int) Address {
 			a.r.End = f.Len()
 			return a
 
-		case ',',
-			';':
+		case ',', ';':
 			if ap.u.left != nil {
 				a1 = cmdaddress(ap.u.left, a, 0)
 			} else {
@@ -1055,8 +1054,7 @@ func cmdaddress(ap *Addr, a Address, sign int) Address {
 			}
 			return a
 
-		case '+',
-			'-':
+		case '+', '-':
 			sign = 1
 			if ap.typ == '-' {
 				sign = -1
@@ -1161,8 +1159,9 @@ func filematch(f *wind.File, r *String) bool {
 		return s[0]
 	}
 	rbuf := []rune(fmt.Sprintf("%c%c%c %s\n", ch(" '", dirty), '+', ch(" .", curtext != nil && curtext.File == f), string(f.Name())))
-	var s regx.Ranges
-	return regx.Match(nil, rbuf, 0, len(rbuf), &s)
+
+	_, match := regx.Match(runes.Runes(rbuf), 0, len(rbuf))
+	return match
 }
 
 func charaddr(l int, addr Address, sign int) Address {
@@ -1226,6 +1225,7 @@ func lineaddr(l int, addr Address, sign int) Address {
 			if c == '\n' {
 				break
 			}
+
 		}
 		a.r.End = p
 	} else {

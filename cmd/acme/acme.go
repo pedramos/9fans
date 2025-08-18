@@ -21,7 +21,6 @@ import (
 	editpkg "plramos.win/9fans/cmd/acme/internal/edit"
 	"plramos.win/9fans/cmd/acme/internal/exec"
 	fileloadpkg "plramos.win/9fans/cmd/acme/internal/fileload"
-	"plramos.win/9fans/cmd/acme/internal/regx"
 	"plramos.win/9fans/cmd/acme/internal/runes"
 	"plramos.win/9fans/cmd/acme/internal/ui"
 	"plramos.win/9fans/cmd/acme/internal/util"
@@ -139,7 +138,7 @@ func main() {
 
 	adraw.Init()
 	// TODO timerinit()
-	regx.Init()
+	// regx.Init()
 
 	wind.OnWinclose = func(w *wind.Window) {
 		xfidlog(w, "del")

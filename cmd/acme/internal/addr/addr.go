@@ -141,7 +141,7 @@ func regexp(showerr bool, t runes.Text, lim runes.Range, r runes.Range, pat []ru
 	var found bool
 	var sel regx.Ranges
 	if dir == Back {
-		found = regx.MatchBackward(t, r.Pos, &sel)
+		sel, found = regx.MatchBackward(t, r.Pos)
 	} else {
 		var q int
 		if lim.Pos < 0 {
@@ -149,7 +149,7 @@ func regexp(showerr bool, t runes.Text, lim runes.Range, r runes.Range, pat []ru
 		} else {
 			q = lim.End
 		}
-		found = regx.Match(t, nil, r.End, q, &sel)
+		sel, found = regx.Match(t, r.End, q)
 	}
 	if !found && showerr {
 		alog.Printf("no match for regexp\n")
