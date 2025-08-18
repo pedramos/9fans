@@ -40,6 +40,14 @@ func (t *Text) RuneAt(pos int) rune { return Textreadc(t, pos) }
 
 func (t *Text) Len() int { return t.File.Len() }
 
+func (t *Text) Slice(q0, q1 int) []rune {
+	r := make([]rune, q1-q0+1)
+	for i := range q1 - q0 {
+		r[i] = t.RuneAt(q0 + i)
+	}
+	return r
+}
+
 type File struct {
 	*file.File
 	Curtext *Text
