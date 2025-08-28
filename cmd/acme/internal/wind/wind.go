@@ -234,12 +234,12 @@ func Winresize(w *Window, r draw.Rectangle, safe, keepextra bool) int {
 	w.tagtop.Max.Y = r.Min.Y + adraw.Font.Height
 
 	r1 := r
-	r1.Max.Y = util.Min(r.Max.Y, r1.Min.Y+w.Taglines*adraw.Font.Height)
+	r1.Max.Y = min(r.Max.Y, r1.Min.Y+w.Taglines*adraw.Font.Height)
 
 	// If needed, recompute number of lines in tag.
 	if !safe || !w.Tagsafe || !(w.Tag.All == r1) {
 		w.Taglines = wintaglines(w, r)
-		r1.Max.Y = util.Min(r.Max.Y, r1.Min.Y+w.Taglines*adraw.Font.Height)
+		r1.Max.Y = min(r.Max.Y, r1.Min.Y+w.Taglines*adraw.Font.Height)
 	}
 
 	// If needed, resize & redraw tag.
@@ -261,7 +261,7 @@ func Winresize(w *Window, r draw.Rectangle, safe, keepextra bool) int {
 			r1.Max.Y = y + 1
 			adraw.Display.ScreenImage.Draw(r1, adraw.TagCols[frame.BORD], nil, draw.ZP)
 			y++
-			r1.Min.Y = util.Min(y, r.Max.Y)
+			r1.Min.Y = min(y, r.Max.Y)
 			r1.Max.Y = r.Max.Y
 		} else {
 			adraw.Display.ScreenImage.Draw(r1, adraw.TagCols[frame.BACK], nil, draw.ZP)
@@ -274,7 +274,7 @@ func Winresize(w *Window, r draw.Rectangle, safe, keepextra bool) int {
 		Textscrdraw(&w.Body)
 		w.Body.All.Min.Y = oy
 	}
-	w.Maxlines = util.Min(w.Body.Fr.NumLines, util.Max(w.Maxlines, w.Body.Fr.MaxLines))
+	w.Maxlines = min(w.Body.Fr.NumLines, max(w.Maxlines, w.Body.Fr.MaxLines))
 	return w.R.Max.Y
 }
 
@@ -514,10 +514,7 @@ func winsettag1(w *Window) {
 	var n int
 	if !runes.Equal(new_, old[:k]) {
 		resize = 1
-		n = k
-		if n > len(new_) {
-			n = len(new_)
-		}
+		n = min(k, len(new_))
 		var j int
 		for j = 0; j < n; j++ {
 			if old[j] != new_[j] {
@@ -637,7 +634,7 @@ const (
 	EVENTSIZE = 256
 )
 
-func Winevent(w *Window, format string, args ...interface{}) {
+func Winevent(w *Window, format string, args ...any) {
 	if !w.External {
 		return
 	}

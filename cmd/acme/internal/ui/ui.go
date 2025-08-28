@@ -66,7 +66,6 @@ var mousew *wind.Window
 var prevmouse draw.Point
 
 func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
-
 	/*
 	 * if not executing a mouse chord (et != t) and snarfing (dosnarf)
 	 * and executed Cut or Snarf in window tag (et->w != nil),
@@ -110,10 +109,7 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 		snarfbuf.Delete(0, snarfbuf.Len())
 		r := bufs.AllocRunes()
 		for q0 < q1 {
-			n := q1 - q0
-			if n > bufs.RuneLen {
-				n = bufs.RuneLen
-			}
+			n := min(q1-q0, bufs.RuneLen)
 			t.File.Read(q0, r[:n])
 			snarfbuf.Insert(snarfbuf.Len(), r[:n])
 			q0 += n
@@ -137,7 +133,6 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 }
 
 func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
-
 	// if(tobody), use body of executing window  (Paste or Send command)
 	if tobody && et != nil && et.W != nil {
 		t = &et.W.Body
@@ -148,7 +143,7 @@ func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
 	}
 
 	acmegetsnarf()
-	if t == nil || snarfbuf.Len() == 0 {
+	if snarfbuf.Len() == 0 {
 		return
 	}
 	if t.W != nil && et.W != t.W {
@@ -164,10 +159,7 @@ func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
 	q1 := t.Q0 + snarfbuf.Len()
 	r := bufs.AllocRunes()
 	for q0 < q1 {
-		n := q1 - q0
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n := min(q1-q0, bufs.RuneLen)
 		snarfbuf.Read(q, r[:n])
 		wind.Textinsert(t, q0, r[:n], true)
 		q += n
@@ -203,9 +195,9 @@ func XUndo(et, _, _ *wind.Text, isundo, _ bool, _ []rune) {
 	 * Simultaneous changes to other files will be chaotic, however.
 	 */
 	wind.Winundo(et.W, isundo)
-	for i := 0; i < len(wind.TheRow.Col); i++ {
+	for i := range len(wind.TheRow.Col) {
 		c := wind.TheRow.Col[i]
-		for j := 0; j < len(c.W); j++ {
+		for j := range len(c.W) {
 			w := c.W[j]
 			if w == et.W {
 				continue
@@ -251,10 +243,7 @@ func acmeputsnarf() {
 	var buf []byte
 	var n int
 	for i := 0; i < snarfbuf.Len(); i += n {
-		n = snarfbuf.Len() - i
-		if n >= NSnarf {
-			n = NSnarf
-		}
+		n = min(snarfbuf.Len()-i, NSnarf)
 		snarfbuf.Read(i, snarfrune[:n])
 		var rbuf [utf8.UTFMax]byte
 		for _, r := range snarfrune[:n] {

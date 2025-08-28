@@ -120,10 +120,7 @@ func Textload(t *wind.Text, q0 int, file string, setqid bool) int {
 	f.Close()
 	rp = bufs.AllocRunes()
 	for q := q0; q < q1; q += n {
-		n = q1 - q
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n = min(q1-q, bufs.RuneLen)
 		t.File.Read(q, rp[:n])
 		if q < t.Org {
 			t.Org += n
@@ -135,7 +132,7 @@ func Textload(t *wind.Text, q0 int, file string, setqid bool) int {
 		}
 	}
 	bufs.FreeRunes(rp)
-	for i = 0; i < len(t.File.Text); i++ {
+	for i = range len(t.File.Text) {
 		u := t.File.Text[i]
 		if u != t {
 			if u.Org > u.Len() { // will be 0 because of reset(), but safety first
@@ -199,7 +196,7 @@ func Textcomplete(t *wind.Text) []rune {
 			more = ": no matches in:"
 		}
 		alog.Printf("%s%s%s*%s\n", d, sep, string(str), more)
-		for i := 0; i < len(c.Files); i++ {
+		for i := range len(c.Files) {
 			alog.Printf(" %s\n", c.Files[i])
 		}
 	}

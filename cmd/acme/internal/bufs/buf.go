@@ -6,11 +6,13 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/runes"
 )
 
-const Len = 32 * 1024
-const RuneLen = Len / runes.RuneSize
+const (
+	Len     = 32 * 1024
+	RuneLen = Len / runes.RuneSize
+)
 
 var runesPool = sync.Pool{
-	New: func() interface{} { return make([]rune, RuneLen) },
+	New: func() any { return make([]rune, RuneLen) },
 }
 
 func AllocRunes() []rune {
@@ -25,7 +27,7 @@ func FreeRunes(buf []rune) {
 }
 
 var bytesPool = sync.Pool{
-	New: func() interface{} { return make([]byte, Len) },
+	New: func() any { return make([]byte, Len) },
 }
 
 func AllocBytes() []byte {

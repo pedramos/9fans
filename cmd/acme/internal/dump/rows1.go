@@ -18,8 +18,8 @@ package dump
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"slices"
 	"strconv"
 	"unicode/utf8"
 
@@ -28,15 +28,16 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/bufs"
 	"plramos.win/9fans/cmd/acme/internal/fileload"
 	"plramos.win/9fans/cmd/acme/internal/ui"
-	"plramos.win/9fans/cmd/acme/internal/util"
 	"plramos.win/9fans/cmd/acme/internal/wind"
 	"plramos.win/9fans/draw"
 )
 
-var Get = func(*wind.Text) {}
-var Run = func(string, []rune) {}
-var Home = ""
-var OnNewWindow = func(*wind.Window) {}
+var (
+	Get         = func(*wind.Text) {}
+	Run         = func(string, []rune) {}
+	Home        = ""
+	OnNewWindow = func(*wind.Window) {}
+)
 
 func Dump(row *wind.Row, file *string) {
 	if len(row.Col) == 0 {
@@ -61,9 +62,8 @@ func Dump(row *wind.Row, file *string) {
 	fmt.Fprintf(b, "%s\n", ui.Wdir)
 	fmt.Fprintf(b, "%s\n", adraw.FontNames[0])
 	fmt.Fprintf(b, "%s\n", adraw.FontNames[1])
-	var i int
 	var c *wind.Column
-	for i = 0; i < len(row.Col); i++ {
+	for i := range len(row.Col) {
 		c = row.Col[i]
 		fmt.Fprintf(b, "%11.7f", 100.0*float64(c.R.Min.X-row.R.Min.X)/float64(row.R.Dx()))
 		if i == len(row.Col)-1 {
@@ -73,16 +73,16 @@ func Dump(row *wind.Row, file *string) {
 		}
 	}
 	dumpid := make(map[*wind.File]int)
-	m := util.Min(bufs.RuneLen, row.Tag.Len())
+	m := min(bufs.RuneLen, row.Tag.Len())
 	row.Tag.File.Read(0, r[:m])
 	n := 0
 	for n < m && r[n] != '\n' {
 		n++
 	}
 	fmt.Fprintf(b, "w %s\n", string(r[:n]))
-	for i = 0; i < len(row.Col); i++ {
+	for i := range len(row.Col) {
 		c = row.Col[i]
-		m = util.Min(bufs.RuneLen, c.Tag.Len())
+		m = min(bufs.RuneLen, c.Tag.Len())
 		c.Tag.File.Read(0, r[:m])
 		n = 0
 		for n < m && r[n] != '\n' {
@@ -103,7 +103,7 @@ func Dump(row *wind.Row, file *string) {
 			}
 			// zeroxes of external windows are tossed
 			if len(t.File.Text) > 1 {
-				for n = 0; n < len(t.File.Text); n++ {
+				for n = range len(t.File.Text) {
 					w1 := t.File.Text[n].W
 					if w == w1 {
 						continue
@@ -138,9 +138,9 @@ func Dump(row *wind.Row, file *string) {
 				fmt.Fprintf(b, "F%11d %11d %11d %11d %11.7f %11d %s\n", i, j, w.Body.Q0, w.Body.Q1, 100.0*float64(w.R.Min.Y-c.R.Min.Y)/float64(c.R.Dy()), w.Body.Len(), fontname)
 			}
 			b.WriteString(wind.Winctlprint(w, false))
-			m = util.Min(bufs.RuneLen, w.Tag.Len())
+			m = min(bufs.RuneLen, w.Tag.Len())
 			w.Tag.File.Read(0, r[:m])
-			if !containsRune(r[:m], '|') {
+			if !slices.Contains(r[:m], '|') {
 				alog.Printf("dump: window %d has no | in tag %q!", w.ID, string(r[:m]))
 			}
 			n = 0
@@ -160,10 +160,7 @@ func Dump(row *wind.Row, file *string) {
 				q0 := 0
 				q1 := t.Len()
 				for q0 < q1 {
-					n = q1 - q0
-					if n > bufs.Len/utf8.UTFMax {
-						n = bufs.Len / utf8.UTFMax
-					}
+					n := min(q1-q0, bufs.Len/utf8.UTFMax)
 					t.File.Read(q0, r[:n])
 					fmt.Fprintf(b, "%s", string(r[:n]))
 					q0 += n
@@ -181,15 +178,6 @@ func Dump(row *wind.Row, file *string) {
 	b.Flush() // TODO(rsc): err check
 	f.Close() // TODO(rsc): err check
 	bufs.FreeRunes(r)
-}
-
-func containsRune(r []rune, c rune) bool {
-	for _, rc := range r {
-		if rc == c {
-			return true
-		}
-	}
-	return false
 }
 
 func exists(file string) bool {
@@ -221,7 +209,7 @@ func LoadFonts(file string) {
 		return
 	}
 	// global fonts
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		l, err := b.ReadString('\n')
 		if err != nil {
 			return
@@ -463,7 +451,7 @@ func Load(row *wind.Row, file *string, initing bool) bool {
 		l = l[:len(l)-1]
 		// convert 0xff in multiline tag back to \n
 		lb := []byte(l)
-		for i = 0; i < len(lb); i++ {
+		for i = range lb {
 			if lb[i] == 0xff {
 				lb[i] = '\n'
 			}
@@ -495,7 +483,7 @@ func Load(row *wind.Row, file *string, initing bool) bool {
 		}
 		if ndumped >= 0 {
 			// simplest thing is to put it in a file and load that
-			f, err := ioutil.TempFile("", fmt.Sprintf("acme.%d.*", os.Getpid()))
+			f, err := os.CreateTemp("", fmt.Sprintf("acme.%d.*", os.Getpid()))
 			if err != nil {
 				alog.Printf("can't create temp file: %v\n", err)
 				return bad()
@@ -535,7 +523,7 @@ func Load(row *wind.Row, file *string, initing bool) bool {
 			q0 = q1
 		}
 		wind.Textshow(&w.Body, q0, q1, true)
-		w.Maxlines = util.Min(w.Body.Fr.NumLines, util.Max(w.Maxlines, w.Body.Fr.MaxLines))
+		w.Maxlines = min(w.Body.Fr.NumLines, max(w.Maxlines, w.Body.Fr.MaxLines))
 		OnNewWindow(w)
 	}
 	return true

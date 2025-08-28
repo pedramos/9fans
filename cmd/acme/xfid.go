@@ -159,10 +159,7 @@ func xfidopen(x *Xfid) {
 			r := bufs.AllocRunes()
 			s := bufs.AllocRunes()
 			for q0 < q1 {
-				n := q1 - q0
-				if n > bufs.Len/utf8.UTFMax {
-					n = bufs.Len / utf8.UTFMax
-				}
+				n := min(q1-q0, bufs.Len/utf8.UTFMax)
 				t.File.Read(q0, r[:n])
 				s := []byte(string(r[:n])) // TODO(rsc)
 				if _, err := w.Rdselfd.Write(s); err != nil {
@@ -264,7 +261,7 @@ func xfidclose(x *Xfid) {
 			w.Nomark = false
 			t = &w.Body
 			// before: only did this if !w->noscroll, but that didn't seem right in practice
-			wind.Textshow(t, util.Min(w.Wrselrange.Pos, t.Len()), util.Min(w.Wrselrange.End, t.Len()), true)
+			wind.Textshow(t, min(w.Wrselrange.Pos, t.Len()), min(w.Wrselrange.End, t.Len()), true)
 			wind.Textscrdraw(t)
 		case QWeditout:
 			w.Editoutlk.Unlock()
@@ -316,7 +313,7 @@ func xfidread(x *Xfid) {
 	case QWaddr:
 		wind.Textcommit(&w.Body, true)
 		clampaddr(w)
-		buf = []byte(fmt.Sprintf("%11d %11d ", w.Addr.Pos, w.Addr.End))
+		buf = fmt.Appendf(buf, "%11d %11d ", w.Addr.Pos, w.Addr.End)
 		goto Readbuf
 
 	case QWbody:
@@ -550,10 +547,7 @@ func xfidwrite(x *Xfid) {
 			wind.Wincommit(w, t)
 			var q0 int
 			if qid == QWwrsel {
-				q0 = w.Wrselrange.End
-				if q0 > t.Len() {
-					q0 = t.Len()
-				}
+				q0 = min(w.Wrselrange.End, t.Len())
 			} else {
 				q0 = t.Len()
 			}
@@ -654,7 +648,7 @@ func xfidctlwrite(x *Xfid, w *wind.Window) {
 				break
 			}
 			r = r[:nr]
-			for i := 0; i < nr; i++ {
+			for i := range nr {
 				if r[i] <= ' ' {
 					err = "bad character in file name"
 					goto out // TODO(rsc): still set name?
@@ -931,10 +925,7 @@ func xfidutfread(x *Xfid, t *wind.Text, q1 int, qid int) {
 		 */
 		w.Utflastboff = boff
 		w.Utflastq = q
-		nr := q1 - q
-		if nr > bufs.Len/utf8.UTFMax {
-			nr = bufs.Len / utf8.UTFMax
-		}
+		nr := min(q1-q, bufs.Len/utf8.UTFMax)
 		t.File.Read(q, r[:nr])
 		b := []byte(string(r[:nr]))
 		if boff >= off {
@@ -948,10 +939,7 @@ func xfidutfread(x *Xfid, t *wind.Text, q1 int, qid int) {
 			if n != 0 {
 				util.Fatal("bad count in utfrune")
 			}
-			m := int(int64(len(b)) - (off - boff))
-			if m > int(x.fcall.Count) {
-				m = int(x.fcall.Count)
-			}
+			m := min(int(int64(len(b))-(off-boff)), int(x.fcall.Count))
 			copy(b1[:m], b[off-boff:])
 			n += m
 		}
@@ -976,10 +964,7 @@ func xfidruneread(x *Xfid, t *wind.Text, q0 int, q1 int) int {
 	q := q0
 	boff := 0
 	for q < q1 && n < int(x.fcall.Count) {
-		nr := q1 - q
-		if nr > bufs.Len/utf8.UTFMax {
-			nr = bufs.Len / utf8.UTFMax
-		}
+		nr := min(q1-q, bufs.Len/utf8.UTFMax)
 		t.File.Read(q, r[:nr])
 		b := []byte(string(r[:nr]))
 		nb := len(b)
@@ -1035,10 +1020,7 @@ func xfideventread(x *Xfid, w *wind.Window) {
 		}
 	}
 
-	n := len(w.Events)
-	if n > int(x.fcall.Count) {
-		n = int(x.fcall.Count)
-	}
+	n := min(len(w.Events), int(x.fcall.Count))
 	fc.Count = uint32(n)
 	fc.Data = w.Events[:n]
 	respond(x, &fc, "")
@@ -1072,7 +1054,7 @@ func xfidindexread(x *Xfid) {
 				continue
 			}
 			buf.WriteString(wind.Winctlprint(w, false))
-			m := util.Min(bufs.RuneLen, w.Tag.Len())
+			m := min(bufs.RuneLen, w.Tag.Len())
 			w.Tag.File.Read(0, r[:m])
 			for i := 0; i < m && r[i] != '\n'; i++ {
 				buf.WriteRune(r[i])

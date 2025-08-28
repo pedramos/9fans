@@ -80,7 +80,7 @@ func Fontx(et, t, argt *wind.Text, _, _ bool, arg []rune) {
 		t.Fr.InitTick()
 		if t.W.IsDir {
 			t.All.Min.X++ // force recolumnation; disgusting!
-			for i := 0; i < len(t.W.Dlp); i++ {
+			for i := range len(t.W.Dlp) {
 				dp := t.W.Dlp[i]
 				aa = string(dp.R)
 				dp.Wid = newfont.F.StringWidth(aa)

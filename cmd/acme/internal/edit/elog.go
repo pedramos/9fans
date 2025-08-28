@@ -26,12 +26,13 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/disk"
 	"plramos.win/9fans/cmd/acme/internal/runes"
 	"plramos.win/9fans/cmd/acme/internal/ui"
-	"plramos.win/9fans/cmd/acme/internal/util"
 	"plramos.win/9fans/cmd/acme/internal/wind"
 )
 
-var Wsequence = "warning: changes out of sequence\n"
-var warned = false
+var (
+	Wsequence = "warning: changes out of sequence\n"
+	warned    = false
+)
 
 /*
  * Log of changes made by editing commands.  Three reasons for this:
@@ -116,8 +117,7 @@ func elogflush(f *elogFile) {
 		alog.Printf("unknown elog type %#x\n", f.elog.typ)
 	case elogNull:
 		break
-	case elogInsert,
-		elogReplace:
+	case elogInsert, elogReplace:
 		if len(f.elog.r) > 0 {
 			f.elogbuf.Insert(f.elogbuf.Len(), f.elog.r)
 		}
@@ -196,10 +196,7 @@ func eloginsert(ff *wind.File, q0 int, r []rune) {
 		elogflush(f)
 		f.elog.typ = elogInsert
 		f.elog.q0 = q0
-		n := len(r)
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n := min(len(r), bufs.RuneLen)
 		f.elog.r = append(f.elog.r, r[:n]...)
 		r = r[n:]
 	}
@@ -287,10 +284,7 @@ func elogapply(f *elogFile) {
 			wind.Textdelete(t, tq0, tq1, true)
 			up -= b.nr
 			for i = 0; i < b.nr; i += n {
-				n = b.nr - i
-				if n > bufs.RuneLen {
-					n = bufs.RuneLen
-				}
+				n = min(b.nr-i, bufs.RuneLen)
 				log.Read(up+i, buf[:n])
 				wind.Textinsert(t, tq0+i, buf[:n], true)
 			}
@@ -320,10 +314,7 @@ func elogapply(f *elogFile) {
 			ui.Textconstrain(t, b.q0, b.q0, &tq0, &tq1)
 			up -= b.nr
 			for i = 0; i < b.nr; i += n {
-				n = b.nr - i
-				if n > bufs.RuneLen {
-					n = bufs.RuneLen
-				}
+				n = min(b.nr-i, bufs.RuneLen)
 				log.Read(up+i, buf[:n])
 				wind.Textinsert(t, tq0+i, buf[:n], true)
 			}
@@ -359,8 +350,8 @@ func elogapply(f *elogFile) {
 		if !warned {
 			alog.Printf("elogapply: can't happen %d %d %d\n", t.Q0, t.Q1, f.Len())
 		}
-		t.Q1 = util.Min(t.Q1, f.Len())
-		t.Q0 = util.Min(t.Q0, t.Q1)
+		t.Q1 = min(t.Q1, f.Len())
+		t.Q0 = min(t.Q0, t.Q1)
 	}
 
 	if t.W != nil {

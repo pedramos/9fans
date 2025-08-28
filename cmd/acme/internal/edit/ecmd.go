@@ -335,20 +335,11 @@ func i_cmd(t *wind.Text, cp *Cmd) bool {
 	return fappend(t.File, cp, TheAddr.r.Pos)
 }
 
-func fbufalloc() []rune {
-	return make([]rune, bufs.Len/runes.RuneSize)
-}
-
-func fbuffree(b []rune) {}
-
 func fcopy(f *wind.File, addr2 Address) {
 	buf := bufs.AllocRunes()
 	var ni int
 	for p := TheAddr.r.Pos; p < TheAddr.r.End; p += ni {
-		ni = TheAddr.r.End - p
-		if ni > bufs.RuneLen {
-			ni = bufs.RuneLen
-		}
+		ni = min(TheAddr.r.End-p, bufs.RuneLen)
 		f.Read(p, buf[:ni])
 		eloginsert(addr2.f, addr2.r.End, buf[:ni])
 	}
@@ -614,10 +605,7 @@ func Nlcount(t *wind.Text, q0 int, q1 int, pnr *int) int {
 	start := q0
 	for q0 < q1 {
 		if i == nbuf {
-			nbuf = q1 - q0
-			if nbuf > bufs.RuneLen {
-				nbuf = bufs.RuneLen
-			}
+			nbuf = min(q1-q0, bufs.RuneLen)
 			t.File.Read(q0, buf[:nbuf])
 			i = 0
 		}
@@ -740,16 +728,10 @@ func fappend(f *wind.File, cp *Cmd, p int) bool {
 
 func pdisplay(f *wind.File) bool {
 	p1 := TheAddr.r.Pos
-	p2 := TheAddr.r.End
-	if p2 > f.Len() {
-		p2 = f.Len()
-	}
+	p2 := min(TheAddr.r.End, f.Len())
 	buf := bufs.AllocRunes()
 	for p1 < p2 {
-		np := p2 - p1
-		if np > bufs.RuneLen-1 {
-			np = bufs.RuneLen - 1
-		}
+		np := min(p2-p1, bufs.RuneLen-1)
 		f.Read(p1, buf[:np])
 		alog.Printf("%s", string(buf[:np]))
 		p1 += np
@@ -774,7 +756,7 @@ func pfilename(f *wind.File) {
 }
 
 func loopcmd(f *wind.File, cp *Cmd, rp []runes.Range) {
-	for i := 0; i < len(rp); i++ {
+	for i := range rp {
 		f.Curtext.Q0 = rp[i].Pos
 		f.Curtext.Q1 = rp[i].End
 		cmdexec(f.Curtext, cp)
@@ -868,7 +850,7 @@ type Looper struct {
 
 var loopstruct Looper // only one; X and Y can't nest
 
-func alllooper(w *wind.Window, v interface{}) {
+func alllooper(w *wind.Window, v any) {
 	lp := v.(*Looper)
 	cp := lp.cp
 	//	if(w->isscratch || w->isdir)
@@ -889,7 +871,7 @@ func alllooper(w *wind.Window, v interface{}) {
 	}
 }
 
-func alllocker(w *wind.Window, v interface{}) {
+func alllocker(w *wind.Window, v any) {
 	if v.(bool) {
 		util.Incref(&w.Ref)
 	} else {
@@ -1090,7 +1072,7 @@ type Tofile struct {
 	r *String
 }
 
-func alltofile(w *wind.Window, v interface{}) {
+func alltofile(w *wind.Window, v any) {
 	tp := v.(*Tofile)
 	if tp.f != nil {
 		return
@@ -1123,7 +1105,7 @@ func tofile(r *String) *wind.File {
 	return t.f
 }
 
-func allmatchfile(w *wind.Window, v interface{}) {
+func allmatchfile(w *wind.Window, v any) {
 	tp := v.(*Tofile)
 	if w.IsScratch || w.IsDir {
 		return
@@ -1274,7 +1256,7 @@ type Filecheck struct {
 	r []rune
 }
 
-func allfilecheck(w *wind.Window, v interface{}) {
+func allfilecheck(w *wind.Window, v any) {
 	fp := v.(*Filecheck)
 	f := w.Body.File
 	if w.Body.File == fp.f {

@@ -47,7 +47,7 @@ func WinresizeAndMouse(w *wind.Window, r draw.Rectangle, safe, keepextra bool) i
 func Wintype(w *wind.Window, t *wind.Text, r rune) {
 	Texttype(t, r)
 	if t.What == wind.Body {
-		for i := 0; i < len(t.File.Text); i++ {
+		for i := range len(t.File.Text) {
 			wind.Textscrdraw(t.File.Text[i])
 		}
 	}

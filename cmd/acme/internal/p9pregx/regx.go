@@ -843,7 +843,7 @@ Overflow:
 
 func bnewmatch(sp *Ranges) {
 	if Sel.R[0].Pos < 0 || sp.R[0].Pos > Sel.R[0].End || (sp.R[0].Pos == Sel.R[0].End && sp.R[0].End < Sel.R[0].Pos) {
-		for i := 0; i < NRange; i++ { /* note the reversal; q0<=q1 */
+		for i := range NRange { /* note the reversal; q0<=q1 */
 			Sel.R[i].Pos = sp.R[i].End
 			Sel.R[i].End = sp.R[i].Pos
 		}

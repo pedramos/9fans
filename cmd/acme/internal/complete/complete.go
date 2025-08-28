@@ -4,7 +4,7 @@ package complete
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"unicode/utf8"
 )
@@ -23,7 +23,7 @@ func Complete(dir, s string) (*Completion, error) {
 	}
 
 	// Note: ioutil.ReadDir sorts, so no sort below.
-	dirs, err := ioutil.ReadDir(dir)
+	dirs, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, err
 	}

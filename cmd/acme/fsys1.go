@@ -218,7 +218,7 @@ func fsysdelid(idm *base.Mntdir) {
 		prev = m
 	}
 	mnt.lk.Unlock()
-	cerr <- []byte(fmt.Sprintf("fsysdelid: can't find id %d\n", idm.ID))
+	cerr <- fmt.Appendf(nil, "fsysdelid: can't find id %d\n", idm.ID)
 }
 
 // fsysmount is called only in exec.runproc.
@@ -310,7 +310,7 @@ func fsysattach(x *Xfid, f *Fid) *Xfid {
 		}
 	}
 	if m == nil && len(x.fcall.Aname) > 0 {
-		cerr <- []byte(fmt.Sprintf("unknown id '%s' in attach", x.fcall.Aname))
+		cerr <- fmt.Appendf(nil, "unknown id '%s' in attach", x.fcall.Aname)
 	}
 	mnt.lk.Unlock()
 	return respond(x, &t, "")

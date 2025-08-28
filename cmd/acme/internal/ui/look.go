@@ -27,7 +27,6 @@ import (
 	"plramos.win/9fans/cmd/acme/internal/alog"
 	"plramos.win/9fans/cmd/acme/internal/bufs"
 	"plramos.win/9fans/cmd/acme/internal/runes"
-	"plramos.win/9fans/cmd/acme/internal/util"
 	"plramos.win/9fans/cmd/acme/internal/wind"
 	"plramos.win/9fans/draw"
 	"plramos.win/9fans/plan9/client"
@@ -202,7 +201,7 @@ func Search(ct *wind.Text, r []rune, reverse bool) bool {
 		alog.Printf("string too long\n") // TODO(rsc): why???????
 		return false
 	}
-	maxn := util.Max(2*len(r), bufs.RuneLen)
+	maxn := max(2*len(r), bufs.RuneLen)
 	s := bufs.AllocRunes()
 	b := s[:0]
 	around := 0
@@ -374,7 +373,7 @@ func texthas(t *wind.Text, q0 int, r []rune) bool {
 	if int(q0) < 0 {
 		return false
 	}
-	for i := 0; i < len(r); i++ {
+	for i := range len(r) {
 		if q0+i >= t.Len() || t.RuneAt(q0+i) != r[i] {
 			return false
 		}
@@ -386,7 +385,7 @@ func hasPrefix(r []rune, s []rune) bool {
 	if len(r) < len(s) {
 		return false
 	}
-	for i := 0; i < len(s); i++ {
+	for i := range len(s) {
 		if r[i] != s[i] {
 			return false
 		}
@@ -478,8 +477,7 @@ func expandfile(t *wind.Text, q0 int, q1 int, e *Expand, reverse bool) bool {
 	}
 	// first, does it have bad chars?
 	nname := -1
-	var i int
-	for i = 0; i < n; i++ {
+	for i := range n {
 		c = r[i]
 		if c == ':' && nname < 0 {
 			if q0+i+1 < t.Len() && (i == n-1 || runes.IsAddr(t.RuneAt(q0+i+1))) {
@@ -493,7 +491,7 @@ func expandfile(t *wind.Text, q0 int, q1 int, e *Expand, reverse bool) bool {
 	if nname == -1 {
 		nname = n
 	}
-	for i = 0; i < nname; i++ {
+	for i := range nname {
 		if !runes.IsFilename(r[i]) && r[i] != ' ' {
 			return false
 		}
@@ -614,13 +612,13 @@ type Expand struct {
 	Bname   string
 	Jump    bool
 	Reverse bool
-	Arg     interface{}
-	Agetc   func(interface{}, int) rune
+	Arg     any
+	Agetc   func(any, int) rune
 	A0      int
 	A1      int
 }
 
-func tgetc(a interface{}, n int) rune {
+func tgetc(a any, n int) rune {
 	t := a.(*wind.Text)
 	if n >= t.Len() {
 		return 0

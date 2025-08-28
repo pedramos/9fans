@@ -29,8 +29,8 @@ import (
 var Textcomplete func(*wind.Text) []rune
 
 func Textconstrain(t *wind.Text, q0 int, q1 int, p0 *int, p1 *int) {
-	*p0 = util.Min(q0, t.Len())
-	*p1 = util.Min(q1, t.Len())
+	*p0 = min(q0, t.Len())
+	*p1 = min(q1, t.Len())
 }
 
 func Texttype(t *wind.Text, r rune) {
@@ -170,7 +170,7 @@ func Texttype(t *wind.Text, r rune) {
 			n = 2 * t.Fr.MaxLines / 3
 		case Kscrolloneup:
 			n = draw.MouseScrollSize(t.Fr.MaxLines)
-			//n = t.Fr.MaxLines / 3
+			// n = t.Fr.MaxLines / 3
 		}
 		q0 = wind.Textbacknl(t, t.Org, n)
 		wind.Textsetorigin(t, q0, true)
@@ -197,12 +197,12 @@ func Texttype(t *wind.Text, r rune) {
 		// 			wind.Textshow(t, t.Len(), t.Len(), false)
 		// 		}
 		// 		return
-	case 0x09:	/* ^I (TAB) */
-		if t.What == wind.Body && t.W.IsTabExpand  {
-			for _ = range t.W.Body.Tabstop {
-				Texttype(t, ' ');
+	case 0x09: /* ^I (TAB) */
+		if t.What == wind.Body && t.W.IsTabExpand {
+			for range t.W.Body.Tabstop {
+				Texttype(t, ' ')
 			}
-			return;
+			return
 		}
 	case 0x01, draw.KeyHome: // ^A: beginning of line
 		wind.Typecommit(t)
@@ -319,7 +319,7 @@ func Texttype(t *wind.Text, r rune) {
 		if nnb <= 0 {
 			return
 		}
-		for i = 0; i < len(t.File.Text); i++ {
+		for i = range len(t.File.Text) {
 			u = t.File.Text[i]
 			u.Nofill = true
 			nb = nnb
@@ -348,7 +348,7 @@ func Texttype(t *wind.Text, r rune) {
 			}
 			u.Nofill = false
 		}
-		for i = 0; i < len(t.File.Text); i++ {
+		for i = range len(t.File.Text) {
 			wind.Textfill(t.File.Text[i])
 		}
 		t.IQ1 = t.Q0
@@ -359,7 +359,7 @@ func Texttype(t *wind.Text, r rune) {
 			nnb = wind.Textbswidth(t, 0x15) // ^U case
 			rp = make([]rune, 1, nnb+1)
 			rp[0] = '\n'
-			for i = 0; i < nnb; i++ {
+			for i = range nnb {
 				r = t.RuneAt(t.Q0 - nnb + i)
 				if r != ' ' && r != '\t' {
 					break
@@ -370,7 +370,7 @@ func Texttype(t *wind.Text, r rune) {
 		// break to normal code
 	}
 	// otherwise ordinary character; just insert, typically in caches of all texts
-	for i = 0; i < len(t.File.Text); i++ {
+	for i = range len(t.File.Text) {
 		u = t.File.Text[i]
 		if u.Eq0 == ^0 {
 			u.Eq0 = t.Q0
@@ -577,8 +577,10 @@ func Textselect(t *wind.Text) {
 	}
 }
 
-var BigLock = func() {}
-var BigUnlock = func() {}
+var (
+	BigLock   = func() {}
+	BigUnlock = func() {}
+)
 
 /*
  * Release the button in less than DELAY ms and it's considered a null selection
