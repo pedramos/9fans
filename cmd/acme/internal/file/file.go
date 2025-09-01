@@ -27,7 +27,6 @@ package file
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"unsafe"
 
 	"plramos.win/9fans/cmd/acme/internal/bufs"
@@ -74,10 +73,7 @@ const undoSize = int(unsafe.Sizeof(undo{})) / runes.RuneSize
 
 func undorunes(u *undo) []rune {
 	var r []rune
-	h := (*reflect.SliceHeader)(unsafe.Pointer(&r))
-	h.Data = uintptr(unsafe.Pointer(u))
-	h.Len = undoSize
-	h.Cap = undoSize
+	r = unsafe.Slice((*rune)(unsafe.Pointer(u)), undoSize)
 	return r
 }
 
