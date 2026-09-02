@@ -248,10 +248,7 @@ func runmsg(c *Client, m *drawfcall.Msg) {
 		replymsg(c, m)
 
 	case drawfcall.Trddraw:
-		n := m.Count
-		if n > len(runmsg_buf) {
-			n = len(runmsg_buf)
-		}
+		n := min(m.Count, len(runmsg_buf))
 		n, err := draw_dataread(c, runmsg_buf[:n])
 		if err != nil {
 			replyerror(c, m, err)

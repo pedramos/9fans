@@ -60,12 +60,12 @@ func scalesubfont(f *subfont, scale int) {
 		mask := byte(1<<uint(f.Bits.Depth) - 1)
 		for x := 0; x < r.Dx(); x++ {
 			v := ((src[x/pack] << uint((x%pack)*f.Bits.Depth)) >> uint(8-f.Bits.Depth)) & mask
-			for j := 0; j < scale; j++ {
+			for j := range scale {
 				x2 := x*scale + j
 				dst[x2/pack] |= v << uint(8-f.Bits.Depth) >> uint((x2%pack)*f.Bits.Depth)
 			}
 		}
-		for j := 0; j < scale; j++ {
+		for j := range scale {
 			i.load(Rect(r2.Min.X, y*scale+j, r2.Max.X, y*scale+j+1), dst)
 		}
 	}

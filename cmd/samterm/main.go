@@ -236,7 +236,7 @@ func closeup(l *Flayer) {
 		free(t)
 		text[m] = nil
 	} else if l == &t.l[t.front] {
-		for m = 0; m < NL; m++ { /* find one; any one will do */
+		for m = range NL { /* find one; any one will do */
 			if t.l[m].textfn != nil {
 				t.front = m
 				return
@@ -247,7 +247,7 @@ func closeup(l *Flayer) {
 }
 
 func findl(t *Text) *Flayer {
-	for i := 0; i < NL; i++ {
+	for i := range NL {
 		if t.l[i].textfn == nil {
 			return &t.l[i]
 		}
@@ -439,10 +439,7 @@ func thirds(l *Flayer, a int, n int) bool {
 			a = t.rasp.nrunes
 		}
 		s := l.scroll.Inset(1)
-		lines := (n*(s.Max.Y-s.Min.Y)/l.f.Font.Height + 1) / 3
-		if lines < 2 {
-			lines = 2
-		}
+		lines := max((n*(s.Max.Y-s.Min.Y)/l.f.Font.Height+1)/3, 2)
 		outTsll(Torigin, t.tag, a, lines)
 		return true
 	}
@@ -596,10 +593,7 @@ func ktype(l *Flayer, res Resource) {
 		center(l, l.origin+l.f.NumChars+1)
 	} else if c == BACKSCROLLKEY || c == PAGEUP {
 		flushtyping(false)
-		a0 := l.origin - l.f.NumChars
-		if a0 < 0 {
-			a0 = 0
-		}
+		a0 := max(l.origin-l.f.NumChars, 0)
 		center(l, a0)
 	} else if c == RIGHTARROW {
 		flushtyping(false)
@@ -636,7 +630,7 @@ func ktype(l *Flayer, res Resource) {
 		}
 		l.p1 = a
 		l.p0 = l.p1
-		for i := 0; i < NL; i++ {
+		for i := range NL {
 			l := &t.l[i]
 			if l.textfn != nil {
 				flsetselect(l, l.p0, l.p1)
@@ -688,7 +682,7 @@ func ktype(l *Flayer, res Resource) {
 			l.p1 = a
 			flushtyping(true)
 		}
-		for i := 0; i < NL; i++ {
+		for i := range NL {
 			l := &t.l[i]
 			if l.textfn != nil {
 				flsetselect(l, l.p0, l.p1)

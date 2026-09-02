@@ -3,6 +3,7 @@ package plan9
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 type ProtocolError string
@@ -169,21 +170,21 @@ var permChars = []permChar{
 }
 
 func (p Perm) String() string {
-	s := ""
+	var s strings.Builder
 	did := false
 	for _, pc := range permChars {
 		if p&pc.bit != 0 {
 			did = true
-			s += string(pc.c)
+			s.WriteString(string(pc.c))
 		}
 		if pc.bit == 0 {
 			if !did {
-				s += string(pc.c)
+				s.WriteString(string(pc.c))
 			}
 			did = false
 		}
 	}
-	return s
+	return s.String()
 }
 
 func gperm(b []byte) (Perm, []byte) {

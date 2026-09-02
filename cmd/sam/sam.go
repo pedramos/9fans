@@ -99,7 +99,7 @@ func main() {
 	siginit()
 	getcurwd()
 	if len(fileargs) > 0 {
-		for i := 0; i < len(fileargs); i++ {
+		for i := range fileargs {
 			func() {
 				defer func() {
 					e := recover()
@@ -181,7 +181,7 @@ func rescue() {
 	}
 }
 
-func panic_(format string, args ...interface{}) {
+func panic_(format string, args ...any) {
 	if panicking++; panicking == 1 {
 		s := fmt.Sprintf(format, args...)
 		func() {

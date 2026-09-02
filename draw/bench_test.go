@@ -29,7 +29,7 @@ func TestBenchmarkString(t *testing.T) {
 	im := testDisplay.Image
 	start := time.Now()
 	var nchars time.Duration
-	for i := 0; i < 1e4; i++ {
+	for range int(1e4) {
 		im.String(im.R.Min, testDisplay.Black, im.R.Min, testDisplay.Font, aHundredChars)
 		nchars += 100
 	}

@@ -20,7 +20,6 @@ import (
 	"sync/atomic"
 )
 
-
 func Min(a int, b int) int {
 	if a < b {
 		return a
@@ -49,15 +48,15 @@ func init() {
 }
 
 type QLock struct {
-	held uint32
+	held atomic.Uint32
 }
 
 func (l *QLock) TryLock() bool {
-	return atomic.CompareAndSwapUint32(&l.held, 0, 1)
+	return l.held.CompareAndSwap(0, 1)
 }
 
 func (l *QLock) Unlock() {
-	v := atomic.SwapUint32(&l.held, 0)
+	v := l.held.Swap(0)
 	if v == 0 {
 		panic("Unlock of unlocked lock")
 	}
@@ -67,13 +66,13 @@ func (l *QLock) Unlock() {
 }
 
 func (l *QLock) Lock() {
-	if atomic.AddUint32(&l.held, 1) == 1 {
+	if l.held.Add(1) == 1 {
 		return
 	}
 	locks.mu.Lock()
 	defer locks.mu.Unlock()
 
-	for atomic.AddUint32(&l.held, 1) != 1 {
+	for l.held.Add(1) != 1 {
 		locks.cond.Wait()
 	}
 }

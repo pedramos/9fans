@@ -46,10 +46,7 @@ func Arc(dst *Image, c draw.Point, a int, b int, t int, src *Image, sp draw.Poin
 	if b < 0 {
 		b = -b
 	}
-	w := t
-	if w < 0 {
-		w = 0
-	}
+	w := max(t, 0)
 	alpha = -alpha /* compensate for upside-down coords */
 	phi = -phi
 	beta := alpha + phi
@@ -76,10 +73,9 @@ func Arc(dst *Image, c draw.Point, a int, b int, t int, src *Image, sp draw.Poin
 	 * multiplying by m1 moves it outside the ellipse
 	 */
 	rect := draw.Rect(-a-w, -b-w, a+w+1, b+w+1)
-	m := rect.Max.X /* inradius of bounding square */
-	if m < rect.Max.Y {
-		m = rect.Max.Y
-	}
+	m := max(
+		/* inradius of bounding square */
+		rect.Max.X, rect.Max.Y)
 	m1 := (m + draw.ICOSSCALE - 1) >> 10
 	m = m1 << 10 /* assure m1*cossin is inside */
 	i := 0

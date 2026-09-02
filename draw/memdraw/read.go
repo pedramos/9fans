@@ -27,7 +27,7 @@ func readmemimage(fd *os.File) (*Image, error) {
 	 */
 	new := false
 	var m int
-	for m = 0; m < 10; m++ {
+	for m = range 10 {
 		if hdr[m] != ' ' {
 			new = true
 			break
@@ -69,10 +69,7 @@ func readmemimage(fd *os.File) (*Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	chunk := 32 * 1024
-	if chunk < l {
-		chunk = l
-	}
+	chunk := max(32*1024, l)
 	tmp := make([]byte, chunk)
 	for maxy > miny {
 		dy := maxy - miny

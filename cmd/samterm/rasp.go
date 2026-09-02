@@ -5,7 +5,7 @@ func rinit(r *Rasp) {
 	r.sect = nil
 }
 
-func free(interface{}) {}
+func free(any) {}
 
 func rclear(r *Rasp) {
 	var ns *Section
@@ -168,10 +168,9 @@ func rload(r *Rasp, p0 int, p1 int) []rune {
 		 * first).  So pretend it isn't there.
 		 */
 		if s.text != nil {
-			n := s.nrunes - (p0 - p)
-			if n > p1-p0 { /* all in this section */
-				n = p1 - p0
-			}
+			n := min(s.nrunes-(p0-p),
+				/* all in this section */
+				p1-p0)
 			copy(raspbuf[nb:nb+n], s.text[p0-p:])
 			nb += n
 		}
@@ -191,10 +190,9 @@ func rmissing(r *Rasp, p0 int, p1 int) int {
 	nm := 0
 	for p < p1 && s != nil {
 		if s.text == nil {
-			n := s.nrunes - (p0 - p)
-			if n > p1-p0 { /* all in this section */
-				n = p1 - p0
-			}
+			n := min(s.nrunes-(p0-p),
+				/* all in this section */
+				p1-p0)
 			nm += n
 		}
 		p += s.nrunes
@@ -212,10 +210,9 @@ func rcontig(r *Rasp, p0 int, p1 int, text bool) int {
 	}
 	np := 0
 	for p < p1 && s != nil && text == (s.text != nil) {
-		n := s.nrunes - (p0 - p)
-		if n > p1-p0 { /* all in this section */
-			n = p1 - p0
-		}
+		n := min(s.nrunes-(p0-p),
+			/* all in this section */
+			p1-p0)
 		np += n
 		p += s.nrunes
 		p0 = p

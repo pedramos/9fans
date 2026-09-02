@@ -34,7 +34,7 @@ func initmap() {
 		debug, _ = strconv.Atoi(p)
 	}
 	var i int
-	for i = 0; i < Nbutton; i++ {
+	for i = range Nbutton {
 		mousemap.b[i] = i
 	}
 	mousemap.init = true
@@ -48,7 +48,7 @@ func initmap() {
 	}
 	if debug != 0 {
 		fmt.Fprintf(os.Stderr, "mousemap: ")
-		for i := 0; i < Nbutton; i++ {
+		for i := range Nbutton {
 			fmt.Fprintf(os.Stderr, " %d", 1+mousemap.b[i])
 		}
 		fmt.Fprintf(os.Stderr, "\n")
@@ -61,7 +61,7 @@ func mouseswap(but int) int {
 	}
 
 	nbut := 0
-	for i := 0; i < Nbutton; i++ {
+	for i := range Nbutton {
 		if but&(1<<i) != 0 && mousemap.b[i] >= 0 {
 			nbut |= 1 << mousemap.b[i]
 		}

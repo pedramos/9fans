@@ -41,7 +41,7 @@ func disknewblock(d *Disk, n int) *Block {
 		/* allocate in chunks to reduce malloc overhead */
 		if blist == nil {
 			bb := make([]Block, 100)
-			for j := 0; j < 100-1; j++ {
+			for j := range 100 - 1 {
 				bb[j].u.next = &bb[j+1]
 			}
 			blist = &bb[0]

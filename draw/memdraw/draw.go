@@ -23,9 +23,9 @@ var tablesbuilt int
 
 /* perfect approximation to NTSC = .299r+.587g+.114b when 0 ≤ r,g,b < 256 */
 func _RGB2K(r, g, b uint8) uint8 {
-//	fmt.Printf("RGB2K %#x %#x %#x -> %#x\n%s", r, g, b,
-//		uint8((156763*int(r) + 307758*int(g) + 59769*int(b)) >> 19),
-//		string(debug.Stack()))
+	//	fmt.Printf("RGB2K %#x %#x %#x -> %#x\n%s", r, g, b,
+	//		uint8((156763*int(r) + 307758*int(g) + 59769*int(b)) >> 19),
+	//		string(debug.Stack()))
 	return uint8((156763*int(r) + 307758*int(g) + 59769*int(b)) >> 19)
 }
 
@@ -415,7 +415,7 @@ func mktables() {
 	tablesbuilt = 1
 
 	/* bit replication up to 8 bits */
-	for i := uint32(0); i < 256; i++ {
+	for i := range uint32(256) {
 		for j := uint32(0); j <= 8; j++ { /* j <= 8 [sic] */
 			small := i & ((1 << j) - 1)
 			replbit[j][i] = uint8((small * replmul[j]) >> 8)
@@ -423,7 +423,7 @@ func mktables() {
 	}
 
 	/* bit unpacking up to 8 bits, only powers of 2 */
-	for i := uint32(0); i < 256; i++ {
+	for i := range uint32(256) {
 		j := uint32(0)
 		sh := uint(7)
 		mask := uint32(1)
@@ -592,7 +592,7 @@ func clipy(img *Image, y *int) {
 
 func dumpbuf(s string, b _Buffer, n int) {
 	fmt.Fprintf(os.Stderr, "%s", s)
-	for i := 0; i < n; i++ {
+	for range n {
 		fmt.Fprintf(os.Stderr, " ")
 		p := b.grey
 		if len(p) != 0 {
@@ -831,14 +831,14 @@ type eface struct {
 	data  unsafe.Pointer
 }
 
-func funcPC(f interface{}) uintptr {
+func funcPC(f any) uintptr {
 	return *(*uintptr)(efaceOf(&f).data)
 }
-func efaceOf(ep *interface{}) *eface {
+func efaceOf(ep *any) *eface {
 	return (*eface)(unsafe.Pointer(ep))
 }
 
-func nameof(x interface{}) string {
+func nameof(x any) string {
 	f := runtime.FuncForPC(funcPC(x))
 	i := strings.LastIndex(f.Name(), ".")
 	return f.Name()[i+1:]
@@ -932,7 +932,7 @@ func alphacalc14(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool, o
 		srgba = uint8words(bsrc.rgba)
 	}
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		sa := bsrc.alpha[0]
 		ma := bmask.alpha[0]
 		fd := _CALC11(sa, ma)
@@ -986,7 +986,7 @@ func alphacalc2810(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool,
 		srgba = uint8words(bsrc.rgba)
 	}
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		ma := bmask.alpha[0]
 		da := bdst.alpha[0]
 		if op == draw.SoutD {
@@ -1043,7 +1043,7 @@ func alphacalc3679(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool,
 		srgba = uint8words(bsrc.rgba)
 	}
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		sa := bsrc.alpha[0]
 		ma := bmask.alpha[0]
 		da := bdst.alpha[0]
@@ -1114,7 +1114,7 @@ func alphacalc11(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool, o
 		srgba = uint8words(bsrc.rgba)
 	}
 
-	for i := 0; i < dx; i++ {
+	for i := range dx {
 		di := i * bdst.delta
 		si := i * bsrc.delta
 		ai := i * bmask.delta
@@ -1193,7 +1193,7 @@ alphacalcS0(Buffer bdst, Buffer bsrc, Buffer bmask, int dx, int grey, int op)
 func alphacalcS(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool, op draw.Op) _Buffer {
 	obdst := bdst
 
-	for i := 0; i < dx; i++ {
+	for i := range dx {
 		di := i * bdst.delta
 		si := i * bsrc.delta
 		ai := i * bmask.delta
@@ -1222,7 +1222,7 @@ func alphacalcS(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool, op
 func boolcalc14(bdst _Buffer, b1 _Buffer, bmask _Buffer, dx int, grey bool, op draw.Op) _Buffer {
 	obdst := bdst
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		ma := bmask.alpha[0]
 		var zero bool
 		if ma != 0 {
@@ -1261,7 +1261,7 @@ func boolcalc236789(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool
 	obdst := bdst
 	zero := op&1 == 0
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		ma := bmask.alpha[0]
 		da := bdst.alpha[0]
 		fs := da
@@ -1315,7 +1315,7 @@ func boolcalc1011(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, grey bool, 
 	obdst := bdst
 	zero := op&1 == 0
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		ma := bmask.alpha[0]
 
 		if grey {
@@ -1399,10 +1399,7 @@ func readnbit(p *drawParam, buf []uint8, y int) _Buffer {
 
 	/* copy from p->r.min.x until end of repl rectangle */
 	x := p.r.Min.X
-	n := dx
-	if n > p.img.R.Max.X-x {
-		n = p.img.R.Max.X - x
-	}
+	n := min(dx, p.img.R.Max.X-x)
 
 	r := p.bytermin[y*p.bwidth:]
 	if _DBG {
@@ -1445,10 +1442,7 @@ func readnbit(p *drawParam, buf []uint8, y int) _Buffer {
 
 	/* copy from beginning of repl rectangle until where we were before. */
 	x = p.img.R.Min.X
-	n = dx
-	if n > p.r.Min.X-x {
-		n = p.r.Min.X - x
-	}
+	n = min(dx, p.r.Min.X-x)
 
 	r = p.bytey0s[y*p.bwidth:]
 	if _DBG {
@@ -1571,7 +1565,7 @@ func readcmap(p *drawParam, buf []uint8, y int) _Buffer {
 		buf = buf[1:]
 		a := p.img.shift[draw.CAlpha] / 8
 		m := p.img.shift[draw.CMap] / 8
-		for i := 0; i < dx; i++ {
+		for range dx {
 			w[0] = r[a]
 			w = w[1:]
 			q := cmap[int(r[m])*3:]
@@ -1596,7 +1590,7 @@ func readcmap(p *drawParam, buf []uint8, y int) _Buffer {
 		}
 	} else {
 		b.alpha = ones[:]
-		for i := 0; i < dx; i++ {
+		for range dx {
 			q := cmap[int(r[0])*3:]
 			if _DBG {
 				fmt.Fprintf(os.Stderr, "D %p %x -> %x %x %x\n", cmap, r[0], q[0], q[1], q[2])
@@ -1717,7 +1711,7 @@ func readbyte(p *drawParam, buf []uint8, y int) _Buffer {
 	arepl := replbit[img.nbits[draw.CAlpha]]
 	krepl := replbit[img.nbits[draw.CGrey]]
 
-	for i := 0; i < dx; i++ {
+	for range dx {
 		var u uint32
 		if img.Depth == 32 {
 			u = uint32(r[0]) | uint32(r[1])<<8 | uint32(r[2])<<16 | uint32(r[3])<<24
@@ -1836,7 +1830,7 @@ func writebyte(p *drawParam, w []uint8, src _Buffer) {
 		adelta = 0
 	}
 
-	for i := 0; i < dx; i++ {
+	for i := range dx {
 		di := i * delta
 		ai := i * adelta
 		var u uint32
@@ -1950,7 +1944,7 @@ func boolcopy8(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, i bool, o draw
 	m := bmask.grey
 	w := bdst.red
 	r := bsrc.red
-	for i := 0; i < dx; i++ {
+	for i := range dx {
 		if m[i] != 0 {
 			w[i] = r[i]
 		}
@@ -1962,7 +1956,7 @@ func boolcopy16(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, i bool, o dra
 	m := bmask.grey
 	w := uint8shorts(bdst.red)
 	r := uint8shorts(bsrc.red)
-	for i := 0; i < dx; i++ {
+	for i := range dx {
 		if m[i] != 0 {
 			w[i] = r[i]
 		}
@@ -1988,7 +1982,7 @@ func boolcopy32(bdst _Buffer, bsrc _Buffer, bmask _Buffer, dx int, i bool, o dra
 	m := bmask.grey
 	w := uint8words(bdst.red)
 	r := uint8words(bsrc.red)
-	for i := 0; i < dx; i++ {
+	for i := range dx {
 		if m[i] != 0 {
 			w[i] = r[i]
 		}
@@ -2272,7 +2266,7 @@ func memoptdraw(par *memDrawParam) int {
 			/* lm, rm are masks that are 1 where we should touch the bits */
 			if dx < 0 { /* just one byte */
 				lm &= rm
-				for y := 0; y < dy; y++ {
+				for range dy {
 					dp[0] ^= (uint8(v) ^ dp[0]) & lm
 					dp = dp[dwid:]
 				}
@@ -2280,7 +2274,7 @@ func memoptdraw(par *memDrawParam) int {
 				if lm != 0 {
 					dwid--
 				}
-				for y := 0; y < dy; y++ {
+				for range dy {
 					if lm != 0 {
 						if _DBG {
 							fmt.Fprintf(os.Stderr, "dp %p v %x lm %x (v ^ *dp) & lm %x\n", dp, v, lm, (uint8(v)^dp[0])&lm)
@@ -2298,7 +2292,7 @@ func memoptdraw(par *memDrawParam) int {
 				}
 				dwid -= dx
 
-				for y := 0; y < dy; y++ {
+				for range dy {
 					if lm != 0 {
 						dp[0] ^= (uint8(v) ^ dp[0]) & lm
 						dp = dp[1:]
@@ -2314,7 +2308,7 @@ func memoptdraw(par *memDrawParam) int {
 			}
 			return 1
 		case 8:
-			for y := 0; y < dy; y++ {
+			for range dy {
 				row := dp[:dx]
 				for i := range row {
 					row[i] = uint8(v)
@@ -2330,13 +2324,13 @@ func memoptdraw(par *memDrawParam) int {
 			if _DBG {
 				fmt.Fprintf(os.Stderr, "dp=%p; dx=%d; for(y=0; y<%d; y++, dp+=%d)\nmemsets(dp, v, dx);\n", dp, dx, dy, dwid)
 			}
-			for y := 0; y < dy; y++ {
+			for range dy {
 				memsets(dp, v, dx)
 				dp = dp[dwid:]
 			}
 			return 1
 		case 24:
-			for y := 0; y < dy; y++ {
+			for range dy {
 				memset24(dp, v, dx)
 				dp = dp[dwid:]
 			}
@@ -2348,7 +2342,7 @@ func memoptdraw(par *memDrawParam) int {
 			p[2] = uint8(v >> 16)
 			p[3] = uint8(v >> 24)
 			v := *(*uint32)(unsafe.Pointer(&p[0]))
-			for y := 0; y < dy; y++ {
+			for y := range dy {
 				memsetl(dp[y*dwid:], v, dx)
 			}
 			return 1
@@ -2382,7 +2376,7 @@ func memoptdraw(par *memDrawParam) int {
 				copy(dp[dwid*y:dwid*y+nb], sp[swid*y:swid*y+nb])
 			}
 		} else {
-			for y := 0; y < dy; y++ {
+			for y := range dy {
 				copy(dp[dwid*y:dwid*y+nb], sp[swid*y:swid*y+nb])
 			}
 		}
@@ -2420,7 +2414,7 @@ func memoptdraw(par *memDrawParam) int {
 					dp[y*dwid] ^= (dp[y*dwid] ^ sp[y*swid]) & mp[y*mwid] & lm
 				}
 			} else {
-				for y := 0; y < dy; y++ {
+				for y := range dy {
 					dp[y*dwid] ^= (dp[y*dwid] ^ sp[y*swid]) & mp[y*mwid] & lm
 				}
 			}
@@ -2429,7 +2423,7 @@ func memoptdraw(par *memDrawParam) int {
 
 		dx /= 8
 		if dir == 1 {
-			for y := 0; y < dy; y++ {
+			for y := range dy {
 				j := 0
 				if lm != 0 {
 					dp[y*dwid] ^= (dp[y*dwid] ^ sp[y*swid]) & mp[y*mwid] & lm

@@ -77,7 +77,7 @@ func toLatin1(k []rune) rune {
 		return toUnicode(k[1:4])
 	}
 
-	for i := 0; i < len(latintab); i++ {
+	for i := range latintab {
 		l := &latintab[i]
 		if k[0] == rune(l.ld[0]) {
 			if n == 1 {

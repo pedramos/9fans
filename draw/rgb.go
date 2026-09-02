@@ -44,7 +44,7 @@ rgb2cmap(int cr, int cg, int cb)
 func rgb2cmap(cr, cg, cb int) int {
 	best := 0
 	bestsq := 0x7FFFFFFF
-	for i := 0; i < 256; i++ {
+	for i := range 256 {
 		r, g, b := cmap2rgb(i)
 		sq := (r-cr)*(r-cr) + (g-cg)*(g-cg) + (b-cb)*(b-cb)
 		if sq < bestsq {

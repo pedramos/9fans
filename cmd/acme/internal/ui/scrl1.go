@@ -39,10 +39,7 @@ func Textscroll(t *wind.Text, but int) {
 	first := true
 	for {
 		adraw.Display.Flush()
-		my := Mouse.Point.Y
-		if my < s.Min.Y {
-			my = s.Min.Y
-		}
+		my := max(Mouse.Point.Y, s.Min.Y)
 		if my >= s.Max.Y {
 			my = s.Max.Y
 		}

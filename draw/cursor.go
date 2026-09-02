@@ -35,7 +35,7 @@ func ScaleCursor(c Cursor) Cursor2 {
 	var c2 Cursor2
 	c2.X = 2 * c.X
 	c2.Y = 2 * c.Y
-	for y := 0; y < 16; y++ {
+	for y := range 16 {
 		c2.White[8*y+4] = expand[c.White[2*y]>>4]
 		c2.White[8*y] = c2.White[8*y+4]
 		c2.Black[8*y+4] = expand[c.Black[2*y]>>4]

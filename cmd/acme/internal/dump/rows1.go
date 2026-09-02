@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"slices"
 	"strconv"
 	"unicode/utf8"
 
@@ -160,10 +161,7 @@ func Dump(row *wind.Row, file *string) {
 				q0 := 0
 				q1 := t.Len()
 				for q0 < q1 {
-					n = q1 - q0
-					if n > bufs.Len/utf8.UTFMax {
-						n = bufs.Len / utf8.UTFMax
-					}
+					n = min(q1-q0, bufs.Len/utf8.UTFMax)
 					t.File.Read(q0, r[:n])
 					fmt.Fprintf(b, "%s", string(r[:n]))
 					q0 += n
@@ -184,12 +182,7 @@ func Dump(row *wind.Row, file *string) {
 }
 
 func containsRune(r []rune, c rune) bool {
-	for _, rc := range r {
-		if rc == c {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(r, c)
 }
 
 func exists(file string) bool {
@@ -221,7 +214,7 @@ func LoadFonts(file string) {
 		return
 	}
 	// global fonts
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		l, err := b.ReadString('\n')
 		if err != nil {
 			return
@@ -463,7 +456,7 @@ func Load(row *wind.Row, file *string, initing bool) bool {
 		l = l[:len(l)-1]
 		// convert 0xff in multiline tag back to \n
 		lb := []byte(l)
-		for i = 0; i < len(lb); i++ {
+		for i = range lb {
 			if lb[i] == 0xff {
 				lb[i] = '\n'
 			}

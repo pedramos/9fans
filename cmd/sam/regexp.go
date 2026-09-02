@@ -661,7 +661,7 @@ Overflow:
 
 func newmatch(sp *Rangeset) {
 	if sel.p[0].p1 < 0 || sp.p[0].p1 < sel.p[0].p1 || (sp.p[0].p1 == sel.p[0].p1 && sp.p[0].p2 > sel.p[0].p2) {
-		for i := 0; i < NSUBEXP; i++ {
+		for i := range NSUBEXP {
 			sel.p[i] = sp.p[i]
 		}
 	}
@@ -812,7 +812,7 @@ Overflow:
 
 func bnewmatch(sp *Rangeset) {
 	if sel.p[0].p1 < 0 || sp.p[0].p1 > sel.p[0].p2 || (sp.p[0].p1 == sel.p[0].p2 && sp.p[0].p2 < sel.p[0].p1) {
-		for i := 0; i < NSUBEXP; i++ { /* note the reversal; p1<=p2 */
+		for i := range NSUBEXP { /* note the reversal; p1<=p2 */
 			sel.p[i].p1 = sp.p[i].p2
 			sel.p[i].p2 = sp.p[i].p1
 		}

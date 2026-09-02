@@ -551,10 +551,7 @@ func Putfile(f *wind.File, q0 int, q1 int, namer []rune) {
 	{
 		var n int
 		for q := q0; q < q1; q += n {
-			n = q1 - q
-			if n > bufs.Len/utf8.UTFMax {
-				n = bufs.Len / utf8.UTFMax
-			}
+			n = min(q1-q, bufs.Len/utf8.UTFMax)
 			f.Read(q, r[:n])
 			buf := []byte(string(r[:n])) // TODO(rsc)
 			h.Write(buf)
@@ -633,10 +630,7 @@ func trimspaces(et *wind.Text) {
 	q0 := f.Len()
 	delstart := q0 // end of current space run, or 0 if no active run; = q0 to delete spaces before EOF
 	for q0 > 0 {
-		n := bufs.RuneLen
-		if n > q0 {
-			n = q0
-		}
+		n := min(bufs.RuneLen, q0)
 		q0 -= n
 		f.Read(q0, r[:n])
 		for i := n; ; i-- {
@@ -878,7 +872,7 @@ func indentval(s []rune) int {
 	return Ioff
 }
 
-func fixindent(w *wind.Window, arg interface{}) {
+func fixindent(w *wind.Window, arg any) {
 	w.Autoindent = wind.GlobalAutoindent
 }
 

@@ -156,7 +156,7 @@ func menuscan(m *Image, me *Menu, but int, mc *Mousectl, textr Rectangle, off, l
 
 func menupaint(m *Image, me *Menu, textr Rectangle, off, nitemdrawn int) {
 	m.Draw(textr.Inset(menuBorder-menuMargin), menu.back, nil, ZP)
-	for i := 0; i < nitemdrawn; i++ {
+	for i := range nitemdrawn {
 		paintitem(m, me, textr, off, i, false, nil, nil)
 	}
 }
@@ -231,10 +231,7 @@ func MenuHit(but int, mc *Mousectl, me *Menu, scr *Screen) int {
 	lasti := me.LastHit
 	if nitem > menuMaxunscroll || nitem > screenitem {
 		scrolling = true
-		nitemdrawn = menuNscroll
-		if nitemdrawn > screenitem {
-			nitemdrawn = screenitem
-		}
+		nitemdrawn = min(menuNscroll, screenitem)
 		wid = maxwid + menuGap + menuScrollwid
 		off = me.LastHit - nitemdrawn/2
 		if off < 0 {

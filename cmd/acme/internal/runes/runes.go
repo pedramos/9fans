@@ -69,7 +69,7 @@ func Equal(s1, s2 []rune) bool {
 	if len(s1) != len(s2) {
 		return false
 	}
-	for i := 0; i < len(s1); i++ {
+	for i := range s1 {
 		if s1[i] != s2[i] {
 			return false
 		}

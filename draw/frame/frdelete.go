@@ -88,10 +88,7 @@ func (f *Frame) Delete(p0, p1 int) int {
 		if n1 < len(f.box) {
 			q0 := pt0.Y + f.Font.Height
 			q1 := pt1.Y + f.Font.Height
-			q2 := pt2.Y + f.Font.Height
-			if q2 > f.R.Max.Y {
-				q2 = f.R.Max.Y
-			}
+			q2 := min(pt2.Y+f.Font.Height, f.R.Max.Y)
 			f.B.Draw(draw.Rect(pt0.X, pt0.Y, pt0.X+(f.R.Max.X-pt1.X), q0), f.B, nil, pt1)
 			f.B.Draw(draw.Rect(f.R.Min.X, q0, f.R.Max.X, q0+(q2-q1)), f.B, nil, draw.Pt(f.R.Min.X, q1))
 			f.SelectPaint(draw.Pt(pt2.X, pt2.Y-(pt1.Y-pt0.Y)), pt2, f.Cols[BACK])

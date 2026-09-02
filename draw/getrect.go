@@ -87,13 +87,6 @@ func freegrtmp() {
 	grRed = nil
 }
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func drawgetrect(display *Display, rc Rectangle, up bool) {
 	screen := display.ScreenImage
 	/*
@@ -123,12 +116,12 @@ func drawgetrect(display *Display, rc Rectangle, up bool) {
 	}
 	rects := brects(rc)
 	if !up {
-		for i := 0; i < 4; i++ {
+		for i := range 4 {
 			screen.Draw(rects[i], grTmp[i], nil, ZP)
 		}
 		return
 	}
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		grTmp[i].Draw(Rect(0, 0, rects[i].Dx(), rects[i].Dy()), screen, nil, rects[i].Min)
 		screen.Draw(rects[i], grRed, nil, ZP)
 	}

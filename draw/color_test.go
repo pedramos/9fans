@@ -154,11 +154,11 @@ func TestAtGrey1(t *testing.T) {
 		return c
 	}
 	i := alloc(Rect(0, 0, 4, 1), GREY1, false, 0)
-	for x := 0; x < 4; x++ {
+	for x := range 4 {
 		bit := alloc(r1, GREY2, false, col(x))
 		i.Draw(Rect(x, 0, x+1, 1), bit, nil, p0)
 	}
-	for x := 0; x < 4; x++ {
+	for x := range 4 {
 		r, g, b, a := i.At(x, 0).RGBA()
 		got := color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)}
 		want := color.RGBA{0, 0, 0, 0xFF}
@@ -192,11 +192,11 @@ func rgba(x int) color.Color {
 
 func TestAtGrey2(t *testing.T) {
 	i := alloc(Rect(0, 0, 4, 1), GREY2, false, 0)
-	for x := 0; x < 4; x++ {
+	for x := range 4 {
 		bit := alloc(r1, GREY2, false, col(x))
 		i.Draw(Rect(x, 0, x+1, 1), bit, nil, p0)
 	}
-	for x := 0; x < 4; x++ {
+	for x := range 4 {
 		r, g, b, a := i.At(x, 0).RGBA()
 		got := color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)}
 		want := rgba(x)
@@ -208,11 +208,11 @@ func TestAtGrey2(t *testing.T) {
 
 func TestAtGrey4(t *testing.T) {
 	i := alloc(Rect(0, 0, 4, 1), GREY4, false, 0)
-	for x := 0; x < 4; x++ {
+	for x := range 4 {
 		bit := alloc(r1, GREY4, false, col(x))
 		i.Draw(Rect(x, 0, x+1, 1), bit, nil, p0)
 	}
-	for x := 0; x < 4; x++ {
+	for x := range 4 {
 		r, g, b, a := i.At(x, 0).RGBA()
 		got := color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)}
 		want := rgba(x)

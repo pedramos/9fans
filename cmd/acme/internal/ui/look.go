@@ -374,7 +374,7 @@ func texthas(t *wind.Text, q0 int, r []rune) bool {
 	if int(q0) < 0 {
 		return false
 	}
-	for i := 0; i < len(r); i++ {
+	for i := range r {
 		if q0+i >= t.Len() || t.RuneAt(q0+i) != r[i] {
 			return false
 		}
@@ -386,7 +386,7 @@ func hasPrefix(r []rune, s []rune) bool {
 	if len(r) < len(s) {
 		return false
 	}
-	for i := 0; i < len(s); i++ {
+	for i := range s {
 		if r[i] != s[i] {
 			return false
 		}
@@ -614,13 +614,13 @@ type Expand struct {
 	Bname   string
 	Jump    bool
 	Reverse bool
-	Arg     interface{}
-	Agetc   func(interface{}, int) rune
+	Arg     any
+	Agetc   func(any, int) rune
 	A0      int
 	A1      int
 }
 
-func tgetc(a interface{}, n int) rune {
+func tgetc(a any, n int) rune {
 	t := a.(*wind.Text)
 	if n >= t.Len() {
 		return 0

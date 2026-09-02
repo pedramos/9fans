@@ -196,10 +196,7 @@ func eloginsert(ff *wind.File, q0 int, r []rune) {
 		elogflush(f)
 		f.elog.typ = elogInsert
 		f.elog.q0 = q0
-		n := len(r)
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n := min(len(r), bufs.RuneLen)
 		f.elog.r = append(f.elog.r, r[:n]...)
 		r = r[n:]
 	}
@@ -287,10 +284,7 @@ func elogapply(f *elogFile) {
 			wind.Textdelete(t, tq0, tq1, true)
 			up -= b.nr
 			for i = 0; i < b.nr; i += n {
-				n = b.nr - i
-				if n > bufs.RuneLen {
-					n = bufs.RuneLen
-				}
+				n = min(b.nr-i, bufs.RuneLen)
 				log.Read(up+i, buf[:n])
 				wind.Textinsert(t, tq0+i, buf[:n], true)
 			}
@@ -320,10 +314,7 @@ func elogapply(f *elogFile) {
 			ui.Textconstrain(t, b.q0, b.q0, &tq0, &tq1)
 			up -= b.nr
 			for i = 0; i < b.nr; i += n {
-				n = b.nr - i
-				if n > bufs.RuneLen {
-					n = bufs.RuneLen
-				}
+				n = min(b.nr-i, bufs.RuneLen)
 				log.Read(up+i, buf[:n])
 				wind.Textinsert(t, tq0+i, buf[:n], true)
 			}

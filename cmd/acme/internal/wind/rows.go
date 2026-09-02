@@ -231,7 +231,7 @@ func Rowwhich(row *Row, p draw.Point) *Text {
 	return nil
 }
 
-func All(f func(*Window, interface{}), arg interface{}) {
+func All(f func(*Window, any), arg any) {
 	for _, c := range TheRow.Col {
 		for _, w := range c.W {
 			f(w, arg)

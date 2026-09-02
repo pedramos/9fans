@@ -28,7 +28,7 @@ func (d *Display) creadimage(rd io.Reader) (*Image, error) {
 	 * while ldepths are a single digit formatted as %-11d.
 	 */
 	new := false
-	for m := 0; m < 10; m++ {
+	for m := range 10 {
 		if hdr[m] != ' ' {
 			new = true
 			break

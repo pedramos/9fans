@@ -1,5 +1,4 @@
 //go:build !plan9
-// +build !plan9
 
 package client // import "plramos.win/9fans/plan9/client"
 

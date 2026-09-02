@@ -68,7 +68,7 @@ func (d *Disk) allocBlock(n int) *block {
 		/* allocate in chunks to reduce malloc overhead */
 		if blist == nil {
 			bb := make([]block, 100)
-			for j := 0; j < 100-1; j++ {
+			for j := range 100 - 1 {
 				bb[j].u.next = &bb[j+1]
 			}
 			blist = &bb[0]

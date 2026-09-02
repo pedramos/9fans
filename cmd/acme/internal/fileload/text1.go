@@ -120,10 +120,7 @@ func Textload(t *wind.Text, q0 int, file string, setqid bool) int {
 	f.Close()
 	rp = bufs.AllocRunes()
 	for q := q0; q < q1; q += n {
-		n = q1 - q
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n = min(q1-q, bufs.RuneLen)
 		t.File.Read(q, rp[:n])
 		if q < t.Org {
 			t.Org += n

@@ -287,10 +287,7 @@ func canfit(p *Piece) bool {
 	var dx = [...]int{0, -1, 1, -2, 2, -3, 3, 4, -4}
 	j := N + 1
 	if j >= 4 {
-		j = p.sz.X
-		if j < p.sz.Y {
-			j = p.sz.Y
-		}
+		j = max(p.sz.X, p.sz.Y)
 		j = 2*j - 1
 	}
 	for i := 0; i < j; i++ {
@@ -329,8 +326,8 @@ func drawboard() {
 	screen.Border(rboard.Inset(-2), 2, display.Black, draw.ZP)
 	screen.Draw(image.Rect(rboard.Min.X, rboard.Min.Y-2, rboard.Max.X, rboard.Min.Y),
 		display.White, nil, draw.ZP)
-	for i := 0; i < NY; i++ {
-		for j := 0; j < NX; j++ {
+	for i := range NY {
+		for j := range NX {
 			if board[i][j] != 0 {
 				drawsq(screen, image.Pt(rboard.Min.X+j*pcsz, rboard.Min.Y+i*pcsz), int(board[i][j]-16))
 			}
@@ -416,7 +413,7 @@ func pause(t int) {
 func horiz() bool {
 	var lev [MAXN]int
 	h := 0
-	for i := 0; i < NY; i++ {
+	for i := range NY {
 		for j := 0; board[i][j] != 0; j++ {
 			if j == NX-1 {
 				lev[h] = i
@@ -436,7 +433,7 @@ func horiz() bool {
 		screen.Draw(r, display.White, whitemask, draw.ZP)
 		display.Flush()
 	}
-	for i := 0; i < 3; i++ {
+	for range 3 {
 		pause(250)
 		if newscreen {
 			drawboard()
@@ -660,10 +657,7 @@ func redraw(new bool) {
 	pos.Y = (pos.Y - rboard.Min.Y) / pcsz
 	dx := r.Max.X - r.Min.X
 	dy := r.Max.Y - r.Min.Y - 2*32
-	DY = dx / NX
-	if DY > dy/NY {
-		DY = dy / NY
-	}
+	DY = min(dx/NX, dy/NY)
 	DY /= 8
 	if DY > 4 {
 		DY = 4

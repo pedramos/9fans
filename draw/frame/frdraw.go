@@ -89,10 +89,7 @@ func (f *Frame) Drawsel0(pt draw.Point, p0, p1 int, back, text *draw.Image) draw
 			ptr = ptr[:runeindex(ptr, nr)]
 			w = f.Font.BytesWidth(ptr)
 		}
-		x := pt.X + w
-		if x > f.R.Max.X {
-			x = f.R.Max.X
-		}
+		x := min(pt.X+w, f.R.Max.X)
 		f.B.Draw(draw.Rect(pt.X, pt.Y, x, pt.Y+f.Font.Height), back, nil, pt)
 		if b.nrune >= 0 {
 			f.B.BytesBg(pt, text, draw.Point{}, f.Font, ptr, back, draw.Point{})

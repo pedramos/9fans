@@ -154,10 +154,7 @@ func (f *File) undelete(delta *disk.Buffer, p0, p1 int) {
 	buf := bufs.AllocRunes()
 	var n int
 	for i := p0; i < p1; i += n {
-		n = p1 - i
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n = min(p1-i, bufs.RuneLen)
 		f.b.Read(i, buf[:n])
 		delta.Insert(delta.Len(), buf[:n])
 	}
@@ -255,10 +252,7 @@ func (f *File) Undo(isundo bool, q0p, q1p *int) {
 			f.mod = u.mod
 			up -= u.n
 			for i = 0; i < u.n; i += n {
-				n = u.n - i
-				if n > bufs.RuneLen {
-					n = bufs.RuneLen
-				}
+				n = min(u.n-i, bufs.RuneLen)
 				delta.Read(up+i, buf[:n])
 				f.b.Insert(u.p0+i, buf[:n])
 				f.view.Insert(u.p0+i, buf[:n])

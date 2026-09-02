@@ -64,7 +64,7 @@ func _memfillpolysc(dst *Image, vert []draw.Point, w int, src *Image, sp draw.Po
 		p0.X <<= 1
 		p0.Y <<= 1
 	}
-	for i := 0; i < len(vert); i++ {
+	for i := range vert {
 		segtab[i].p0 = p0
 		p0 = vert[i]
 		if fixshift == 0 {
@@ -135,7 +135,7 @@ func xscan(dst *Image, seg []*polySeg, segtab []polySeg, nseg int, wind int, src
 	*/
 
 	p := 0
-	for i := 0; i < nseg; i++ {
+	for i := range nseg {
 		s := &segtab[i]
 		seg[p] = s
 		if s.p0.Y == s.p1.Y {
@@ -169,10 +169,7 @@ func xscan(dst *Image, seg []*polySeg, segtab []polySeg, nseg int, wind int, src
 	minx := dst.Clipr.Min.X
 	maxx := dst.Clipr.Max.X
 
-	y := seg[0].p0.Y
-	if y < dst.Clipr.Min.Y<<fixshift {
-		y = dst.Clipr.Min.Y << fixshift
-	}
+	y := max(seg[0].p0.Y, dst.Clipr.Min.Y<<fixshift)
 	iy := (y + onehalf) >> fixshift
 	y = (iy << fixshift) + onehalf
 	maxy := dst.Clipr.Max.Y << fixshift
@@ -283,7 +280,7 @@ func xscan(dst *Image, seg []*polySeg, segtab []polySeg, nseg int, wind int, src
 
 func yscan(dst *Image, seg []*polySeg, segtab []polySeg, nseg int, wind int, src *Image, sp draw.Point, fixshift int, op draw.Op) {
 	p := 0
-	for i := 0; i < nseg; i++ {
+	for i := range nseg {
 		s := &segtab[i]
 		seg[p] = s
 		if s.p0.X == s.p1.X {
@@ -317,10 +314,7 @@ func yscan(dst *Image, seg []*polySeg, segtab []polySeg, nseg int, wind int, src
 	miny := dst.Clipr.Min.Y
 	maxy := dst.Clipr.Max.Y
 
-	x := seg[0].p0.X
-	if x < dst.Clipr.Min.X<<fixshift {
-		x = dst.Clipr.Min.X << fixshift
-	}
+	x := max(seg[0].p0.X, dst.Clipr.Min.X<<fixshift)
 	ix := (x + onehalf) >> fixshift
 	x = (ix << fixshift) + onehalf
 	maxx := dst.Clipr.Max.X << fixshift
@@ -446,7 +440,7 @@ func zsort(seg []*polySeg, ep int) {
 		}
 	} else {
 		q := ep - 1
-		for p := 0; p < q; p++ {
+		for p := range q {
 			if seg[p].z > seg[p+1].z {
 				sort.Slice(seg[:ep], func(i, j int) bool { return seg[i].z < seg[j].z })
 				break

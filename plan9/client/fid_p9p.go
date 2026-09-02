@@ -1,5 +1,4 @@
 //go:build !plan9
-// +build !plan9
 
 package client
 
@@ -233,10 +232,7 @@ func (fid *Fid) Walk(name string) (*Fid, error) {
 	var wfid *Fid
 	fromfidnum := fid.fid
 	for nwalk := 0; ; nwalk++ {
-		n := len(elem)
-		if n > plan9.MAXWELEM {
-			n = plan9.MAXWELEM
-		}
+		n := min(len(elem), plan9.MAXWELEM)
 		tx := &plan9.Fcall{Type: plan9.Twalk, Fid: fromfidnum, Newfid: wfidnum, Wname: elem[0:n]}
 		rx, err := conn.rpc(tx, nil)
 		if err == nil && len(rx.Wqid) != n {

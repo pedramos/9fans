@@ -222,8 +222,8 @@ func reformat(id int, name string, formatter []string) {
 var nlBytes = []byte("\n")
 
 func parseSpan(text string) (start, end int) {
-	i := strings.Index(text, ",")
-	if i < 0 {
+	before, after, ok := strings.Cut(text, ",")
+	if !ok {
 		n, err := strconv.Atoi(text)
 		if err != nil {
 			log.Printf("cannot parse span %q", text)
@@ -231,8 +231,8 @@ func parseSpan(text string) (start, end int) {
 		}
 		return n, n
 	}
-	start, err1 := strconv.Atoi(text[:i])
-	end, err2 := strconv.Atoi(text[i+1:])
+	start, err1 := strconv.Atoi(before)
+	end, err2 := strconv.Atoi(after)
 	if err1 != nil || err2 != nil {
 		log.Printf("cannot parse span %q", text)
 		return 0, 0

@@ -184,10 +184,7 @@ func main() {
 			if argc == 0 {
 				ncol = 2
 			} else {
-				ncol = (argc + (WPERCOL - 1)) / WPERCOL
-				if ncol < 2 {
-					ncol = 2
-				}
+				ncol = max((argc+(WPERCOL-1))/WPERCOL, 2)
 			}
 		}
 		if ncol == 0 {
@@ -205,7 +202,7 @@ func main() {
 		if argc == 0 {
 			readfile(c, ui.Wdir)
 		} else {
-			for i = 0; i < argc; i++ {
+			for i = range argc {
 				j := strings.LastIndex(argv[i], "/")
 				if j >= 0 && argv[i][j:] == "/guide" || i/WPERCOL >= len(wind.TheRow.Col) {
 					readfile(c, argv[i])

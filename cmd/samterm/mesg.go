@@ -314,7 +314,7 @@ func inmesg(typ Hmesg, count int) {
 
 Checkscroll:
 	if m == cmd.tag {
-		for i := 0; i < NL; i++ {
+		for i := range NL {
 			lp := &cmd.l[i]
 			if lp.textfn != nil {
 				p := int(l)
@@ -521,7 +521,7 @@ func hcheck(m int) {
 	if t == nil { /* possible in a half-built window */
 		return
 	}
-	for i := 0; i < NL; i++ {
+	for i := range NL {
 		l := &t.l[i]
 		if l.textfn == nil || !flprepare(l) {
 			/* BUG: don't need this if BUG below is fixed */
@@ -619,7 +619,7 @@ func hgrow(m int, a int, new int, req int) {
 	}
 	t := whichtext(m)
 	rresize(&t.rasp, a, 0, new)
-	for i := 0; i < NL; i++ {
+	for i := range NL {
 		l := &t.l[i]
 		if l.textfn == nil {
 			continue
@@ -649,7 +649,7 @@ func hgrow(m int, a int, new int, req int) {
 }
 
 func hdata1(t *Text, a int, rp []rune) int {
-	for i := 0; i < NL; i++ {
+	for i := range NL {
 		l := &t.l[i]
 		if l.textfn == nil {
 			continue
@@ -695,7 +695,7 @@ func hcut(m, a, old int) {
 	if t.lock != 0 {
 		t.lock--
 	}
-	for i := 0; i < NL; i++ {
+	for i := range NL {
 		l := &t.l[i]
 		if l.textfn == nil {
 			continue

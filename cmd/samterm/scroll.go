@@ -121,10 +121,7 @@ func scroll(l *Flayer, but int) {
 		if in {
 			scrmark(l, r)
 			oy := y
-			my = mousep.Point.Y
-			if my < s.Min.Y {
-				my = s.Min.Y
-			}
+			my = max(mousep.Point.Y, s.Min.Y)
 			if my >= s.Max.Y {
 				my = s.Max.Y
 			}
@@ -136,10 +133,7 @@ func scroll(l *Flayer, but int) {
 				rt := scrpos(l.scroll, p0, p0+l.f.NumChars, tot)
 				y = rt.Min.Y
 			} else if but == 2 {
-				y = my
-				if y > s.Max.Y-2 {
-					y = s.Max.Y - 2
-				}
+				y = min(my, s.Max.Y-2)
 			} else if but == 3 || but == 5 {
 				p0 = l.origin + l.f.CharOf(image.Pt(s.Max.X, my))
 				rt := scrpos(l.scroll, p0, p0+l.f.NumChars, tot)
@@ -151,7 +145,7 @@ func scroll(l *Flayer, but int) {
 				scrmark(l, r)
 			}
 		}
-		if !(but <= 3 && button(but) !=0 ) {
+		if !(but <= 3 && button(but) != 0) {
 			break
 		}
 	}
@@ -170,10 +164,7 @@ func scroll(l *Flayer, but int) {
 			}
 		} else if but == 3 || but == 5 {
 			but = 3
-			p0 = l.origin + l.f.CharOf(image.Pt(s.Max.X, my))
-			if p0 > tot {
-				p0 = tot
-			}
+			p0 = min(l.origin+l.f.CharOf(image.Pt(s.Max.X, my)), tot)
 		}
 		scrorigin(l, but, p0)
 	}

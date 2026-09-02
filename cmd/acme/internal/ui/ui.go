@@ -110,10 +110,7 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 		snarfbuf.Delete(0, snarfbuf.Len())
 		r := bufs.AllocRunes()
 		for q0 < q1 {
-			n := q1 - q0
-			if n > bufs.RuneLen {
-				n = bufs.RuneLen
-			}
+			n := min(q1-q0, bufs.RuneLen)
 			t.File.Read(q0, r[:n])
 			snarfbuf.Insert(snarfbuf.Len(), r[:n])
 			q0 += n
@@ -164,10 +161,7 @@ func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
 	q1 := t.Q0 + snarfbuf.Len()
 	r := bufs.AllocRunes()
 	for q0 < q1 {
-		n := q1 - q0
-		if n > bufs.RuneLen {
-			n = bufs.RuneLen
-		}
+		n := min(q1-q0, bufs.RuneLen)
 		snarfbuf.Read(q, r[:n])
 		wind.Textinsert(t, q0, r[:n], true)
 		q += n
@@ -251,10 +245,7 @@ func acmeputsnarf() {
 	var buf []byte
 	var n int
 	for i := 0; i < snarfbuf.Len(); i += n {
-		n = snarfbuf.Len() - i
-		if n >= NSnarf {
-			n = NSnarf
-		}
+		n = min(snarfbuf.Len()-i, NSnarf)
 		snarfbuf.Read(i, snarfrune[:n])
 		var rbuf [utf8.UTFMax]byte
 		for _, r := range snarfrune[:n] {

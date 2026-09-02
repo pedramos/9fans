@@ -63,7 +63,7 @@ func (f *Frame) dupbox(bn int) {
 
 func runeindex(p []byte, n int) int {
 	off := 0
-	for i := 0; i < n; i++ {
+	for range n {
 		_, size := utf8.DecodeRune(p[off:])
 		off += size
 	}

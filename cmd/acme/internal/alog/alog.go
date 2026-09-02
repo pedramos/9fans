@@ -13,7 +13,7 @@ func Init(w func(string)) {
 	warn = w
 }
 
-func Printf(format string, args ...interface{}) {
+func Printf(format string, args ...any) {
 	s := fmt.Sprintf(format, args...)
 	warn(s)
 }

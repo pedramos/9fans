@@ -514,10 +514,7 @@ func winsettag1(w *Window) {
 	var n int
 	if !runes.Equal(new_, old[:k]) {
 		resize = 1
-		n = k
-		if n > len(new_) {
-			n = len(new_)
-		}
+		n = min(k, len(new_))
 		var j int
 		for j = 0; j < n; j++ {
 			if old[j] != new_[j] {
@@ -637,7 +634,7 @@ const (
 	EVENTSIZE = 256
 )
 
-func Winevent(w *Window, format string, args ...interface{}) {
+func Winevent(w *Window, format string, args ...any) {
 	if !w.External {
 		return
 	}

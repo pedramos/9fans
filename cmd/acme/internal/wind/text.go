@@ -274,7 +274,7 @@ func Textcolumnate(t *Text, dlp []*Dirlist) {
 	nrow := (len(dlp) + ncol - 1) / ncol
 
 	q1 := 0
-	for i = 0; i < nrow; i++ {
+	for i = range nrow {
 		for j := i; j < len(dlp); j += nrow {
 			dl = dlp[j]
 			t.File.Insert(q1, dl.R)
@@ -393,10 +393,7 @@ func Textdelete(t *Text, q0 int, q1 int, tofile bool) {
 	if q1 <= t.Org {
 		t.Org -= n
 	} else if q0 < t.Org+t.Fr.NumChars {
-		p1 := q1 - t.Org
-		if p1 > t.Fr.NumChars {
-			p1 = t.Fr.NumChars
-		}
+		p1 := min(q1-t.Org, t.Fr.NumChars)
 		var p0 int
 		if q0 < t.Org {
 			t.Org = q0
@@ -746,7 +743,7 @@ func Textdoubleclick(t *Text, q0 *int, q1 *int) {
 		return
 	}
 
-	for i := 0; i < len(left); i++ {
+	for i := range left {
 		q := *q0
 		l := left[i]
 		r := right[i]
