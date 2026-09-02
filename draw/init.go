@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -227,8 +228,8 @@ func Init(errch chan<- error, font, label, size string) (d *Display, err error) 
 	if font == "" {
 		buf := []byte(fmt.Sprintf("%d %d\n0 %d\t%s\n", df.Height, df.Ascent,
 			df.N-1, deffontname))
-		//fmt.Printf("%q\n", buf)
-		//BUG: Need something better for this	installsubfont("*default*", df);
+		// fmt.Printf("%q\n", buf)
+		// BUG: Need something better for this	installsubfont("*default*", df);
 		d.Font, err = d.buildFont(buf, deffontname)
 	} else {
 		d.Font, err = d.openFont(font) // BUG: grey fonts
