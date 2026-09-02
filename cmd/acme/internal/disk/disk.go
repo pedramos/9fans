@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"reflect"
 	"unsafe"
 
 	"plramos.win/9fans/cmd/acme/internal/runes"
@@ -93,8 +94,10 @@ func (d *Disk) freeBlock(b *block) {
 
 func runedata(r []rune) []byte {
 	var b []byte
-	l := runes.RuneSize * len(r)
-	b = unsafe.Slice((*byte)(unsafe.Pointer(&r[0])), l)
+	h := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	h.Data = uintptr(unsafe.Pointer(&r[0]))
+	h.Len = runes.RuneSize * len(r)
+	h.Cap = runes.RuneSize * cap(r)
 	return b
 }
 
