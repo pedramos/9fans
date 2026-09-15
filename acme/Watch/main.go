@@ -33,7 +33,6 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -227,7 +226,7 @@ func runBackground(id int, dir string) {
 			return
 		}
 		q0, _, err := win.ReadAddr()
-		if err != nil && err != io.EOF {
+		if err != nil {
 			log.Fatal(err)
 		}
 		err = win.Addr("#%d/^%%[ \t][^ \t\\n].*\\n/", q0)
