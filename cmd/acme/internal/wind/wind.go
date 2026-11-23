@@ -510,10 +510,10 @@ func winsettag1(w *Window) {
 	}
 
 	// replace tag if the new one is different
-	resize := 0
+	changed := false
 	var n int
 	if !runes.Equal(new_, old[:k]) {
-		resize = 1
+		changed = true
 		n = min(k, len(new_))
 		var j int
 		for j = 0; j < n; j++ {
@@ -546,10 +546,24 @@ func winsettag1(w *Window) {
 	}
 	Textsetselect(&w.Tag, w.Tag.Q0, w.Tag.Q1)
 	windrawbutton(w)
-	if resize != 0 {
+	if changed && tagNeedsResize(w) {
 		w.Tagsafe = false
 		Winresize(w, w.R, true, true)
 	}
+}
+
+func tagNeedsResize(w *Window) bool {
+	if !w.Tagexpand {
+		return w.Showdel
+	}
+	if w.Tag.Org+w.Tag.Fr.NumChars < w.Tag.Len() {
+		return true
+	}
+	lines := w.Tag.Fr.NumLines
+	if w.Tag.Len() > 0 && Textreadc(&w.Tag, w.Tag.Len()-1) == '\n' {
+		lines++
+	}
+	return lines != w.Taglines
 }
 
 func Wincommit(w *Window, t *Text) {
