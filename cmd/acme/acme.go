@@ -150,6 +150,8 @@ func main() {
 	dumppkg.OnNewWindow = ui.OnNewWindow
 
 	ui.Textcomplete = fileloadpkg.Textcomplete
+	ui.BigLock = bigLock
+	ui.BigUnlock = bigUnlock
 	editpkg.Putfile = exec.Putfile
 	editpkg.BigLock = bigLock
 	editpkg.BigUnlock = bigUnlock
