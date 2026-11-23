@@ -50,8 +50,9 @@ func Wintype(w *wind.Window, t *wind.Text, r rune) {
 		for i := 0; i < len(t.File.Text); i++ {
 			wind.Textscrdraw(t.File.Text[i])
 		}
+		wind.Winsettag(w)
 	}
-	wind.Winsettag(w)
+
 }
 
 var fff *file.File

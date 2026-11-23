@@ -66,7 +66,6 @@ var mousew *wind.Window
 var prevmouse draw.Point
 
 func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
-
 	/*
 	 * if not executing a mouse chord (et != t) and snarfing (dosnarf)
 	 * and executed Cut or Snarf in window tag (et->w != nil),
@@ -123,7 +122,9 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 		wind.Textsetselect(t, t.Q0, t.Q0)
 		if t.W != nil {
 			wind.Textscrdraw(t)
-			wind.Winsettag(t.W)
+			if t.What == wind.Body {
+				wind.Winsettag(t.W)
+			}
 		}
 	} else if dosnarf { // Snarf command
 		wind.Argtext = t
@@ -134,7 +135,6 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 }
 
 func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
-
 	// if(tobody), use body of executing window  (Paste or Send command)
 	if tobody && et != nil && et.W != nil {
 		t = &et.W.Body
@@ -175,7 +175,9 @@ func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
 	}
 	if t.W != nil {
 		wind.Textscrdraw(t)
-		wind.Winsettag(t.W)
+		if t.What == wind.Body {
+			wind.Winsettag(t.W)
+		}
 	}
 	if t.W != nil && et.W != t.W {
 		wind.Winunlock(t.W)
