@@ -162,7 +162,7 @@ func fsysproc() {
 				f = newfid(int(x.fcall.Fid))
 			default:
 				f = newfid(int(x.fcall.Fid))
-				if !f.busy {
+				if f.state.Load() != fidBusy {
 					x.f = f
 					x = respond(x, &t, "fid not in use")
 					continue
@@ -289,7 +289,9 @@ func fsysattach(x *Xfid, f *Fid) *Xfid {
 	if x.fcall.Uname != user {
 		return respond(x, &t, Eperm)
 	}
-	f.busy = true
+	if !f.state.CompareAndSwap(fidFree, fidBusy) {
+		return respond(x, &t, "fid already in use")
+	}
 	f.open = false
 	f.qid.Path = Qdir
 	f.qid.Type = plan9.QTDIR
@@ -325,10 +327,9 @@ func fsyswalk(x *Xfid, f *Fid) *Xfid {
 	}
 	if x.fcall.Fid != x.fcall.Newfid {
 		nf = newfid(int(x.fcall.Newfid))
-		if nf.busy {
+		if !nf.state.CompareAndSwap(fidFree, fidBusy) {
 			return respond(x, &t, "newfid already in use")
 		}
-		nf.busy = true
 		nf.open = false
 		nf.mntdir = f.mntdir
 		if f.mntdir != nil {
@@ -449,8 +450,8 @@ func fsyswalk(x *Xfid, f *Fid) *Xfid {
 
 	if err != "" || len(t.Wqid) < len(x.fcall.Wname) {
 		if nf != nil {
-			nf.busy = false
 			fsysdelid(nf.mntdir)
+			nf.state.Store(fidFree)
 		}
 	} else if len(t.Wqid) == len(x.fcall.Wname) {
 		if w != nil {
@@ -599,6 +600,10 @@ func fsyswrite(x *Xfid, f *Fid) *Xfid {
 }
 
 func fsysclunk(x *Xfid, f *Fid) *Xfid {
+	if !f.state.CompareAndSwap(fidBusy, fidClosing) {
+		var t plan9.Fcall
+		return respond(x, &t, "fid not in use")
+	}
 	fsysdelid(f.mntdir)
 	x.c <- xfidclose
 	return nil
@@ -634,7 +639,7 @@ func newfid(fid int) *Fid {
 	for f = *fh; f != nil; f = f.next {
 		if f.fid == fid {
 			return f
-		} else if ff == nil && !f.busy {
+		} else if ff == nil && f.state.Load() == fidFree {
 			ff = f
 		}
 	}

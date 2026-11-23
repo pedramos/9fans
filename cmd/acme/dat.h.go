@@ -1,6 +1,8 @@
 package main
 
 import (
+	"sync/atomic"
+
 	"plramos.win/9fans/cmd/acme/internal/wind"
 	"plramos.win/9fans/cmd/internal/base"
 	"plramos.win/9fans/draw"
@@ -48,9 +50,15 @@ type Dirtab struct {
 	perm int
 }
 
+const (
+	fidFree = iota
+	fidBusy
+	fidClosing
+)
+
 type Fid struct {
 	fid    int
-	busy   bool
+	state  atomic.Uint32
 	open   bool
 	qid    plan9.Qid
 	w      *wind.Window

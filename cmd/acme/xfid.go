@@ -209,26 +209,29 @@ func xfidopen(x *Xfid) {
 }
 
 func xfidclose(x *Xfid) {
-	w := x.f.w
-	x.f.busy = false
-	x.f.w = nil
+	f := x.f
+	w := f.w
+	open := f.open
+	q := FILE(f.qid)
+	fid := f.fid
+	f.w = nil
+	f.open = false
 	var fc plan9.Fcall
-	if !x.f.open {
+	if !open {
 		if w != nil {
 			wind.Winclose(w)
 		}
+		f.state.Store(fidFree)
 		respond(x, &fc, "")
 		return
 	}
 
-	q := FILE(x.f.qid)
-	x.f.open = false
 	if w != nil {
 		wind.Winlock(w, 'E')
 		var t *wind.Text
 		switch q {
 		case QWctl:
-			if w.Ctlfid != ^0 && w.Ctlfid == x.f.fid {
+			if w.Ctlfid != ^0 && w.Ctlfid == fid {
 				w.Ctlfid = ^0
 				w.Ctllock.Unlock()
 			}
@@ -274,6 +277,7 @@ func xfidclose(x *Xfid) {
 			editpkg.Editoutlk.Unlock()
 		}
 	}
+	f.state.Store(fidFree)
 	respond(x, &fc, "")
 }
 
