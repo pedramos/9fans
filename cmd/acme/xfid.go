@@ -1032,7 +1032,9 @@ func xfideventread(x *Xfid, w *wind.Window) {
 }
 
 func xfidindexread(x *Xfid) {
+	bigUnlock()
 	wind.TheRow.Lk.Lock()
+	bigLock()
 	nmax := 0
 	var i int
 	var j int
