@@ -1011,7 +1011,7 @@ func xfideventread(x *Xfid, w *wind.Window) {
 		w.Eventwait = c
 		wind.Winunlock(w)
 		bigUnlock()
-		ok := <-w.Eventwait
+		ok := <-c
 		bigLock()
 		wind.Winlock(w, 'F')
 		if !ok {
