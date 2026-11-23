@@ -528,20 +528,20 @@ func Textselect(t *wind.Text) {
 			}
 			if b&2 != 0 {
 				if state == Paste && t.What == wind.Body {
-					wind.Winundo(t.W, true)
+					wind.WinundoDeferred(t.W, true)
 					wind.Textsetselect(t, q0, t.Q1)
 					state = None
 				} else if state != Cut {
-					XCut(t, t, nil, true, true, nil)
+					xcut(t, t, true, true, false)
 					state = Cut
 				}
 			} else {
 				if state == Cut && t.What == wind.Body {
-					wind.Winundo(t.W, true)
+					wind.WinundoDeferred(t.W, true)
 					wind.Textsetselect(t, q0, t.Q1)
 					state = None
 				} else if state != Paste {
-					XPaste(t, t, nil, true, false, nil)
+					xpaste(t, t, true, false, false)
 					state = Paste
 				}
 			}

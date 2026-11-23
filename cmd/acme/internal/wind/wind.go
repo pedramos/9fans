@@ -358,6 +358,12 @@ func windelete(w *Window) {
 }
 
 func Winundo(w *Window, isundo bool) {
+	WinundoDeferred(w, isundo)
+	Winsettag(w)
+}
+
+// WinundoDeferred leaves the tag refresh to the caller.
+func WinundoDeferred(w *Window, isundo bool) {
 	w.Utflastqid = -1
 	body := &w.Body
 	body.File.Undo(isundo, &body.Q0, &body.Q1)
@@ -371,7 +377,6 @@ func Winundo(w *Window, isundo bool) {
 			v.Body.Q1 = v.Body.Fr.P1 + v.Body.Org
 		}
 	}
-	Winsettag(w)
 }
 
 func Winsetname(w *Window, name []rune) {

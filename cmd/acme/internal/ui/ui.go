@@ -66,6 +66,10 @@ var mousew *wind.Window
 var prevmouse draw.Point
 
 func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
+	xcut(et, t, dosnarf, docut, true)
+}
+
+func xcut(et, t *wind.Text, dosnarf, docut, updateTag bool) {
 	/*
 	 * if not executing a mouse chord (et != t) and snarfing (dosnarf)
 	 * and executed Cut or Snarf in window tag (et->w != nil),
@@ -122,7 +126,7 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 		wind.Textsetselect(t, t.Q0, t.Q0)
 		if t.W != nil {
 			wind.Textscrdraw(t)
-			if t.What == wind.Body {
+			if updateTag && t.What == wind.Body {
 				wind.Winsettag(t.W)
 			}
 		}
@@ -135,6 +139,10 @@ func XCut(et, t, _ *wind.Text, dosnarf, docut bool, _ []rune) {
 }
 
 func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
+	xpaste(et, t, selectall, tobody, true)
+}
+
+func xpaste(et, t *wind.Text, selectall, tobody, updateTag bool) {
 	// if(tobody), use body of executing window  (Paste or Send command)
 	if tobody && et != nil && et.W != nil {
 		t = &et.W.Body
@@ -155,7 +163,8 @@ func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
 		}
 		wind.Winlock(t.W, c)
 	}
-	XCut(t, t, nil, false, true, nil)
+	// Rebuild the tag only after the replacement is complete.
+	xcut(t, t, false, true, false)
 	q := 0
 	q0 := t.Q0
 	q1 := t.Q0 + snarfbuf.Len()
@@ -175,7 +184,7 @@ func XPaste(et, t, _ *wind.Text, selectall, tobody bool, _ []rune) {
 	}
 	if t.W != nil {
 		wind.Textscrdraw(t)
-		if t.What == wind.Body {
+		if updateTag && t.What == wind.Body {
 			wind.Winsettag(t.W)
 		}
 	}
