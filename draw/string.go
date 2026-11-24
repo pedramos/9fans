@@ -84,6 +84,13 @@ func (dst *Image) BytesBg(p Point, src *Image, sp Point, f *Font, b []byte, bg *
 	return _string(dst, p, src, sp, f, "", b, nil, dst.Clipr, bg, bgp, SoverD)
 }
 
+// BytesBgClip is like BytesBg but restricts drawing to clipr.
+func (dst *Image) BytesBgClip(p Point, src *Image, sp Point, f *Font, b []byte, bg *Image, bgp Point, clipr Rectangle) Point {
+	dst.Display.mu.Lock()
+	defer dst.Display.mu.Unlock()
+	return _string(dst, p, src, sp, f, "", b, nil, clipr.Intersect(dst.Clipr), bg, bgp, SoverD)
+}
+
 // BytesBgOp is like StringBgOp but accepts a UTF-8-encoded byte slice instead of a string.
 func (dst *Image) BytesBgOp(p Point, src *Image, sp Point, f *Font, b []byte, bg *Image, bgp Point, op Op) Point {
 	dst.Display.mu.Lock()

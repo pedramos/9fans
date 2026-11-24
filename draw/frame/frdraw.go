@@ -11,7 +11,7 @@ func (f *Frame) drawtext(pt draw.Point, text, back *draw.Image) {
 		b := &f.box[nb]
 		f.cklinewrap(&pt, b)
 		if f.NoRedraw == 0 && b.nrune >= 0 {
-			f.B.BytesBg(pt, text, draw.Point{}, f.Font, b.bytes, back, draw.Point{})
+			f.B.BytesBgClip(pt, text, draw.Point{}, f.Font, b.bytes, back, draw.Point{}, f.R)
 		}
 		pt.X += b.wid
 	}
@@ -92,7 +92,7 @@ func (f *Frame) Drawsel0(pt draw.Point, p0, p1 int, back, text *draw.Image) draw
 		x := min(pt.X+w, f.R.Max.X)
 		f.B.Draw(draw.Rect(pt.X, pt.Y, x, pt.Y+f.Font.Height), back, nil, pt)
 		if b.nrune >= 0 {
-			f.B.BytesBg(pt, text, draw.Point{}, f.Font, ptr, back, draw.Point{})
+			f.B.BytesBgClip(pt, text, draw.Point{}, f.Font, ptr, back, draw.Point{}, f.R)
 		}
 		pt.X += w
 		p += nr
